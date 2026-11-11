@@ -11,8 +11,15 @@ is written "Uix"; identifiers keep the lowercase form (`uix-` prefix, package na
 Settled decisions:
 
 - The core is plain HTML and CSS, built from scratch: no third-party component library (such as Reka UI)
-  underneath. Integrations (Blade components, Vue components…) are separate packages kept in this same
-  repository; their names and layout are not settled yet. A Tailwind theme is still under discussion.
+  underneath. Integrations are separate packages kept in this same repository, all sharing one version
+  and one tag:
+  - `packages/uix` → npm `@sfaut/uix` (core);
+  - `packages/vue` → npm `@sfaut/uix-vue`;
+  - `packages/blade` → Composer `sfaut/uix-blade`, whose `composer.json` sits at the repository root
+    (Packagist requires it there; one PHP package per repository at most).
+
+  The npm packages are scoped because the unscoped name `uix` is taken. A Tailwind theme is still under
+  discussion.
 - The library must be usable straight from a CDN, with no build step on the consumer side: the published
   `dist/` is what jsDelivr / unpkg serve. Two forms of use, served by the same files:
   - CDN: everything at once, with one stylesheet and one module script (`uix.css`, `uix.js`); a CSS-only
@@ -55,8 +62,8 @@ Settled decisions:
 
 ## Status
 
-The repository holds no code yet. Choices still open (Tailwind theme, names and layout of the integration
-packages, code style for HTML, CSS and JavaScript) are made with the maintainer; do not decide them alone.
+The repository holds no code yet. Choices still open (Tailwind theme, code style for HTML, CSS and
+JavaScript) are made with the maintainer; do not decide them alone.
 The code style must avoid repetition: the early sketches, with a class on every child element, were
 rejected for that reason.
 
