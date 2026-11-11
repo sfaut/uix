@@ -42,9 +42,13 @@ Settled decisions:
   no JavaScript. Purely structural components (`<uix-app>`, `<uix-toolbar>`…) are styled by CSS alone and
   need no registration. Only what native HTML cannot do gets JavaScript, as custom elements without
   Shadow DOM.
-- Philosophy inspired by XUL: dense application UIs, themed from a handful of root settings (base font
-  size, unitless line height for density, spacing, radius, corner shape including squircle, accent
-  color). Every dimension derives from them (`em`, `lh`, `calc()`) and every color from the accent
+- Philosophy inspired by XUL: dense application UIs, themed from a handful of root settings: fonts
+  (interface, headings, code), base font size, unitless line height for density, normal and strong
+  weights, text box trim, spacing, radius, corner shape (including squircle), border width, shadow
+  strength, focus ring width and offset, motion duration (forced to 0 under `prefers-reduced-motion`),
+  contrast, accent color, semantic hues (danger, success, warning, info) and the dark base background.
+  Features some browsers lack (`corner-shape`, `appearance: base-select` for themed option lists) are
+  progressive enhancements behind `@supports`. Every dimension derives from them (`em`, `lh`, `calc()`) and every color from the accent
   (relative color syntax, `light-dark()`), so changing a setting re-themes everything. The dark theme is
   computed from the light theme and one dark base background color (grayish, bluish…), whose hue and
   tint every dark neutral keeps. DTCG tokens hold
