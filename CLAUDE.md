@@ -54,7 +54,9 @@ Settled decisions:
   - Authoring attributes never reuse a global HTML attribute for another meaning: `title` shows a tooltip
     on any element, so a heading is `heading="…"`, never `title="…"`.
   - Element and attribute names are full English words in kebab-case (`uix-option-group`,
-    `uix-menu-item`, `start-icon`), and do not mimic native or XUL names (`optgroup`, `hbox`).
+    `uix-menu-item`, `start-icon`), and do not mimic native or XUL names (`optgroup`, `hbox`). Compound
+    words follow English spelling: one word when English writes one (`toolbar`, `checkbox`), a hyphen
+    between separate words (`status-bar`).
   - When an attribute and the children feed the same content (`text` and rich children), the children
     win, and the console gets a warning that names the element, the conflict and the fix.
   - Lists of items are written as `uix-*` children (`<uix-option>`, `<uix-option-group>`); a JavaScript
