@@ -35,6 +35,18 @@ Settled decisions:
   `<uix-menu>`…), while controls stay native elements (`<button>`, `<input>`, `<select>`, `<fieldset>`)
   so they keep their built-in accessibility and form behavior. Variants are `data-*` attributes
   (`<button data-primary>`), with no required class. Custom properties are prefixed with `uix-`.
+- Two levels of markup:
+  - The rendered HTML is the reference: native controls, structural `uix-*` components, `data-*`
+    variants. It is what the CSS styles, what assistive technologies and forms see, and what is tested.
+  - Authoring tags (`<uix-button>`, `<uix-input>`, `<uix-select>`…) are shorter to write and produce
+    exactly that HTML, from three producers: custom elements in the browser (CDN, plain HTML, htmx),
+    Blade components, Vue components. A browser-side authoring element renders its native HTML once in
+    light DOM (skipping it when already present, as when a server rendered it), keeps it in sync with its
+    attributes, and relays properties (`value`, `checked`, `disabled`, `focus()`) to the native control.
+    Authoring tags need JavaScript; the rendered HTML does not.
+  - Authoring content goes in attributes (`<uix-button label="Save" primary>`). Children are used only
+    for rich or structured content (HTML, a list of `<option>`). On authoring tags, variants are plain
+    attributes (`primary`); on native elements, they are `data-*` attributes (`data-primary`).
 - `<uix-app>` is the explicit root: Uix styles apply only inside it, so an existing application can adopt
   Uix part by part, and a subtree can override the theme settings. Toasts need no root of their own: they
   are `popover="manual"` elements shown in the top layer.
