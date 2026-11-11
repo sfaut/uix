@@ -122,7 +122,7 @@ Settled decisions:
 - The documentation is also the component workshop (no Storybook): each component page shows live
   examples next to their HTML, and a showcase page renders every component in every state, light and
   dark side by side. Playwright runs the visual and accessibility tests against these documentation pages.
-  Examples write widths in `ch` (`width="26ch"`).
+  Examples write widths in `ch` (`width="26ch"`) and heights in `lh` (`height="6lh"`).
 - Documentation is multilingual: English is the base, translations follow (French first).
 - License: MIT (`LICENSE`).
 
