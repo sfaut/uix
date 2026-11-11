@@ -65,8 +65,9 @@ Settled decisions:
 - Goal: users write only `uix-*` tags; native HTML is what Uix renders, not what users write. Every
   component therefore gets an authoring tag, configured through attributes (`<uix-callout tone="warning"
   heading="…" text="…" dismissible>`).
-- Layout attributes, on rows, columns and grids: `align` (`start | center | end | stretch`, across the
-  axis), `justify` (`start | center | end | space-between`, along the axis), `gap` (`none | small |
+- Layout attributes, on rows, columns and grids: `align` (`start | center | end | stretch | baseline`,
+  across the axis: vertical in a row, horizontal in a column; in a grid, vertical in each cell),
+  `justify` (`start | center | end | space-between`, along the axis; in a grid, horizontal in each cell), `gap` (`none | small |
   large`), `wrap`, `grow` (alone = 1, or `0`, `2`, `3`: a share of the free space), `width`, `height`,
   `min-width`, `max-width`, `min-height`, `max-height` (any CSS length), `scroll`; `columns` and `rows`
   (CSS grid tracks) on `uix-grid`; `persist` on `uix-splitter`.
