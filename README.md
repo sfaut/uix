@@ -1,4 +1,4 @@
-# uix
+# Uix
 
 A design system for web applications, written in plain HTML and CSS.
 

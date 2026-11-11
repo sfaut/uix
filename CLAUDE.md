@@ -4,8 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`uix` (GitHub: `sfaut/uix`, npm: `@sfaut/uix`) is a design system for web applications, designed and
-written from scratch in this repository. The local folder is named `lib-uix`.
+Uix (GitHub: `sfaut/uix`, npm: `@sfaut/uix`) is a design system for web applications, designed and
+written from scratch in this repository. The local folder is named `lib-uix`. In prose, the project name
+is written "Uix"; identifiers keep the lowercase form (`uix-` prefix, package names).
 
 Settled decisions:
 
