@@ -73,6 +73,18 @@ Settled decisions:
   the global release procedure. The global Git conventions still apply. The main branch is `master`.
 - The GitHub repository keeps issues and pull requests; wiki, projects and discussions are disabled.
 
+## CSS pitfalls
+
+Cases met while prototyping, to avoid repeating them:
+
+- Hairlines (separators, rules): draw them with a border on a zero-size box (`inline-size: 0;
+  border-inline-start: 1px solid …`), never with a background on a 1px box. Browsers snap borders to whole
+  device pixels; a 1px background box landing on a fractional position (another font size, zoom, display
+  scaling) is antialiased over two device pixels and looks thicker.
+- `text-box` / `text-box-trim` only applies to block containers and inline boxes. An element whose text
+  must be trimmed (a button, a menu item) cannot be a flex or grid container: use `block` or
+  `inline-block`.
+
 ## Status
 
 The repository holds no code yet. Choices still open (Tailwind theme, code style for HTML, CSS and
