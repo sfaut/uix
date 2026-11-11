@@ -53,6 +53,13 @@ Settled decisions:
     attributes (`data-variant="primary"`).
   - Authoring attributes never reuse a global HTML attribute for another meaning: `title` shows a tooltip
     on any element, so a heading is `heading="…"`, never `title="…"`.
+  - Element and attribute names are full English words in kebab-case (`uix-option-group`,
+    `uix-menu-item`, `start-icon`), and do not mimic native or XUL names (`optgroup`, `hbox`).
+  - When an attribute and the children feed the same content (`text` and rich children), the children
+    win, and the console gets a warning that names the element, the conflict and the fix.
+  - Lists of items are written as `uix-*` children (`<uix-option>`, `<uix-option-group>`); a JavaScript
+    property (`options`) will serve programmatic use later. Rich content uses components too
+    (`<uix-link>`), and native content HTML is written only inside `<uix-prose>`.
 - Goal: users write only `uix-*` tags; native HTML is what Uix renders, not what users write. Every
   component therefore gets an authoring tag, configured through attributes (`<uix-callout tone="warning"
   heading="…" text="…" dismissible>`).
@@ -83,7 +90,8 @@ Settled decisions:
   (relative color syntax, `light-dark()`), so changing a setting re-themes everything. The dark theme is
   computed from the light theme and one dark base background color (grayish, bluish…), whose hue and
   tint every dark neutral keeps. DTCG tokens hold the default values; the derivation formulas live in
-  the CSS.
+  the CSS. Density (compact, comfortable) means a tighter or looser interface: it changes spacing and
+  line height, never the font size.
 - Every element inside `<uix-app>` uses `box-sizing: border-box`, with no setting to change it.
 - JavaScript is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source file is the
   file served, with no compilation step.
