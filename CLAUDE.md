@@ -37,7 +37,7 @@ Settled decisions:
 - Git: read and write operations are allowed in this repository, remote included (push, deletion of
   remote branches), which lifts the global read-only rule. Claude Code may publish versions by following
   the global release procedure. The global Git conventions still apply. The main branch is `master`.
-- The GitHub repository only uses issues (wiki, projects and discussions are disabled).
+- The GitHub repository keeps issues and pull requests; wiki, projects and discussions are disabled.
 
 ## Status
 
