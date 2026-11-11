@@ -65,6 +65,11 @@ Settled decisions:
 - Goal: users write only `uix-*` tags; native HTML is what Uix renders, not what users write. Every
   component therefore gets an authoring tag, configured through attributes (`<uix-callout tone="warning"
   heading="…" text="…" dismissible>`).
+- Layout attributes, on rows, columns and grids: `align` (`start | center | end | stretch`, across the
+  axis), `justify` (`start | center | end | space-between`, along the axis), `gap` (`none | small |
+  large`), `wrap`, `grow` (alone = 1, or `0`, `2`, `3`: a share of the free space), `width`, `height`,
+  `min-width`, `max-width`, `min-height`, `max-height` (any CSS length), `scroll`; `columns` and `rows`
+  (CSS grid tracks) on `uix-grid`; `persist` on `uix-splitter`.
 - Uix is for pure application UIs, which hold no prose: the application title is an attribute
   (`<uix-app heading="…">`), and a block of text, when one is really needed, goes in `<uix-prose>`, the
   only place where users write native content HTML (paragraphs, lists, headings). Layout uses structure
