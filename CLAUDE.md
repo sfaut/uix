@@ -14,7 +14,13 @@ Settled decisions:
   underneath. Integrations (Blade components, Vue components…) are separate packages kept in this same
   repository; their names and layout are not settled yet. A Tailwind theme is still under discussion.
 - The library must be usable straight from a CDN, with no build step on the consumer side: the published
-  `dist/` is what jsDelivr / unpkg serve.
+  `dist/` is what jsDelivr / unpkg serve. Two forms of use, served by the same files:
+  - CDN: everything at once, with one stylesheet and one module script (`uix.css`, `uix.js`); a CSS-only
+    use needs the stylesheet alone. No script injects the CSS.
+  - Build (Vite, webpack…): everything, or one component at a time (`menu.css`, `menu.js`), through the
+    `exports` map of `package.json`; the DTCG tokens are exported too. All CSS lives in `@layer`, so
+    import order does not matter, and custom elements are registered only once
+    (`if (!customElements.get(…))`), so loading both forms does no harm.
 - Browser target: Baseline "Newly available". Modern CSS and HTML features (`@layer`, nesting,
   `light-dark()`, `:has()`, container queries, popover, anchor positioning, invoker commands…) are
   preferred over JavaScript.
