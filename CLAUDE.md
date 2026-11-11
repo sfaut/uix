@@ -77,8 +77,11 @@ Settled decisions:
   Uix part by part, and a subtree can override the theme settings. Toasts need no root of their own: they
   are `popover="manual"` elements shown in the top layer.
 - Behavior comes first from native HTML (`<dialog>`, `popover`, `<details name>`, invoker commands…), with
-  no JavaScript. Purely structural components (`<uix-toolbar>`, boxes…) are styled by CSS alone and
-  need no registration. Only what native HTML cannot do gets JavaScript, as custom elements without
+  no JavaScript. Purely structural components (`<uix-toolbar>`…) are styled by CSS alone and need no
+  registration. Layout elements take free values in attributes (`width="16em"`, `columns="auto 1fr"`):
+  CSS reads them with typed `attr()` where supported (Chromium, Firefox; not stable Safari as of
+  2026-11, an Interop 2026 focus area), and a few lines of JavaScript copy them to custom properties
+  elsewhere. Only what native HTML cannot do gets JavaScript, as custom elements without
   Shadow DOM.
 - Philosophy inspired by XUL: dense application UIs, themed from a handful of root settings: fonts
   (interface, headings, code), base font size, unitless line height for density, normal and strong
