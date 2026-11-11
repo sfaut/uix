@@ -34,7 +34,10 @@ Settled decisions:
 - Markup is component-oriented: components are custom elements (`<uix-app>`, `<uix-toolbar>`,
   `<uix-menu>`…), while controls stay native elements (`<button>`, `<input>`, `<select>`, `<fieldset>`)
   so they keep their built-in accessibility and form behavior. Variants are `data-*` attributes
-  (`<button data-primary>`), with no required class. Custom properties are prefixed with `uix-`.
+  (`<button data-variant="primary">`), with no required class. Custom properties are prefixed with `uix-`.
+- Variants that exclude each other are one enumerated attribute (`variant="primary"`, `size="small"`,
+  `tone="danger"`), so an impossible combination cannot be written; boolean attributes are kept for
+  states that combine (`disabled`, `dismissible`, `icon-only`).
 - Two levels of markup:
   - The rendered HTML is the reference: native controls, structural `uix-*` components, `data-*`
     variants. It is what the CSS styles, what assistive technologies and forms see, and what is tested.
@@ -44,12 +47,19 @@ Settled decisions:
     light DOM (skipping it when already present, as when a server rendered it), keeps it in sync with its
     attributes, and relays properties (`value`, `checked`, `disabled`, `focus()`) to the native control.
     Authoring tags need JavaScript; the rendered HTML does not.
-  - Authoring content goes in attributes (`<uix-button label="Save" primary>`). Children are used only
-    for rich or structured content (HTML, a list of `<option>`). On authoring tags, variants are plain
-    attributes (`primary`); on native elements, they are `data-*` attributes (`data-primary`).
+  - Authoring content goes in attributes (`<uix-button label="Save" variant="primary">`). Children are
+    used only for rich or structured content (inline HTML such as a link, a list of items). On authoring
+    tags, variants are plain attributes (`variant="primary"`); on native elements, they are `data-*`
+    attributes (`data-variant="primary"`).
+  - Authoring attributes never reuse a global HTML attribute for another meaning: `title` shows a tooltip
+    on any element, so a heading is `heading="…"`, never `title="…"`.
 - Goal: users write only `uix-*` tags; native HTML is what Uix renders, not what users write. Every
   component therefore gets an authoring tag, configured through attributes (`<uix-callout tone="warning"
   heading="…" text="…" dismissible>`).
+- Uix is for pure application UIs, which hold no prose: the application title is an attribute
+  (`<uix-app heading="…">`), and a block of text, when one is really needed, goes in `<uix-prose>`, the
+  only place where users write native content HTML (paragraphs, lists, headings). Layout uses structure
+  elements, as in XUL / XAML (boxes, spacer, group box…).
 - Icons: Lucide by default, other providers possible. An icon is referenced as `provider:name` in
   attributes (`start-icon="lucide:save"`, `end-icon`, `icon`); a registry maps each provider prefix to a
   resolver. Icons render as inline SVG (`<svg data-icon="lucide:save" aria-hidden="true">`), so they take
@@ -58,20 +68,23 @@ Settled decisions:
   Uix part by part, and a subtree can override the theme settings. Toasts need no root of their own: they
   are `popover="manual"` elements shown in the top layer.
 - Behavior comes first from native HTML (`<dialog>`, `popover`, `<details name>`, invoker commands…), with
-  no JavaScript. Purely structural components (`<uix-app>`, `<uix-toolbar>`…) are styled by CSS alone and
+  no JavaScript. Purely structural components (`<uix-toolbar>`, boxes…) are styled by CSS alone and
   need no registration. Only what native HTML cannot do gets JavaScript, as custom elements without
   Shadow DOM.
 - Philosophy inspired by XUL: dense application UIs, themed from a handful of root settings: fonts
   (interface, headings, code), base font size, unitless line height for density, normal and strong
-  weights, text box trim, spacing, radius, corner shape (including squircle), border width, shadow
-  strength, focus ring width and offset, motion duration (forced to 0 under `prefers-reduced-motion`),
-  contrast, accent color, semantic hues (danger, success, warning, info) and the dark base background.
-  Features some browsers lack (`corner-shape`, `appearance: base-select` for themed option lists) are
-  progressive enhancements behind `@supports`. Every dimension derives from them (`em`, `lh`, `calc()`) and every color from the accent
+  weights, text box trim, outer spacing (between elements) and inner spacing (inside controls and
+  boxes), radius, corner shape (including squircle), border width, shadow strength, icon stroke width,
+  focus ring width and offset, motion duration (forced to 0 under `prefers-reduced-motion`), contrast,
+  accent color, semantic hues (danger, success, warning, info) and the dark base background. Features
+  some browsers lack (`corner-shape`, `appearance: base-select` for themed option lists) are progressive
+  enhancements behind `@supports`; themed option lists are on by default, with a setting to turn them
+  off. Every dimension derives from the settings (`em`, `lh`, `calc()`) and every color from the accent
   (relative color syntax, `light-dark()`), so changing a setting re-themes everything. The dark theme is
   computed from the light theme and one dark base background color (grayish, bluish…), whose hue and
-  tint every dark neutral keeps. DTCG tokens hold
-  the default values; the derivation formulas live in the CSS.
+  tint every dark neutral keeps. DTCG tokens hold the default values; the derivation formulas live in
+  the CSS.
+- Every element inside `<uix-app>` uses `box-sizing: border-box`, with no setting to change it.
 - JavaScript is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source file is the
   file served, with no compilation step.
 - Design tokens: source of truth in DTCG format (`.tokens.json`), turned into CSS custom properties by
