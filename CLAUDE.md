@@ -47,6 +47,13 @@ Settled decisions:
   - Authoring content goes in attributes (`<uix-button label="Save" primary>`). Children are used only
     for rich or structured content (HTML, a list of `<option>`). On authoring tags, variants are plain
     attributes (`primary`); on native elements, they are `data-*` attributes (`data-primary`).
+- Goal: users write only `uix-*` tags; native HTML is what Uix renders, not what users write. Every
+  component therefore gets an authoring tag, configured through attributes (`<uix-callout tone="warning"
+  heading="…" text="…" dismissible>`).
+- Icons: Lucide by default, other providers possible. An icon is referenced as `provider:name` in
+  attributes (`start-icon="lucide:save"`, `end-icon`, `icon`); a registry maps each provider prefix to a
+  resolver. Icons render as inline SVG (`<svg data-icon="lucide:save" aria-hidden="true">`), so they take
+  the text color and the theme's stroke width.
 - `<uix-app>` is the explicit root: Uix styles apply only inside it, so an existing application can adopt
   Uix part by part, and a subtree can override the theme settings. Toasts need no root of their own: they
   are `popover="manual"` elements shown in the top layer.
