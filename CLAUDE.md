@@ -18,8 +18,12 @@ Settled decisions:
   `light-dark()`, `:has()`, container queries, popover, anchor positioning, invoker commands…) are
   preferred over JavaScript.
 - Every class and custom property is prefixed with `uix-` (`.uix-button`, `--uix-color-primary`).
-- JavaScript, if any, is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source
-  file is the file served, with no compilation step.
+- Behavior comes first from native HTML (`<dialog>`, `popover`, `<details name>`, invoker commands…), with
+  no JavaScript. Only what native HTML cannot do gets JavaScript, as custom elements (`<uix-tabs>`)
+  without Shadow DOM: their content stays ordinary HTML in the page, so the library CSS, the user's
+  classes, ARIA `id` references and form submission keep working. No Shadow DOM.
+- JavaScript is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source file is the
+  file served, with no compilation step.
 - Design tokens: source of truth in DTCG format (`.tokens.json`), turned into CSS custom properties by
   Style Dictionary. The format is documented in `README.md`.
 - Planned tooling (not installed yet): Lightning CSS (bundling, browser targets, minification), Stylelint
@@ -41,8 +45,8 @@ Settled decisions:
 
 ## Status
 
-The repository holds no code yet. Structural choices still open (integrations, JavaScript form) are made
-with the maintainer; do not decide them alone.
+The repository holds no code yet. Structural choices still open (integrations such as a Tailwind theme or
+Blade / Vue components) are made with the maintainer; do not decide them alone.
 
 This file grows as decisions are made: commands (build, lint, tests, running a single test), then
 architecture (design tokens, components, theming, package distribution).
