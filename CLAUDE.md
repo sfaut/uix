@@ -70,6 +70,9 @@ Settled decisions:
   large`), `wrap`, `grow` (alone = 1, or `0`, `2`, `3`: a share of the free space), `width`, `height`,
   `min-width`, `max-width`, `min-height`, `max-height` (any CSS length), `scroll`; `columns` and `rows`
   (CSS grid tracks) on `uix-grid`; `persist` on `uix-splitter`.
+- Scrolling: components holding content of free length (navigation, list, table, tree, text area,
+  prose) scroll by themselves once their size is constrained; layout boxes scroll only with `scroll`.
+- In a row, a field's label stays on one line: the field never gets narrower than its label.
 - Uix is for pure application UIs, which hold no prose: the application title is an attribute
   (`<uix-app heading="…">`), and a block of text, when one is really needed, goes in `<uix-prose>`, the
   only place where users write native content HTML (paragraphs, lists, headings). Layout uses structure
