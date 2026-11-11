@@ -41,7 +41,9 @@ Settled decisions:
 - Philosophy inspired by XUL: dense application UIs, themed from a handful of root settings (base font
   size, unitless line height for density, spacing, radius, corner shape including squircle, accent
   color). Every dimension derives from them (`em`, `lh`, `calc()`) and every color from the accent
-  (relative color syntax, `light-dark()`), so changing a setting re-themes everything. DTCG tokens hold
+  (relative color syntax, `light-dark()`), so changing a setting re-themes everything. The dark theme is
+  computed, not designed by hand: from the light theme and one dark base background color (grayish,
+  bluish…), whose hue and tint every dark neutral keeps. DTCG tokens hold
   the default values; the derivation formulas live in the CSS.
 - JavaScript is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source file is the
   file served, with no compilation step.
