@@ -38,6 +38,11 @@ Settled decisions:
   no JavaScript. Only what native HTML cannot do gets JavaScript. Its form is under review: custom
   elements without Shadow DOM were chosen first, but they conflict with the native-tags-only rule above;
   event delegation on `data-*` attributes is the candidate. No Shadow DOM in any case.
+- Philosophy inspired by XUL: dense application UIs, themed from a handful of root settings (base font
+  size, unitless line height for density, spacing, radius, corner shape including squircle, accent
+  color). Every dimension derives from them (`em`, `lh`, `calc()`) and every color from the accent
+  (relative color syntax, `light-dark()`), so changing a setting re-themes everything. DTCG tokens hold
+  the default values; the derivation formulas live in the CSS.
 - JavaScript is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source file is the
   file served, with no compilation step.
 - Design tokens: source of truth in DTCG format (`.tokens.json`), turned into CSS custom properties by
