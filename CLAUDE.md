@@ -31,11 +31,13 @@ Settled decisions:
 - Browser target: Baseline "Newly available". Modern CSS and HTML features (`@layer`, nesting,
   `light-dark()`, `:has()`, container queries, popover, anchor positioning, invoker commands…) are
   preferred over JavaScript.
-- Every class and custom property is prefixed with `uix-` (`.uix-button`, `--uix-color-primary`).
+- Markup uses native HTML elements only: the maintainer does not want custom tags mixed with native HTML.
+  Variants and component hooks are `data-*` attributes (`<button data-primary>`, `<div data-toolbar>`),
+  with no required class. Custom properties are prefixed with `uix-`.
 - Behavior comes first from native HTML (`<dialog>`, `popover`, `<details name>`, invoker commands…), with
-  no JavaScript. Only what native HTML cannot do gets JavaScript, as custom elements (`<uix-tabs>`)
-  without Shadow DOM: their content stays ordinary HTML in the page, so the library CSS, the user's
-  classes, ARIA `id` references and form submission keep working. No Shadow DOM.
+  no JavaScript. Only what native HTML cannot do gets JavaScript. Its form is under review: custom
+  elements without Shadow DOM were chosen first, but they conflict with the native-tags-only rule above;
+  event delegation on `data-*` attributes is the candidate. No Shadow DOM in any case.
 - JavaScript is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source file is the
   file served, with no compilation step.
 - Design tokens: source of truth in DTCG format (`.tokens.json`), turned into CSS custom properties by
