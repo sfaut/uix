@@ -74,7 +74,9 @@ Settled decisions:
   prose) scroll by themselves once their size is constrained; layout boxes scroll only with `scroll`.
 - In a row, a field's label stays on one line: the field never gets narrower than its label.
 - Overflow: a box never gets smaller than its content, so content never spills over its neighbors; what
-  does not fit makes the nearest scrolling element scroll, or else the application.
+  does not fit makes the nearest scrolling element scroll, or else the application. A written size
+  (`width`, `height`) gives way only to content that cannot wrap (a button, a word, a field and its
+  label), unless `min-width` / `min-height` is written; a scrolling element keeps its size.
 - Every component has a layout type, which sets who places it and which layout attributes it accepts. A
   layout attribute its type does not accept has no effect and brings a console warning.
 - Uix is for pure application UIs, which hold no prose: the application title is an attribute
