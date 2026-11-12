@@ -337,6 +337,8 @@
   uix-row, uix-column { display: flex; gap: var(--uix-gap); }
   uix-row { flex-direction: row; align-items: center; }
   uix-column { flex-direction: column; align-items: stretch; }
+  /* Browsers read align as the obsolete HTML attribute, which also aligns the text inside (align="end" puts it on the right): the text keeps the alignment of the parent. */
+  :is(uix-row, uix-column, uix-grid)[align] { text-align: inherit; }
   :is(uix-row, uix-column) {
     &[align="start"] { align-items: flex-start; }
     &[align="center"] { align-items: center; }

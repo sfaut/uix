@@ -164,6 +164,9 @@ Cases met while prototyping, to avoid repeating them:
 - `text-box` / `text-box-trim` only applies to block containers and inline boxes. An element whose text
   must be trimmed (a button, a menu item) cannot be a flex or grid container: use `block` or
   `inline-block`.
+- Browsers read some authoring attributes as obsolete HTML attributes, even on custom elements: Chrome
+  turns `align="end"` on `<uix-row>` into `text-align: end` for everything inside. Such an effect is
+  undone in CSS (`text-align: inherit`), and a new attribute name is checked for it.
 
 ## Status
 
