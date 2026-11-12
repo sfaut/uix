@@ -152,7 +152,7 @@
     --uix-weight-medium: calc((var(--uix-weight-normal) + var(--uix-weight-strong)) / 2);
     --uix-line: var(--uix-border-width) solid var(--uix-border);
     --uix-focus-ring: var(--uix-focus-width) solid var(--uix-primary);
-    --uix-transition: background-color var(--uix-motion-feedback) var(--uix-ease), border-color var(--uix-motion-feedback) var(--uix-ease), color var(--uix-motion-feedback) var(--uix-ease), box-shadow var(--uix-motion-feedback) var(--uix-ease);
+    --uix-transition: background-color var(--uix-motion-feedback) var(--uix-ease), border-color var(--uix-motion-feedback) var(--uix-ease), color var(--uix-motion-feedback) var(--uix-ease), box-shadow var(--uix-motion-feedback) var(--uix-ease), outline-color var(--uix-motion-feedback) var(--uix-ease);
     /* Outer spacing: between elements. Inner spacing: inside controls and boxes. */
     --uix-gap: calc(var(--uix-space-outer) * 1lh);
     --uix-pad-block: calc(var(--uix-space-inner) * 0.45lh);
@@ -401,6 +401,18 @@
 @layer uix.controls {
   uix-app :is(button, input, select, textarea) { font: inherit; color: inherit; }
 
+  /* Focus ring: always drawn, transparent at rest, so that only its color changes on focus and follows the state feedback transition (an outline that appears cannot be animated). Forced colors would show a transparent outline, so there the ring is drawn on focus only. */
+  uix-app :is(button, input, select, textarea) {
+    outline: var(--uix-focus-width) solid transparent;
+    outline-offset: var(--uix-focus-offset);
+
+    &:focus-visible { outline-color: var(--uix-primary); }
+
+    @media (forced-colors: active) {
+      &:not(:focus-visible) { outline-style: none; }
+    }
+  }
+
   /* A block container (inline-block), because text-box trim does not apply to flex containers. */
   uix-app button {
     display: inline-block;
@@ -417,7 +429,6 @@
     transition: var(--uix-transition);
 
     &:hover:not(:disabled) { background: var(--uix-surface-hover); }
-    &:focus-visible { outline: var(--uix-focus-ring); outline-offset: var(--uix-focus-offset); }
     &:disabled { opacity: 0.5; cursor: not-allowed; }
     &[data-variant="primary"] {
       border-color: transparent;
@@ -459,7 +470,9 @@
     transition: var(--uix-transition);
 
     &::placeholder { color: var(--uix-text-muted); }
-    &:focus-visible { outline: var(--uix-focus-ring); outline-offset: calc(var(--uix-focus-offset) / 2); border-color: var(--uix-primary); }
+    outline-offset: calc(var(--uix-focus-offset) / 2);
+
+    &:focus-visible { border-color: var(--uix-primary); }
     &[aria-invalid="true"] { border-color: var(--uix-danger); }
     &:disabled { background-color: var(--uix-canvas); color: var(--uix-text-muted); cursor: not-allowed; }
   }
@@ -521,6 +534,7 @@
   }
 
   uix-app input:is([type="checkbox"], [type="radio"]) {
+    transition: var(--uix-transition);
     inline-size: 1.05em;
     block-size: 1.05em;
     margin: 0;
@@ -904,7 +918,7 @@ body {
 
 <main class="sc-page">
   <header class="sc-head">
-    <p class="sc-mark">Uix <span>v0 · mockup 18</span></p>
+    <p class="sc-mark">Uix <span>v0 · mockup 19</span></p>
     <h1>Component showcase</h1>
     <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
   </header>
