@@ -50,5 +50,5 @@ in the script (folder names, version keys): update them there first.
    has changed shape and yields nothing.
 
 The showcase (`prototype/showcase.html`, Palettes page) embeds these files in a
-`<script type="application/json" id="sc-palettes-data">` element, so it stands alone online: replace its
-content after regenerating.
+`<script type="application/json" id="sc-palettes-data">` element, so it stands alone online. After
+regenerating, run `node palettes/embed.mjs` to embed the new files.

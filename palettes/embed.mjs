@@ -1,0 +1,32 @@
+// Embeds palettes/*.json in the showcase page, replacing the content of its
+// <script type="application/json" id="sc-palettes-data"> element.
+// Usage: node palettes/embed.mjs [showcase file] (default: prototype/showcase.html)
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const folder = path.dirname(fileURLToPath(import.meta.url));
+const file = process.argv[2] ?? path.join(folder, '..', 'prototype', 'showcase.html');
+
+/**
+ * Palette files, in the order of the showcase chooser.
+ *
+ * @type {string[]}
+ */
+const order = ['tailwind', 'bootstrap', 'material-ui', 'radix', 'open-props', 'mantine', 'ant-design', 'chakra', 'carbon', 'pico', 'wave-ui', 'shadcn', 'flux'];
+
+const data = {};
+for (const name of order) {
+  data[name] = JSON.parse(fs.readFileSync(path.join(folder, `${name}.json`), 'utf8'))[name];
+}
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+
+const page = fs.readFileSync(file, 'utf8');
+const element = /(<script type="application\/json" id="sc-palettes-data">)[^<]*(<\/script>)/;
+if (!element.test(page)) {
+  console.error(`${file}: no <script id="sc-palettes-data"> element`);
+  process.exit(1);
+}
+fs.writeFileSync(file, page.replace(element, (_, open, close) => `${open}${json}${close}`));
+console.log(`${file}: ${order.length} palettes embedded (${Math.round(json.length / 1024)} KiB)`);
