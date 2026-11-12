@@ -108,7 +108,9 @@ Settled decisions:
 - `<uix-app>` is the explicit root: Uix styles apply only inside it, so an existing application can adopt
   Uix part by part, and a subtree can override the theme settings. The root takes all the space of its
   parent, with a margin inside its edges set by the inner spacing, and has no size attribute; right in
-  `<body>`, it fills the window, and the body loses its margin (the only style Uix sets outside a root). Toasts need no root of their own: they
+  `<body>`, it fills the window, and the body loses its margin (the only style Uix sets outside a root). A
+  `<uix-app>` inside another is an application like any other (same heading, same default pattern),
+  placed as an item of its parent's layout, where it takes the space its siblings leave. Toasts need no root of their own: they
   are `popover="manual"` elements shown in the top layer.
 - Behavior comes first from native HTML (`<dialog>`, `popover`, `<details name>`, invoker commands…), with
   no JavaScript. Purely structural components (`<uix-toolbar>`…) are styled by CSS alone and need no
