@@ -469,9 +469,9 @@
     background-color: var(--uix-surface);
     transition: var(--uix-transition);
 
-    &::placeholder { color: var(--uix-text-muted); }
     outline-offset: calc(var(--uix-focus-offset) / 2);
 
+    &::placeholder { color: var(--uix-text-muted); }
     &:focus-visible { border-color: var(--uix-primary); }
     &[aria-invalid="true"] { border-color: var(--uix-danger); }
     &:disabled { background-color: var(--uix-canvas); color: var(--uix-text-muted); cursor: not-allowed; }
