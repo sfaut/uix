@@ -862,8 +862,8 @@ body {
 .sc-item { display: grid; gap: 0.7em; justify-items: start; align-content: start; margin: 0; min-inline-size: 0; }
 .sc-demo[data-stack] > .sc-item { justify-self: stretch; }
 .sc-item > figcaption { font: 400 0.6875rem/1.3 var(--font-mono); color: var(--uix-text-muted); }
-/* Showcase only: the application gets a fixed height its rows and columns share, and a frame; the layout demos outline their rows, columns and grids. */
-.sc-item > uix-app { justify-self: stretch; block-size: 38em; padding: var(--uix-pad-box); border: var(--uix-line); border-radius: var(--uix-radius); box-shadow: var(--uix-shadow); }
+/* Showcase only: the application is a 16:9 screen, with a frame; the layout demos outline their rows, columns and grids. */
+.sc-item > uix-app { justify-self: stretch; aspect-ratio: 16 / 9; padding: var(--uix-pad-box); border: var(--uix-line); border-radius: var(--uix-radius); box-shadow: var(--uix-shadow); }
 /* Layout pages: the containers are shaded, so the free space shows. */
 :is(#row, #column, #grid, #sizes) .sc-demo[data-stack] .sc-item > * { justify-self: stretch; }
 :is(#row, #column, #grid, #sizes) .sc-item :is(uix-row, uix-column, uix-grid) {
@@ -2474,7 +2474,7 @@ const components = [
     id: 'app',
     title: 'Application',
     tags: 'uix-app',
-    text: 'A complete application in a fixed-size window. The middle row takes the height left by the toolbar and the status bar. The side panels have a size, bounds and a splitter that remembers the size; the main column grows. Its content scrolls, while its buttons stay at the bottom. Forms align their labels with a grid; in the invitation row, the email field grows by default and the role list opts out.',
+    text: 'A complete application in a 16:9 screen. The middle row takes the height left by the toolbar and the status bar. The side panels have a size, bounds and a splitter that remembers the size; the main column grows. Its content scrolls, while its buttons stay at the bottom. Forms align their labels with a grid; in the invitation row, the email field grows by default and the role list opts out.',
     attrs: 'uix-app: heading · uix-row / uix-column: width · min-width · max-width · grow · scroll · uix-splitter: persist · uix-grid: columns',
     wide: true,
     rows: (p) => [
