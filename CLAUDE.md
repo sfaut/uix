@@ -32,8 +32,13 @@ Settled decisions:
   `light-dark()`, `:has()`, container queries, popover, anchor positioning, invoker commands…) are
   preferred over JavaScript.
 - Markup is component-oriented: components are custom elements (`<uix-app>`, `<uix-toolbar>`,
-  `<uix-menu>`…), while controls stay native elements (`<button>`, `<input>`, `<select>`, `<fieldset>`)
-  so they keep their built-in accessibility and form behavior. Variants are `data-*` attributes
+  `<uix-menu>`…). Uix is for applications, not documents: it renders a native element only where the
+  element brings behavior that would take real work to rebuild (controls such as `<button>`, `<input>`,
+  `<select>`, `<textarea>`, `<label>`; links; `<dialog>`, `popover`, `<details>`, `<fieldset>`), and a
+  `<div>` / `<span>` with ARIA where it would bring only meaning and default styles (a heading is
+  `<div role="heading" aria-level="1">`; paragraphs, lists, sections). `<uix-prose>` is the exception,
+  where users write native content HTML. Screen reader support beyond this is set aside for now.
+  Variants are `data-*` attributes
   (`<button data-variant="primary">`), with no required class. Custom properties are prefixed with `uix-`.
 - Variants that exclude each other are one enumerated attribute (`variant="primary"`, `size="small"`,
   `tone="danger"`), so an impossible combination cannot be written; boolean attributes are kept for
