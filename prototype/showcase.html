@@ -999,7 +999,7 @@ body {
 
 <main class="sc-page">
   <header class="sc-head">
-    <p class="sc-mark">Uix <span>v0 · mockup 20</span></p>
+    <p class="sc-mark">Uix <span>v0 · mockup 21</span></p>
     <h1>Component showcase</h1>
     <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
   </header>
@@ -3328,6 +3328,7 @@ for (const component of components) {
       const [, , schemeItems] = rows[index];
       const panel = document.createElement('uix-app');
       panel.className = 'sc-panel';
+      panel.setAttribute('background-pattern', 'none');
       panel.dataset.scheme = scheme;
       panel.style.colorScheme = scheme;
       panel.innerHTML = `<p class="sc-panel-label">${label}</p>
