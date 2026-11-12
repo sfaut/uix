@@ -216,6 +216,8 @@
     scrollbar-width: thin;
 
     & > * + * { margin-block-start: 0.75lh; }
+    /* A heading sits closer to the text it opens than to the text before it. */
+    & > * + :is(h1, h2, h3, h4) { margin-block-start: 1.1lh; }
     & > :is(h1, h2, h3, h4) + * { margin-block-start: 0.35lh; }
     & :is(h1, h2, h3, h4) { font-family: var(--uix-font-heading); font-weight: var(--uix-weight-strong); line-height: 1.2; text-wrap: balance; }
     & h1 { font-size: 1.75em; }
@@ -812,7 +814,7 @@ body {
 .sc-attrs td:last-child { color: var(--muted); }
 
 .sc-example { display: grid; gap: 1rem; padding-block-start: 2rem; border-block-start: 1px solid var(--line); }
-.sc-example h3 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.sc-example > h3 { margin: 0; font-size: 1.05rem; font-weight: 600; }
 .sc-panels { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
 .sc-main[data-scheme="both"] .sc-panels:not([data-wide]) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .sc-main[data-scheme="light"] .sc-panel[data-scheme="dark"],
