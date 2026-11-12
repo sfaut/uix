@@ -108,7 +108,10 @@ Settled decisions:
   (interface, headings, code), base font size, unitless line height for density, normal and strong
   weights, text box trim, outer spacing (between elements) and inner spacing (inside controls and
   boxes), radius, corner shape (including squircle), border width, shadow strength, icon stroke width,
-  focus ring width and offset, motion duration (forced to 0 under `prefers-reduced-motion`), contrast,
+  focus ring width and offset, motion (a base duration, from which the durations of state feedback,
+  entering and leaving derive by default, each settable, with an easing curve for each and the distance an
+  element slides in; under `prefers-reduced-motion`, nothing slides, while short fades and color changes
+  stay), contrast,
   accent color, semantic hues (danger, success, warning, info) and the dark base background. Features
   some browsers lack (`corner-shape`, `appearance: base-select` for themed option lists) are progressive
   enhancements behind `@supports`; themed option lists are on by default, with a setting to turn them

@@ -99,6 +99,13 @@
     --uix-focus-width: 2px;
     --uix-focus-offset: 2px;
     --uix-motion: 120ms;
+    --uix-motion-feedback: var(--uix-motion);
+    --uix-motion-enter: calc(var(--uix-motion) * 1.5);
+    --uix-motion-exit: calc(var(--uix-motion) * 0.75);
+    --uix-ease: ease;
+    --uix-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+    --uix-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+    --uix-motion-distance: 0.25em;
     --uix-contrast: 1;
     --uix-accent: oklch(0.55 0.15 250);
     --uix-danger-hue: 25;
@@ -145,7 +152,7 @@
     --uix-weight-medium: calc((var(--uix-weight-normal) + var(--uix-weight-strong)) / 2);
     --uix-line: var(--uix-border-width) solid var(--uix-border);
     --uix-focus-ring: var(--uix-focus-width) solid var(--uix-primary);
-    --uix-transition: background-color var(--uix-motion), border-color var(--uix-motion), color var(--uix-motion), box-shadow var(--uix-motion);
+    --uix-transition: background-color var(--uix-motion-feedback) var(--uix-ease), border-color var(--uix-motion-feedback) var(--uix-ease), color var(--uix-motion-feedback) var(--uix-ease), box-shadow var(--uix-motion-feedback) var(--uix-ease);
     /* Outer spacing: between elements. Inner spacing: inside controls and boxes. */
     --uix-gap: calc(var(--uix-space-outer) * 1lh);
     --uix-pad-block: calc(var(--uix-space-inner) * 0.45lh);
@@ -170,8 +177,9 @@
     }
   }
 
+  /* Reduced motion: nothing slides any more; fades and color changes stay, short, so changes remain visible. Important, so a theme cannot bring the sliding back. */
   @media (prefers-reduced-motion: reduce) {
-    uix-app { --uix-motion: 0s; }
+    uix-app { --uix-motion-distance: 0px !important; }
   }
 
   uix-app :is(h1, h2, h3, h4, p, ul, ol, pre) { margin: 0; }
@@ -335,7 +343,7 @@
     position: relative;
     touch-action: none;
 
-    &::before { content: ""; position: absolute; transition: border-color var(--uix-motion); }
+    &::before { content: ""; position: absolute; transition: border-color var(--uix-motion-feedback) var(--uix-ease); }
     &:is(:hover, :focus-visible, [data-dragging])::before { border-color: var(--uix-primary); }
     &:focus-visible { outline: none; }
   }
@@ -657,19 +665,29 @@
     & > uix-separator > hr { margin: 0.25em 0; border: 0; border-block-start: max(1px, var(--uix-border-width)) solid var(--uix-border); }
   }
 
-  /* Opening animation; display and overlay stay discrete so the closing fade can play. */
+  /* Opening and closing: a transition takes the values of the state it goes to, so the open state carries the entering ones and the closed state the leaving ones. display and overlay stay discrete so the closing fade can play. */
   uix-menu[popover] {
+    --uix-motion-current: var(--uix-motion-exit);
+    --uix-ease-current: var(--uix-ease-exit);
+
     opacity: 0;
-    translate: 0 -0.25em;
-    transition: opacity var(--uix-motion), translate var(--uix-motion), display var(--uix-motion) allow-discrete, overlay var(--uix-motion) allow-discrete;
+    translate: 0 calc(-1 * var(--uix-motion-distance));
+    transition:
+      opacity var(--uix-motion-current) var(--uix-ease-current),
+      translate var(--uix-motion-current) var(--uix-ease-current),
+      display var(--uix-motion-current) allow-discrete,
+      overlay var(--uix-motion-current) allow-discrete;
 
     &:popover-open {
+      --uix-motion-current: var(--uix-motion-enter);
+      --uix-ease-current: var(--uix-ease-enter);
+
       opacity: 1;
       translate: 0 0;
 
       @starting-style {
         opacity: 0;
-        translate: 0 -0.25em;
+        translate: 0 calc(-1 * var(--uix-motion-distance));
       }
     }
   }
@@ -777,6 +795,9 @@ body {
 .sc-setting output { font: 400 0.8125rem/1.5 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 .sc-setting input[type="range"] { inline-size: 100%; margin: 0; accent-color: var(--accent); }
 .sc-setting select { font: 400 0.875rem/1.3 var(--font-text); padding: 0.4rem 0.5rem; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }
+.sc-fine summary { cursor: pointer; font-size: 0.875rem; font-weight: 500; inline-size: fit-content; }
+.sc-fine > :not(summary) { margin-block-start: 0.85rem; }
+.sc-fine summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .sc-check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; }
 .sc-check input { margin: 0; accent-color: var(--accent); inline-size: 1rem; block-size: 1rem; }
 .sc-note { margin: 0; font-size: 0.8125rem; color: var(--muted); }
@@ -883,7 +904,7 @@ body {
 
 <main class="sc-page">
   <header class="sc-head">
-    <p class="sc-mark">Uix <span>v0 · mockup 17</span></p>
+    <p class="sc-mark">Uix <span>v0 · mockup 18</span></p>
     <h1>Component showcase</h1>
     <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
   </header>
@@ -998,6 +1019,38 @@ body {
           <div class="sc-setting-head"><label for="set-motion">Motion</label><output for="set-motion"></output></div>
           <input id="set-motion" type="range" min="0" max="400" step="20" data-key="motion" data-format="ms">
         </div>
+        <details class="sc-fine">
+          <summary>Motion details</summary>
+          <p class="sc-note">Durations as a share of Motion; a theme can also write them in ms.</p>
+          <div class="sc-setting">
+            <div class="sc-setting-head"><label for="set-motion-feedback">State feedback</label><output for="set-motion-feedback"></output></div>
+            <input id="set-motion-feedback" type="range" min="0" max="3" step="0.25" data-key="motionFeedback" data-format="times">
+          </div>
+          <div class="sc-setting">
+            <div class="sc-setting-head"><label for="set-ease">Feedback easing</label></div>
+            <select id="set-ease" data-key="ease"><option value="ease">Ease</option><option value="linear">Linear</option><option value="ease-in-out">Ease in and out</option><option value="cubic-bezier(0.2, 0, 0, 1)">Standard</option><option value="cubic-bezier(0, 0, 0.2, 1)">Decelerate</option><option value="cubic-bezier(0.4, 0, 1, 1)">Accelerate</option></select>
+          </div>
+          <div class="sc-setting">
+            <div class="sc-setting-head"><label for="set-motion-enter">Entering</label><output for="set-motion-enter"></output></div>
+            <input id="set-motion-enter" type="range" min="0" max="3" step="0.25" data-key="motionEnter" data-format="times">
+          </div>
+          <div class="sc-setting">
+            <div class="sc-setting-head"><label for="set-ease-enter">Entering easing</label></div>
+            <select id="set-ease-enter" data-key="easeEnter"><option value="ease">Ease</option><option value="linear">Linear</option><option value="ease-in-out">Ease in and out</option><option value="cubic-bezier(0.2, 0, 0, 1)">Standard</option><option value="cubic-bezier(0, 0, 0.2, 1)">Decelerate</option><option value="cubic-bezier(0.4, 0, 1, 1)">Accelerate</option></select>
+          </div>
+          <div class="sc-setting">
+            <div class="sc-setting-head"><label for="set-motion-exit">Leaving</label><output for="set-motion-exit"></output></div>
+            <input id="set-motion-exit" type="range" min="0" max="3" step="0.25" data-key="motionExit" data-format="times">
+          </div>
+          <div class="sc-setting">
+            <div class="sc-setting-head"><label for="set-ease-exit">Leaving easing</label></div>
+            <select id="set-ease-exit" data-key="easeExit"><option value="ease">Ease</option><option value="linear">Linear</option><option value="ease-in-out">Ease in and out</option><option value="cubic-bezier(0.2, 0, 0, 1)">Standard</option><option value="cubic-bezier(0, 0, 0.2, 1)">Decelerate</option><option value="cubic-bezier(0.4, 0, 1, 1)">Accelerate</option></select>
+          </div>
+          <div class="sc-setting">
+            <div class="sc-setting-head"><label for="set-motion-distance">Slide distance</label><output for="set-motion-distance"></output></div>
+            <input id="set-motion-distance" type="range" min="0" max="1" step="0.05" data-key="motionDistance" data-format="em">
+          </div>
+        </details>
       </section>
 
       <section class="sc-group" aria-labelledby="group-color">
@@ -3464,6 +3517,13 @@ const state = {
   focusWidth: 2,
   focusOffset: 2,
   motion: 120,
+  motionFeedback: 1,
+  motionEnter: 1.5,
+  motionExit: 0.75,
+  ease: 'ease',
+  easeEnter: 'cubic-bezier(0, 0, 0.2, 1)',
+  easeExit: 'cubic-bezier(0.4, 0, 1, 1)',
+  motionDistance: 0.25,
   contrast: 1,
   accentHue: 250,
   dangerHue: 25,
@@ -3508,6 +3568,13 @@ function themeVariables() {
     '--uix-focus-width': `${state.focusWidth}px`,
     '--uix-focus-offset': `${state.focusOffset}px`,
     '--uix-motion': `${state.motion}ms`,
+    '--uix-motion-feedback': `calc(var(--uix-motion) * ${state.motionFeedback})`,
+    '--uix-motion-enter': `calc(var(--uix-motion) * ${state.motionEnter})`,
+    '--uix-motion-exit': `calc(var(--uix-motion) * ${state.motionExit})`,
+    '--uix-ease': state.ease,
+    '--uix-ease-enter': state.easeEnter,
+    '--uix-ease-exit': state.easeExit,
+    '--uix-motion-distance': `${state.motionDistance}em`,
     '--uix-contrast': `${state.contrast}`,
     '--uix-accent': `oklch(0.55 0.15 ${state.accentHue})`,
     '--uix-danger-hue': `${state.dangerHue}`,
@@ -3526,7 +3593,10 @@ function themeVariables() {
  */
 function readout(control) {
   const value = state[control.dataset.key];
-  const suffix = { px: 'px', deg: '°', ms: ' ms' }[control.dataset.format] ?? '';
+  if (control.dataset.format === 'times') {
+    return `${value} × (${Math.round(value * state.motion)} ms)`;
+  }
+  const suffix = { px: 'px', deg: '°', ms: ' ms', em: 'em' }[control.dataset.format] ?? '';
   return `${value}${suffix}`;
 }
 
