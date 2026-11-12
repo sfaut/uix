@@ -881,7 +881,7 @@ body {
 
 <main class="sc-page">
   <header class="sc-head">
-    <p class="sc-mark">Uix <span>v0 · mockup 16</span></p>
+    <p class="sc-mark">Uix <span>v0 · mockup 17</span></p>
     <h1>Component showcase</h1>
     <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
   </header>
@@ -2953,6 +2953,34 @@ const components = [
     <li>Change the billing address in <a href="#billing">Billing settings</a>.</li>
   </ul>
   <pre><code>curl https://api.northwind.app.example/invoices/2026-11</code></pre>
+</uix-prose>`]]],
+      ['Long text: line height, paragraph and heading spacing, line length', true, [['uix-prose, a help article', `<uix-prose>
+  <h1>Billing and invoices</h1>
+  <p>Northwind bills each workspace once a month, for the members who were active during the previous month. A member counts as active from the first day they sign in, and stops counting the day an owner removes them. Guests, read-only viewers and members who never signed in are free, whatever their number.</p>
+  <p>The invoice lists every active member by name, with the number of days they were active. When someone joins in the middle of the month, only those days are billed; the same goes for someone who leaves. The amounts are rounded to the cent on each line, then added up, so the total can differ by a cent or two from a calculation made on the whole month.</p>
+  <h2>When invoices are issued</h2>
+  <p>Invoices are issued on the <strong>first day</strong> of each month, at midnight in the time zone of the workspace, and sent by email to every billing contact. They also appear at once in <a href="#billing">Billing settings</a>, where they can be downloaded as PDF for ten years. Press <kbd>Ctrl</kbd> <kbd>P</kbd> on an open invoice to print it.</p>
+  <p>Payment is taken from the card on file three days later. If it fails, Northwind tries again after two days, then after five, and writes to the billing contacts each time. The workspace stays fully usable during these attempts; it switches to read-only only if the last one fails, and comes back as soon as the invoice is paid.</p>
+  <h3>Changing the billing details</h3>
+  <p>The company name, address and tax number printed on invoices come from the billing details. A change applies to the next invoice only: invoices already issued are legal documents and keep the details they were issued with. To correct one, ask for a credit note and a replacement invoice.</p>
+  <ol>
+    <li>Open <a href="#billing">Billing settings</a> and choose <strong>Billing details</strong>.</li>
+    <li>Edit the fields, then check the preview of the next invoice on the right.</li>
+    <li>Save. Every billing contact gets an email listing the changes.</li>
+  </ol>
+  <h2>Automating downloads</h2>
+  <p>Accounting tools can fetch invoices through the API. Each invoice has a stable identifier made of the year and the month, such as <code>2026-11</code>, and the endpoint <code>GET /invoices/{id}</code> returns it as JSON, or as PDF with the header <code>Accept: application/pdf</code>. Requests need a token with the <code>billing:read</code> scope.</p>
+  <pre><code>curl --header "Authorization: Bearer $TOKEN" \\
+     --header "Accept: application/pdf" \\
+     --output invoice-2026-11.pdf \\
+     https://api.northwind.app.example/invoices/2026-11</code></pre>
+  <p>Tokens are created by owners, under <strong>Settings › API tokens</strong>. Give each tool its own token, with the narrowest scope it needs, so that one can be revoked without stopping the others.</p>
+  <ul>
+    <li>A token that has not been used for 90 days expires by itself.</li>
+    <li>Revoking a token takes effect within a minute, on every server.</li>
+    <li>The audit log keeps, for each token, the date and address of its last use.</li>
+  </ul>
+  <p>Questions about an invoice go to the billing team, from the <strong>Help</strong> menu. They answer within one working day, in the language of the workspace.</p>
 </uix-prose>`]]],
     ],
   },
