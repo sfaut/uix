@@ -8,7 +8,7 @@ framework, shaped `{"<framework>": {"v<version>": {...}}}`. Values keep the nota
 |---|---|---|---|
 | `tailwind.json` | v4.3.5, v3.4.19 | npm `tailwindcss`: `theme.css` (v4), `lib/public/colors.js` (v3) | 50–950 per color; v4 in OKLCH, v3 in hex. The deprecated v3 aliases (`lightBlue`…) are left out. |
 | `bootstrap.json` | v5.3.9 | npm `bootstrap`: `scss/_variables.scss` | 100–900 per color, computed as Sass does (`tint-color` mixes with white, `shade-color` with black), checked against `$blue-100` and `$blue-900`; grays; `theme` maps the theme colors. |
-| `material-ui.json` | v9.5.0 | npm `@mui/material`: `colors/` | The Material Design 2 palette: 50–900 and A100–A700. |
+| `material-ui.json` | v9.5.0 | npm `@mui/material`: `colors/` | The Material Design 2 palette: 50–900 and A100–A700 (see "Material UI: the A shades" below). |
 | `radix.json` | v3.0.0 | npm `@radix-ui/colors` | Steps 1–12, `light` and `dark`, sRGB. The Display P3 and alpha variants are left out. |
 | `open-props.json` | v1.7.23 | npm `open-props`: `src/props.colors*.css` | `hex`: 0–12 per color. `oklch`: one lightness and chroma scale (0–15) applied to `--color-hue`, and the named hues. |
 | `mantine.json` | v9.8.0 | npm `@mantine/core`: `default-colors` | Ten shades, indexed 0–9 as in Mantine. |
@@ -19,6 +19,30 @@ framework, shaped `{"<framework>": {"v<version>": {...}}}`. Values keep the nota
 | `wave-ui.json` | v4.2.5 | npm `wave-ui`: `utils/colors.js`, `utils/config.js` | `palette`: each color with six lighter and six darker shades; `theme`: the default light and dark theme colors. |
 | `shadcn.json` | v4.23.0 (CLI) | registry `ui.shadcn.com/r/colors/<base>.json` | Semantic tokens (`background`, `primary`, `border`…) of each base color, `light` and `dark`. Its color scales are Tailwind's. |
 | `flux.json` | v2.21.0 | `fluxui.dev/themes` | Accent themes (`accent`, `accent-content`, `accent-foreground`), `light` and `dark`, as Tailwind CSS v4 color names (`red-500`). |
+
+## Notes
+
+### Material UI: the A shades
+
+Material UI ships the palette of Material Design 2 (2014) as it was. Its shades serve two roles:
+
+- 50–900 make the primary color of an application: 500 for the app bar, 700 for the status bar, 100 for
+  light backgrounds.
+- A100, A200, A400 and A700 ("A" for accent) make the accent color, the one that draws the eye: floating
+  action button, switches, sliders, checked boxes, progress bars, selected text. They are more saturated
+  variants of the same hue, tuned by hand (red: 500 `#f44336`, A200 `#ff5252`, A400 `#ff1744`, A700
+  `#d50000`). The guidelines took A200 as the accent, and A100, A400 or A700 for a lighter or darker one.
+
+The 2014 specification gives no accent shades to grey, blue grey and brown. Material UI still ships them,
+so every color has the same keys, as copies: for these three colors, A100, A200, A400 and A700 equal 100,
+200, 400 and 700.
+
+Material Design 3 (2021) replaced this palette with tonal palettes computed from one seed color, on a tone
+scale from 0 to 100.
+
+For Uix: these shades meet a real need, a more vivid variant of the accent for what must draw the eye.
+Uix can derive it from the accent color by raising the chroma with relative color syntax, where Material
+Design 2 tuned each hue by hand.
 
 ## Regenerate
 
