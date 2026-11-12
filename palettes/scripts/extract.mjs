@@ -1,11 +1,17 @@
 // Reads the color sources of each framework as text (nothing from the packages is executed) and writes
 // one JSON file per framework, <output>/<framework>.json: {"<framework>": {"v<version>": {...}}}.
-// Usage: node extract.mjs <packages dir> <downloads dir> <output dir> (see README.md, "Regenerate").
+// Usage: node palettes/scripts/extract.mjs <packages dir> <downloads dir> [output dir] (default: palettes/data;
+// see palettes/README.md, "Regenerate").
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const [packages, downloads, output] = process.argv.slice(2);
+const [packages, downloads, output = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data')] = process.argv.slice(2);
+if (!packages || !downloads) {
+  console.error('Usage: node palettes/scripts/extract.mjs <packages dir> <downloads dir> [output dir]');
+  process.exit(1);
+}
 const read = (...parts) => fs.readFileSync(path.join(...parts), 'utf8');
 const pkg = (name, file) => read(packages, name, 'package', file);
 const all = (text, regex) => [...text.matchAll(regex)];

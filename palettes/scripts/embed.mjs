@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const folder = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+const data = path.join(folder, 'data');
 const file = process.argv[2] ?? path.join(folder, '..', 'prototype', 'showcase.html');
 
 /**
@@ -16,11 +17,11 @@ const file = process.argv[2] ?? path.join(folder, '..', 'prototype', 'showcase.h
  */
 const order = ['tailwind', 'bootstrap', 'material-ui', 'radix', 'open-props', 'mantine', 'ant-design', 'chakra', 'carbon', 'pico', 'wave-ui', 'shadcn', 'flux'];
 
-const data = {};
+const palettes = {};
 for (const name of order) {
-  data[name] = JSON.parse(fs.readFileSync(path.join(folder, 'data', `${name}.json`), 'utf8'))[name];
+  palettes[name] = JSON.parse(fs.readFileSync(path.join(data, `${name}.json`), 'utf8'))[name];
 }
-const json = JSON.stringify(data).replace(/</g, '\\u003c');
+const json = JSON.stringify(palettes).replace(/</g, '\\u003c');
 
 const page = fs.readFileSync(file, 'utf8');
 const element = /(<script type="application\/json" id="sc-palettes-data">)[^<]*(<\/script>)/;

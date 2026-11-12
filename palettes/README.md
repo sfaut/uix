@@ -386,7 +386,8 @@ versions are written in the script (folder names, version keys): update them the
 
    The list of shadcn/ui base colors comes from its CLI (`shadcn` on npm).
 
-3. Run `node palettes/scripts/extract.mjs <packages folder> <downloads folder> palettes/data`. The script stops
+3. Run `node palettes/scripts/extract.mjs <packages folder> <downloads folder>`: it writes `data/` (a third
+   argument writes elsewhere, to compare before replacing). The script stops
    when a source has changed shape and yields nothing.
 
 The showcase (`prototype/showcase.html`, Palettes page) embeds the palettes in a
