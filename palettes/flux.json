@@ -1,0 +1,320 @@
+{
+  "flux": {
+    "v2.21.0": {
+      "accents": {
+        "slate": {
+          "light": {
+            "accent": "slate-800",
+            "accent-content": "slate-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "slate-800"
+          }
+        },
+        "gray": {
+          "light": {
+            "accent": "gray-800",
+            "accent-content": "gray-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "gray-800"
+          }
+        },
+        "zinc": {
+          "light": {
+            "accent": "zinc-800",
+            "accent-content": "zinc-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "zinc-800"
+          }
+        },
+        "neutral": {
+          "light": {
+            "accent": "neutral-800",
+            "accent-content": "neutral-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "neutral-800"
+          }
+        },
+        "stone": {
+          "light": {
+            "accent": "stone-800",
+            "accent-content": "stone-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "stone-800"
+          }
+        },
+        "red": {
+          "light": {
+            "accent": "red-500",
+            "accent-content": "red-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "red-500",
+            "accent-content": "red-400",
+            "accent-foreground": "white"
+          }
+        },
+        "orange": {
+          "light": {
+            "accent": "orange-500",
+            "accent-content": "orange-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "orange-400",
+            "accent-content": "orange-400",
+            "accent-foreground": "orange-950"
+          }
+        },
+        "amber": {
+          "light": {
+            "accent": "amber-400",
+            "accent-content": "amber-600",
+            "accent-foreground": "amber-950"
+          },
+          "dark": {
+            "accent": "amber-400",
+            "accent-content": "amber-400",
+            "accent-foreground": "amber-950"
+          }
+        },
+        "yellow": {
+          "light": {
+            "accent": "yellow-400",
+            "accent-content": "yellow-600",
+            "accent-foreground": "yellow-950"
+          },
+          "dark": {
+            "accent": "yellow-400",
+            "accent-content": "yellow-400",
+            "accent-foreground": "yellow-950"
+          }
+        },
+        "lime": {
+          "light": {
+            "accent": "lime-400",
+            "accent-content": "lime-600",
+            "accent-foreground": "lime-900"
+          },
+          "dark": {
+            "accent": "lime-400",
+            "accent-content": "lime-400",
+            "accent-foreground": "lime-950"
+          }
+        },
+        "green": {
+          "light": {
+            "accent": "green-600",
+            "accent-content": "green-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "green-600",
+            "accent-content": "green-400",
+            "accent-foreground": "white"
+          }
+        },
+        "emerald": {
+          "light": {
+            "accent": "emerald-600",
+            "accent-content": "emerald-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "emerald-600",
+            "accent-content": "emerald-400",
+            "accent-foreground": "white"
+          }
+        },
+        "teal": {
+          "light": {
+            "accent": "teal-600",
+            "accent-content": "teal-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "teal-600",
+            "accent-content": "teal-400",
+            "accent-foreground": "white"
+          }
+        },
+        "cyan": {
+          "light": {
+            "accent": "cyan-600",
+            "accent-content": "cyan-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "cyan-600",
+            "accent-content": "cyan-400",
+            "accent-foreground": "white"
+          }
+        },
+        "sky": {
+          "light": {
+            "accent": "sky-600",
+            "accent-content": "sky-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "sky-600",
+            "accent-content": "sky-400",
+            "accent-foreground": "white"
+          }
+        },
+        "blue": {
+          "light": {
+            "accent": "blue-500",
+            "accent-content": "blue-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "blue-500",
+            "accent-content": "blue-400",
+            "accent-foreground": "white"
+          }
+        },
+        "indigo": {
+          "light": {
+            "accent": "indigo-500",
+            "accent-content": "indigo-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "indigo-500",
+            "accent-content": "indigo-300",
+            "accent-foreground": "white"
+          }
+        },
+        "violet": {
+          "light": {
+            "accent": "violet-500",
+            "accent-content": "violet-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "violet-500",
+            "accent-content": "violet-400",
+            "accent-foreground": "white"
+          }
+        },
+        "purple": {
+          "light": {
+            "accent": "purple-500",
+            "accent-content": "purple-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "purple-500",
+            "accent-content": "purple-300",
+            "accent-foreground": "white"
+          }
+        },
+        "fuchsia": {
+          "light": {
+            "accent": "fuchsia-600",
+            "accent-content": "fuchsia-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "fuchsia-600",
+            "accent-content": "fuchsia-400",
+            "accent-foreground": "white"
+          }
+        },
+        "pink": {
+          "light": {
+            "accent": "pink-600",
+            "accent-content": "pink-600",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "pink-600",
+            "accent-content": "pink-400",
+            "accent-foreground": "white"
+          }
+        },
+        "rose": {
+          "light": {
+            "accent": "rose-500",
+            "accent-content": "rose-500",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "rose-500",
+            "accent-content": "rose-400",
+            "accent-foreground": "white"
+          }
+        },
+        "mauve": {
+          "light": {
+            "accent": "mauve-800",
+            "accent-content": "mauve-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "mauve-800"
+          }
+        },
+        "olive": {
+          "light": {
+            "accent": "olive-800",
+            "accent-content": "olive-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "olive-800"
+          }
+        },
+        "mist": {
+          "light": {
+            "accent": "mist-800",
+            "accent-content": "mist-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "mist-800"
+          }
+        },
+        "taupe": {
+          "light": {
+            "accent": "taupe-800",
+            "accent-content": "taupe-800",
+            "accent-foreground": "white"
+          },
+          "dark": {
+            "accent": "white",
+            "accent-content": "white",
+            "accent-foreground": "taupe-800"
+          }
+        }
+      }
+    }
+  }
+}
