@@ -107,6 +107,9 @@
     --uix-ease-exit: cubic-bezier(0.4, 0, 1, 1);
     --uix-motion-distance: 0.25em;
     --uix-contrast: 1;
+    --uix-background-pattern-size: 16px;
+    --uix-background-pattern-thickness: 1px;
+    --uix-background-pattern-contrast: 1;
     --uix-accent: oklch(0.55 0.15 250);
     --uix-danger-hue: 25;
     --uix-success-hue: 150;
@@ -167,7 +170,83 @@
     gap: var(--uix-gap);
     font: var(--uix-weight-normal) var(--uix-font-size) / var(--uix-line-height) var(--uix-font);
     color: var(--uix-text);
-    background: var(--uix-canvas);
+    background-color: var(--uix-canvas);
+  }
+
+  /* Background pattern: a tile repeated over the canvas, drawn with gradients in a color a little darker than the canvas (lighter in the dark theme). background-pattern picks it: dots by default, and for a value Uix does not know. Filled patterns (checkerboard, zigzag) take half the color, so they weigh as much as the lines. */
+  uix-app {
+    --uix-background-pattern-color: light-dark(
+      oklch(from var(--uix-dark-base) calc(0.975 - 0.06 * var(--uix-background-pattern-contrast)) calc(c * 0.5) h),
+      oklch(from var(--uix-dark-base) calc(l + 0.06 * var(--uix-background-pattern-contrast)) c h));
+
+    background-image: radial-gradient(circle, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent calc(var(--uix-background-pattern-thickness) + 0.5px));
+    background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+    background-position: 0 0;
+
+    &[background-pattern="none"] { background-image: none; }
+    &[background-pattern="staggered-dots"] {
+      background-image:
+        radial-gradient(circle, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent calc(var(--uix-background-pattern-thickness) + 0.5px)),
+        radial-gradient(circle, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent calc(var(--uix-background-pattern-thickness) + 0.5px));
+      background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+      background-position: 0 0, calc(var(--uix-background-pattern-size) / 2) calc(var(--uix-background-pattern-size) / 2);
+    }
+    &[background-pattern="grid"] {
+      background-image:
+        linear-gradient(var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness)),
+        linear-gradient(to right, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness));
+      background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+      background-position: 0 0;
+    }
+    &[background-pattern="graph-paper"] {
+      background-image:
+        linear-gradient(var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness)),
+        linear-gradient(to right, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness)),
+        linear-gradient(color-mix(in oklch, var(--uix-background-pattern-color), transparent 55%) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness)),
+        linear-gradient(to right, color-mix(in oklch, var(--uix-background-pattern-color), transparent 55%) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness));
+      background-size: calc(var(--uix-background-pattern-size) * 5) calc(var(--uix-background-pattern-size) * 5), calc(var(--uix-background-pattern-size) * 5) calc(var(--uix-background-pattern-size) * 5), var(--uix-background-pattern-size) var(--uix-background-pattern-size), var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+      background-position: 0 0;
+    }
+    &[background-pattern="horizontal-lines"] {
+      background-image:
+        linear-gradient(var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness));
+      background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+      background-position: 0 0;
+    }
+    &[background-pattern="vertical-lines"] {
+      background-image:
+        linear-gradient(to right, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness));
+      background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+      background-position: 0 0;
+    }
+    &[background-pattern="diagonal-lines"] {
+      background-image:
+        repeating-linear-gradient(45deg, var(--uix-background-pattern-color) 0 var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness) calc(var(--uix-background-pattern-size) * 0.7071));
+      background-size: auto;
+      background-position: 0 0;
+    }
+    &[background-pattern="crosshatch"] {
+      background-image:
+        repeating-linear-gradient(45deg, var(--uix-background-pattern-color) 0 var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness) calc(var(--uix-background-pattern-size) * 0.7071)),
+        repeating-linear-gradient(-45deg, var(--uix-background-pattern-color) 0 var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness) calc(var(--uix-background-pattern-size) * 0.7071));
+      background-size: auto;
+      background-position: 0 0;
+    }
+    &[background-pattern="checkerboard"] {
+      background-image:
+        conic-gradient(color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 0 50%, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 0 75%, transparent 0);
+      background-size: calc(var(--uix-background-pattern-size) * 2) calc(var(--uix-background-pattern-size) * 2);
+      background-position: 0 0;
+    }
+    &[background-pattern="zigzag"] {
+      background-image:
+        linear-gradient(135deg, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 25%),
+        linear-gradient(225deg, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 25%),
+        linear-gradient(315deg, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 25%),
+        linear-gradient(45deg, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 25%);
+      background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+      background-position: calc(var(--uix-background-pattern-size) / -2) 0, calc(var(--uix-background-pattern-size) / -2) 0, 0 0, 0 0;
+    }
   }
 
   /* With text box trim, a control's text takes the cap height instead of the line height. */
@@ -863,6 +942,7 @@ body {
 .sc-demo[data-stack] > .sc-item { justify-self: stretch; }
 .sc-item > figcaption { font: 400 0.6875rem/1.3 var(--font-mono); color: var(--uix-text-muted); }
 /* Showcase only: the application is a 16:9 screen, with a frame; the layout demos outline their rows, columns and grids. */
+.sc-demo[data-tiles] { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 2em 1.5em; }
 .sc-item > uix-app { justify-self: stretch; aspect-ratio: 16 / 9; padding: var(--uix-pad-box); border: var(--uix-line); border-radius: var(--uix-radius); box-shadow: var(--uix-shadow); }
 /* Layout pages: the containers are shaded, so the free space shows. */
 :is(#row, #column, #grid, #sizes) .sc-demo[data-stack] .sc-item > * { justify-self: stretch; }
@@ -918,7 +998,7 @@ body {
 
 <main class="sc-page">
   <header class="sc-head">
-    <p class="sc-mark">Uix <span>v0 · mockup 19</span></p>
+    <p class="sc-mark">Uix <span>v0 · mockup 20</span></p>
     <h1>Component showcase</h1>
     <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
   </header>
@@ -1065,6 +1145,23 @@ body {
             <input id="set-motion-distance" type="range" min="0" max="1" step="0.05" data-key="motionDistance" data-format="em">
           </div>
         </details>
+      </section>
+
+      <section class="sc-group" aria-labelledby="group-background">
+        <h3 id="group-background">Background</h3>
+        <p class="sc-note">The pattern itself is an attribute of the application: <code>background-pattern</code>.</p>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-pattern-size">Pattern tile size</label><output for="set-pattern-size"></output></div>
+          <input id="set-pattern-size" type="range" min="6" max="48" step="1" data-key="patternSize" data-format="px">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-pattern-thickness">Pattern thickness</label><output for="set-pattern-thickness"></output></div>
+          <input id="set-pattern-thickness" type="range" min="0.5" max="4" step="0.5" data-key="patternThickness" data-format="px">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-pattern-contrast">Pattern contrast</label><output for="set-pattern-contrast"></output></div>
+          <input id="set-pattern-contrast" type="range" min="0" max="3" step="0.1" data-key="patternContrast">
+        </div>
       </section>
 
       <section class="sc-group" aria-labelledby="group-color">
@@ -1414,11 +1511,22 @@ class UixAuthoring extends HTMLElement {
  * <uix-app heading="…">: the root; renders the application title as its first-level heading.
  */
 class UixApp extends UixAuthoring {
-  static observedAttributes = ['heading'];
+  static observedAttributes = ['heading', 'background-pattern'];
 
   static layout = 'container';
 
+  /**
+   * Values of background-pattern.
+   *
+   * @type {string[]}
+   */
+  static backgroundPatterns = ['none', 'dots', 'staggered-dots', 'grid', 'graph-paper', 'horizontal-lines', 'vertical-lines', 'diagonal-lines', 'crosshatch', 'checkerboard', 'zigzag'];
+
   sync() {
+    const pattern = this.getAttribute('background-pattern');
+    if (pattern !== null && !UixApp.backgroundPatterns.includes(pattern)) {
+      uixWarn(this, `background-pattern="${pattern}" is unknown, so the default pattern (dots) is drawn. Write one of: ${UixApp.backgroundPatterns.join(', ')}.`);
+    }
     const text = this.getAttribute('heading');
     let heading = this.querySelector(':scope > h1[data-heading]');
     if (!text) {
@@ -2474,8 +2582,8 @@ const components = [
     id: 'app',
     title: 'Application',
     tags: 'uix-app',
-    text: 'A complete application in a 16:9 screen. The middle row takes the height left by the toolbar and the status bar. The side panels have a size, bounds and a splitter that remembers the size; the main column grows. Its content scrolls, while its buttons stay at the bottom. Forms align their labels with a grid; in the invitation row, the email field grows by default and the role list opts out.',
-    attrs: 'uix-app: heading · uix-row / uix-column: width · min-width · max-width · grow · scroll · uix-splitter: persist · uix-grid: columns',
+    text: 'A complete application in a 16:9 screen. The middle row takes the height left by the toolbar and the status bar. The side panels have a size, bounds and a splitter that remembers the size; the main column grows. Its content scrolls, while its buttons stay at the bottom. Forms align their labels with a grid; in the invitation row, the email field grows by default and the role list opts out. background-pattern draws a tile repeated over the canvas, dots by default; the theme sets its tile size, thickness and contrast.',
+    attrs: 'uix-app: heading · background-pattern: none | dots | staggered-dots | grid | graph-paper | horizontal-lines | vertical-lines | diagonal-lines | crosshatch | checkerboard | zigzag · uix-row / uix-column: width · min-width · max-width · grow · scroll · uix-splitter: persist · uix-grid: columns',
     wide: true,
     rows: (p) => [
       ['Application', true, [['uix-app heading="…"', `<uix-app heading="Northwind">
@@ -2578,6 +2686,13 @@ const components = [
     <uix-status-item text="12 members · 46 GB of 50 GB"></uix-status-item>
   </uix-status-bar>
 </uix-app>`]]],
+      ['background-pattern', 'tiles', [
+        ['(no attribute: dots)', '<uix-app>\n  <uix-row>\n    <uix-panel text="Panel"></uix-panel>\n  </uix-row>\n</uix-app>'],
+        ...UixApp.backgroundPatterns.filter((name) => name !== 'dots').map((name) => [
+          `background-pattern="${name}"`,
+          `<uix-app background-pattern="${name}">\n  <uix-row>\n    <uix-panel text="Panel"></uix-panel>\n  </uix-row>\n</uix-app>`,
+        ]),
+      ]],
     ],
   },
   {
@@ -3215,7 +3330,7 @@ for (const component of components) {
       panel.dataset.scheme = scheme;
       panel.style.colorScheme = scheme;
       panel.innerHTML = `<p class="sc-panel-label">${label}</p>
-        <div class="sc-demo"${stack ? ' data-stack' : ''}>${schemeItems.map(([caption, html]) => `
+        <div class="sc-demo"${stack === 'tiles' ? ' data-tiles' : stack ? ' data-stack' : ''}>${schemeItems.map(([caption, html]) => `
           <figure class="sc-item">${html}<figcaption>${escapeHtml(caption)}</figcaption></figure>`).join('')}
         </div>`;
       panels.append(panel);
@@ -3539,6 +3654,9 @@ const state = {
   easeExit: 'cubic-bezier(0.4, 0, 1, 1)',
   motionDistance: 0.25,
   contrast: 1,
+  patternSize: 16,
+  patternThickness: 1,
+  patternContrast: 1,
   accentHue: 250,
   dangerHue: 25,
   successHue: 150,
@@ -3590,6 +3708,9 @@ function themeVariables() {
     '--uix-ease-exit': state.easeExit,
     '--uix-motion-distance': `${state.motionDistance}em`,
     '--uix-contrast': `${state.contrast}`,
+    '--uix-background-pattern-size': `${state.patternSize}px`,
+    '--uix-background-pattern-thickness': `${state.patternThickness}px`,
+    '--uix-background-pattern-contrast': `${state.patternContrast}`,
     '--uix-accent': `oklch(0.55 0.15 ${state.accentHue})`,
     '--uix-danger-hue': `${state.dangerHue}`,
     '--uix-success-hue': `${state.successHue}`,

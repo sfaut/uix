@@ -86,6 +86,12 @@ Settled decisions:
   `tone` (`info | success | warning | danger`). Documentation examples use panels to stand for any
   content: examples are written with `uix-*` elements only, never with elements made for the
   documentation.
+- `<uix-app background-pattern="…">` repeats a tile over the canvas, drawn with CSS gradients in a color
+  a little darker than the canvas (lighter in the dark theme): `none | dots | staggered-dots | grid |
+  graph-paper | horizontal-lines | vertical-lines | diagonal-lines | crosshatch | checkerboard | zigzag`,
+  `dots` by default. The theme sets the tile size, the thickness of dots and lines, and the contrast
+  (`--uix-background-pattern-size`, `-thickness`, `-contrast`). Custom SVG tiles, used as a mask colored
+  by the theme, will come later.
 - Uix is for pure application UIs, which hold no prose: the application title is an attribute
   (`<uix-app heading="…">`), and a block of text, when one is really needed, goes in `<uix-prose>`, the
   only place where users write native content HTML (paragraphs, lists, headings). Layout uses structure
@@ -111,7 +117,7 @@ Settled decisions:
   focus ring width and offset, motion (a base duration, from which the durations of state feedback,
   entering and leaving derive by default, each settable, with an easing curve for each and the distance an
   element slides in; under `prefers-reduced-motion`, nothing slides, while short fades and color changes
-  stay), contrast,
+  stay), contrast, background pattern (tile size, thickness, contrast),
   accent color, semantic hues (danger, success, warning, info) and the dark base background. Features
   some browsers lack (`corner-shape`, `appearance: base-select` for themed option lists) are progressive
   enhancements behind `@supports`; themed option lists are on by default, with a setting to turn them
