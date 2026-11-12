@@ -163,8 +163,9 @@ Cases met while prototyping, to avoid repeating them:
 
 The repository holds no library code yet. `prototype/showcase.html` is the design mockup: the library CSS
 and JavaScript and the showcase, in one page served as is (Chrome refuses it from `file://`: serve it
-over HTTP locally). It is also published as a private artifact,
-<https://claude.ai/artifact/APutT4LLK3SKG57L8TmX76>; keep both in step. The file is the page as served
+over HTTP locally). The reference is the private artifact
+<https://claude.ai/artifact/APutT4LLK3SKG57L8TmX76>, and the file is its clone, kept up to date: read the
+artifact before changing the file, and bring the file back in step with each publication. The file is the page as served
 online, wrapped by the artifact service in a document skeleton (the first line up to `<body>`, and the
 closing `</body></html>`): remove that skeleton before publishing it again. Its Palettes page embeds
 `palettes/data/*.json`. `docs/STATUS.md` sums up where the
