@@ -287,7 +287,7 @@
   }
   uix-app kbd { border: var(--uix-line); border-block-end-width: calc(var(--uix-border-width) + 1px); }
 
-  uix-app > h1[data-heading] {
+  uix-app > [data-heading] {
     font: var(--uix-weight-strong) 1.35em / 1.2 var(--uix-font-heading);
     text-wrap: balance;
   }
@@ -1011,7 +1011,7 @@ div.sc-panel {
 
 <main class="sc-page">
   <header class="sc-head">
-    <p class="sc-mark">Uix <span>v0 · mockup 22</span></p>
+    <p class="sc-mark">Uix <span>v0 · mockup 23</span></p>
     <h1>Component showcase</h1>
     <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
   </header>
@@ -1544,7 +1544,8 @@ class UixAuthoring extends HTMLElement {
 /* ================= Uix library (mockup): application and structure ================= */
 
 /**
- * <uix-app heading="…">: the root; renders the application title as its first-level heading.
+ * <uix-app heading="…">: the root; renders the application title as a first-level heading, a div with the
+ * heading role, in every application, nested or not.
  */
 class UixApp extends UixAuthoring {
   static observedAttributes = ['heading', 'background-pattern'];
@@ -1570,14 +1571,16 @@ class UixApp extends UixAuthoring {
       uixWarn(this, `background-pattern="${pattern}" is unknown, so the default pattern (dots) is drawn. Write one of: ${UixApp.backgroundPatterns.join(', ')}.`);
     }
     const text = this.getAttribute('heading');
-    let heading = this.querySelector(':scope > h1[data-heading]');
+    let heading = this.querySelector(':scope > [data-heading]');
     if (!text) {
       heading?.remove();
       return;
     }
     if (!heading) {
-      heading = document.createElement('h1');
+      heading = document.createElement('div');
       heading.setAttribute('data-heading', '');
+      heading.setAttribute('role', 'heading');
+      heading.setAttribute('aria-level', '1');
       this.prepend(heading);
     }
     heading.textContent = text;
