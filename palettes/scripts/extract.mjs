@@ -1,5 +1,5 @@
 // Reads the color sources of each framework as text (nothing from the packages is executed) and writes
-// one JSON file per framework, <output>/<framework>/palette.json: {"<framework>": {"v<version>": {...}}}.
+// one JSON file per framework, <output>/<framework>.json: {"<framework>": {"v<version>": {...}}}.
 // Usage: node extract.mjs <packages dir> <downloads dir> <output dir> (see README.md, "Regenerate").
 
 import fs from 'node:fs';
@@ -19,8 +19,8 @@ function write(name, versions) {
   for (const [version, data] of Object.entries(versions)) {
     if (!data || count(data) === 0) fail(`${name} ${version}: nothing extracted`);
   }
-  fs.mkdirSync(path.join(output, name), { recursive: true });
-  fs.writeFileSync(path.join(output, name, 'palette.json'), `${JSON.stringify({ [name]: versions }, null, 2)}\n`);
+  fs.mkdirSync(output, { recursive: true });
+  fs.writeFileSync(path.join(output, `${name}.json`), `${JSON.stringify({ [name]: versions }, null, 2)}\n`);
   const sizes = Object.entries(versions).map(([version, data]) => `${version}: ${Object.keys(data).join(', ')}`);
   console.log(`${name} → ${sizes.join(' | ')}`);
 }

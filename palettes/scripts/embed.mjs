@@ -1,4 +1,4 @@
-// Embeds palettes/*/palette.json in the showcase page, replacing the content of its
+// Embeds palettes/data/*.json in the showcase page, replacing the content of its
 // <script type="application/json" id="sc-palettes-data"> element.
 // Usage: node palettes/scripts/embed.mjs [showcase file] (default: prototype/showcase.html)
 
@@ -18,7 +18,7 @@ const order = ['tailwind', 'bootstrap', 'material-ui', 'radix', 'open-props', 'm
 
 const data = {};
 for (const name of order) {
-  data[name] = JSON.parse(fs.readFileSync(path.join(folder, name, 'palette.json'), 'utf8'))[name];
+  data[name] = JSON.parse(fs.readFileSync(path.join(folder, 'data', `${name}.json`), 'utf8'))[name];
 }
 const json = JSON.stringify(data).replace(/</g, '\\u003c');
 
