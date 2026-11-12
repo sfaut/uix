@@ -48,3 +48,7 @@ in the script (folder names, version keys): update them there first.
 
 3. Run `node extract.mjs <packages folder> <downloads folder> <output folder>`. The script stops when a source
    has changed shape and yields nothing.
+
+The showcase (`prototype/showcase.html`, Palettes page) embeds these files in a
+`<script type="application/json" id="sc-palettes-data">` element, so it stands alone online: replace its
+content after regenerating.
