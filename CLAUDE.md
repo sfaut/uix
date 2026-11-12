@@ -82,6 +82,10 @@ Settled decisions:
   label), unless `min-width` / `min-height` is written; a scrolling element keeps its size.
 - Every component has a layout type, which sets who places it and which layout attributes it accepts. A
   layout attribute its type does not accept has no effect and brings a console warning.
+- `<uix-panel text="…" tone="info">` is a framed area holding a short text or rich children, colored by
+  `tone` (`info | success | warning | danger`). Documentation examples use panels to stand for any
+  content: examples are written with `uix-*` elements only, never with elements made for the
+  documentation.
 - Uix is for pure application UIs, which hold no prose: the application title is an attribute
   (`<uix-app heading="…">`), and a block of text, when one is really needed, goes in `<uix-prose>`, the
   only place where users write native content HTML (paragraphs, lists, headings). Layout uses structure
