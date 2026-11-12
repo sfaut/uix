@@ -158,7 +158,10 @@ Cases met while prototyping, to avoid repeating them:
 
 ## Status
 
-The repository holds no code yet. Choices still open (Tailwind theme, code style for HTML, CSS and
+The repository holds no library code yet. `prototype/showcase.html` is the design mockup: the library CSS
+and JavaScript and the showcase, in one page served as is (Chrome refuses it from `file://`: serve it
+over HTTP locally). It is also published as a private artifact,
+<https://claude.ai/artifact/APutT4LLK3SKG57L8TmX76>; keep both in step. Choices still open (Tailwind theme, code style for HTML, CSS and
 JavaScript) are made with the maintainer; do not decide them alone.
 The code style must avoid repetition: the early sketches, with a class on every child element, were
 rejected for that reason.

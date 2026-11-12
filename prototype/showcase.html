@@ -1,0 +1,3416 @@
+<title>Uix Showcase</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a specimen sheet with a sticky settings column. Each component is written with uix-* tags only and rendered in a light and a dark <uix-app>; its source and the native HTML it produces fold out below. */
+:root {
+  --bg: oklch(0.975 0.005 250);
+  --fg: oklch(0.25 0.02 255);
+  --muted: oklch(0.5 0.02 255);
+  --line: oklch(0.89 0.01 250);
+  --accent: oklch(0.52 0.16 255);
+  --chip: oklch(0.945 0.01 250);
+  --font-text: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.17 0.01 250);
+    --fg: oklch(0.93 0.008 250);
+    --muted: oklch(0.7 0.015 250);
+    --line: oklch(0.3 0.015 250);
+    --accent: oklch(0.72 0.13 250);
+    --chip: oklch(0.235 0.014 250);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.17 0.01 250);
+  --fg: oklch(0.93 0.008 250);
+  --muted: oklch(0.7 0.015 250);
+  --line: oklch(0.3 0.015 250);
+  --accent: oklch(0.72 0.13 250);
+  --chip: oklch(0.235 0.014 250);
+  color-scheme: dark;
+}
+
+/* ================= Uix library (mockup) ================= */
+@layer uix.settings, uix.base, uix.content, uix.structure, uix.controls, uix.components, uix.sizes;
+
+/* Sizes copied from attributes must not be inherited by nested rows and columns. */
+@property --uix-width { syntax: "*"; inherits: false; }
+@property --uix-height { syntax: "*"; inherits: false; }
+@property --uix-min-width { syntax: "*"; inherits: false; }
+@property --uix-max-width { syntax: "*"; inherits: false; }
+@property --uix-min-height { syntax: "*"; inherits: false; }
+@property --uix-max-height { syntax: "*"; inherits: false; }
+@property --uix-columns { syntax: "*"; inherits: false; }
+@property --uix-rows { syntax: "*"; inherits: false; }
+
+@layer uix.sizes {
+  /* Sizes written as attributes, on containers, items and floating elements: any CSS length. Where CSS reads typed attr(), it takes them from the attributes; elsewhere the elements copy them to custom properties. This layer comes last, so a written size wins over a component's default. A fixed size does not shrink. */
+  :is(uix-row, uix-column, uix-grid, uix-toolbar, uix-status-bar, uix-group, uix-radio-group, uix-input, uix-select, uix-button, uix-checkbox, uix-callout, uix-panel, uix-prose, uix-status-item, uix-spacer, uix-menu) {
+    &[width] { inline-size: var(--uix-width); }
+    &[height] { block-size: var(--uix-height); }
+    &[min-width] { min-inline-size: var(--uix-min-width); }
+    &[max-width] { max-inline-size: var(--uix-max-width); }
+    &[min-height] { min-block-size: var(--uix-min-height); }
+    &[max-height] { max-block-size: var(--uix-max-height); }
+    &:is([width], [height]) { flex-shrink: 0; }
+
+    /* A written size gives way to the content only where the content cannot wrap: a button, a word, a field and its label. A scrolling element keeps its size, since it scrolls what does not fit. */
+    &[width]:not([min-width], [scroll], uix-prose) { min-inline-size: min-content; }
+    &[height]:not([min-height], [scroll], uix-prose) { min-block-size: min-content; }
+
+    @supports (width: attr(x type(<length>))) {
+      &[width] { inline-size: attr(width type(<length-percentage>)); }
+      &[height] { block-size: attr(height type(<length-percentage>)); }
+      &[min-width] { min-inline-size: attr(min-width type(<length-percentage>)); }
+      &[max-width] { max-inline-size: attr(max-width type(<length-percentage>)); }
+      &[min-height] { min-block-size: attr(min-height type(<length-percentage>)); }
+      &[max-height] { max-block-size: attr(max-height type(<length-percentage>)); }
+    }
+  }
+}
+
+/* The only values a theme sets. */
+@layer uix.settings {
+  :root {
+    --uix-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --uix-font-heading: var(--uix-font);
+    --uix-font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --uix-font-size: 13px;
+    --uix-line-height: 1.3;
+    --uix-weight-normal: 400;
+    --uix-weight-strong: 600;
+    --uix-text-box: normal;
+    --uix-text-trim: 0;
+    --uix-space-outer: 0.5;
+    --uix-space-inner: 0.5;
+    --uix-radius: 4px;
+    --uix-corner-shape: round;
+    --uix-border-width: 1px;
+    --uix-shadow-strength: 1;
+    --uix-icon-stroke: 2;
+    --uix-select: themed;
+    --uix-focus-width: 2px;
+    --uix-focus-offset: 2px;
+    --uix-motion: 120ms;
+    --uix-contrast: 1;
+    --uix-accent: oklch(0.55 0.15 250);
+    --uix-danger-hue: 25;
+    --uix-success-hue: 150;
+    --uix-warning-hue: 75;
+    --uix-info-hue: 235;
+    --uix-dark-base: oklch(0.2 0.012 250);
+  }
+}
+
+/* Everything else derives from the settings. Neutrals take the hue and tint of the dark base, in both themes; contrast scales their distance from the canvas. */
+@layer uix.base {
+  uix-app, uix-app *, uix-app *::before, uix-app *::after { box-sizing: border-box; }
+
+  uix-app {
+    --uix-canvas: light-dark(oklch(from var(--uix-dark-base) 0.975 calc(c * 0.5) h), var(--uix-dark-base));
+    --uix-surface: light-dark(oklch(from var(--uix-dark-base) 0.997 calc(c * 0.25) h), oklch(from var(--uix-dark-base) calc(l + 0.05) c h));
+    --uix-surface-hover: light-dark(
+      oklch(from var(--uix-dark-base) calc(0.975 - 0.035 * var(--uix-contrast)) calc(c * 0.8) h),
+      oklch(from var(--uix-dark-base) calc(l + 0.11 * var(--uix-contrast)) calc(c * 1.2) h));
+    --uix-border: light-dark(
+      oklch(from var(--uix-dark-base) calc(0.975 - 0.125 * var(--uix-contrast)) c h),
+      oklch(from var(--uix-dark-base) calc(l + 0.18 * var(--uix-contrast)) calc(c * 1.3) h));
+    --uix-text: light-dark(
+      oklch(from var(--uix-dark-base) max(0.08, 0.975 - 0.735 * var(--uix-contrast)) c h),
+      oklch(from var(--uix-dark-base) min(0.99, l + 0.73 * var(--uix-contrast)) calc(c * 0.5) h));
+    --uix-text-muted: light-dark(
+      oklch(from var(--uix-dark-base) max(0.2, 0.975 - 0.495 * var(--uix-contrast)) c h),
+      oklch(from var(--uix-dark-base) min(0.9, l + 0.52 * var(--uix-contrast)) c h));
+    --uix-primary: light-dark(var(--uix-accent), oklch(from var(--uix-accent) 0.74 calc(c * 0.85) h));
+    --uix-on-primary: light-dark(oklch(1 0 0), oklch(from var(--uix-accent) 0.18 0.03 h));
+    --uix-danger: light-dark(oklch(0.54 0.18 var(--uix-danger-hue)), oklch(0.72 0.15 var(--uix-danger-hue)));
+    --uix-danger-soft: light-dark(oklch(0.96 0.03 var(--uix-danger-hue)), oklch(0.27 0.05 var(--uix-danger-hue)));
+    --uix-on-danger: light-dark(oklch(1 0 0), oklch(0.18 0.04 var(--uix-danger-hue)));
+    --uix-success: light-dark(oklch(0.52 0.13 var(--uix-success-hue)), oklch(0.75 0.14 var(--uix-success-hue)));
+    --uix-success-soft: light-dark(oklch(0.96 0.03 var(--uix-success-hue)), oklch(0.27 0.05 var(--uix-success-hue)));
+    --uix-warning: light-dark(oklch(0.58 0.13 var(--uix-warning-hue)), oklch(0.8 0.13 var(--uix-warning-hue)));
+    --uix-warning-soft: light-dark(oklch(0.96 0.04 var(--uix-warning-hue)), oklch(0.28 0.05 var(--uix-warning-hue)));
+    --uix-info: light-dark(oklch(0.53 0.14 var(--uix-info-hue)), oklch(0.75 0.12 var(--uix-info-hue)));
+    --uix-info-soft: light-dark(oklch(0.96 0.03 var(--uix-info-hue)), oklch(0.27 0.05 var(--uix-info-hue)));
+    --uix-shadow: 0 0.6em 1.6em -0.6em light-dark(
+      oklch(from var(--uix-dark-base) 0.3 c h / calc(0.3 * var(--uix-shadow-strength))),
+      oklch(0 0 0 / calc(0.65 * var(--uix-shadow-strength))));
+    --uix-weight-medium: calc((var(--uix-weight-normal) + var(--uix-weight-strong)) / 2);
+    --uix-line: var(--uix-border-width) solid var(--uix-border);
+    --uix-focus-ring: var(--uix-focus-width) solid var(--uix-primary);
+    --uix-transition: background-color var(--uix-motion), border-color var(--uix-motion), color var(--uix-motion), box-shadow var(--uix-motion);
+    /* Outer spacing: between elements. Inner spacing: inside controls and boxes. */
+    --uix-gap: calc(var(--uix-space-outer) * 1lh);
+    --uix-pad-block: calc(var(--uix-space-inner) * 0.45lh);
+    --uix-pad-inline: calc(var(--uix-space-inner) * 1.4em + 0.35em);
+    --uix-pad-box: calc(var(--uix-space-inner) * 1lh);
+    --uix-icon-size: 1.15em;
+    --uix-control-height: calc(1lh + 2 * var(--uix-pad-block) + 2 * var(--uix-border-width));
+
+    /* The application root is a vertical box, like a XUL window. */
+    display: flex;
+    flex-direction: column;
+    gap: var(--uix-gap);
+    font: var(--uix-weight-normal) var(--uix-font-size) / var(--uix-line-height) var(--uix-font);
+    color: var(--uix-text);
+    background: var(--uix-canvas);
+  }
+
+  /* With text box trim, a control's text takes the cap height instead of the line height. */
+  @supports (text-box: trim-both cap alphabetic) {
+    uix-app {
+      --uix-control-height: calc(var(--uix-text-trim) * 1cap + (1 - var(--uix-text-trim)) * 1lh + 2 * var(--uix-pad-block) + 2 * var(--uix-border-width));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    uix-app { --uix-motion: 0s; }
+  }
+
+  uix-app :is(h1, h2, h3, h4, p, ul, ol, pre) { margin: 0; }
+
+  /* Authoring tags take part in the layout by their layout type: containers, items and floating elements are boxes; an inline element is an inline box in its text; most parts leave no box, their component laying out the native HTML they produce. Data elements are never shown. */
+  :is(uix-menu-item, uix-separator) { display: contents; }
+  uix-link { display: inline; }
+  :is(uix-button, uix-checkbox, uix-radio) { display: inline-flex; vertical-align: middle; }
+  uix-button > button { flex: 1 1 auto; }
+  :is(uix-input, uix-select) { display: grid; gap: calc(var(--uix-space-outer) * 0.25lh); align-content: start; }
+  :is(uix-group, uix-radio-group, uix-status-item) { display: block; }
+  uix-status-item { white-space: nowrap; }
+  :is(uix-option, uix-option-group) { display: none; }
+}
+
+/* Inline content, allowed in rich children (a link in a callout); block content only inside uix-prose. */
+@layer uix.content {
+  uix-app strong { font-weight: var(--uix-weight-strong); }
+  uix-app a { color: var(--uix-primary); text-underline-offset: 0.2em; }
+  uix-app :is(code, kbd, samp, pre) { font-family: var(--uix-font-mono); font-size: 0.92em; }
+  uix-app :is(:not(pre) > code, kbd) {
+    padding: 0.1em 0.35em;
+    border-radius: calc(var(--uix-radius) * 0.6);
+    background: var(--uix-surface-hover);
+  }
+  uix-app kbd { border: var(--uix-line); border-block-end-width: calc(var(--uix-border-width) + 1px); }
+
+  uix-app > h1[data-heading] {
+    font: var(--uix-weight-strong) 1.35em / 1.2 var(--uix-font-heading);
+    text-wrap: balance;
+  }
+
+  /* Prose scrolls by itself once its height is constrained; the padding, offset by the margin, keeps focus rings visible without moving the text. */
+  uix-prose {
+    --uix-scroll-gutter: calc(var(--uix-focus-width) + var(--uix-focus-offset));
+
+    display: block;
+    max-inline-size: calc(65ch + 2 * var(--uix-scroll-gutter));
+    overflow: auto;
+    padding: var(--uix-scroll-gutter);
+    margin: calc(-1 * var(--uix-scroll-gutter));
+    scrollbar-width: thin;
+
+    & > * + * { margin-block-start: 0.75lh; }
+    & > :is(h1, h2, h3, h4) + * { margin-block-start: 0.35lh; }
+    & :is(h1, h2, h3, h4) { font-family: var(--uix-font-heading); font-weight: var(--uix-weight-strong); line-height: 1.2; text-wrap: balance; }
+    & h1 { font-size: 1.75em; }
+    & h2 { font-size: 1.4em; }
+    & h3 { font-size: 1.15em; }
+    & :is(ul, ol) { padding-inline-start: 1.4em; }
+    & pre {
+      max-inline-size: 100%;
+      padding: var(--uix-pad-box);
+      overflow-x: auto;
+      border: var(--uix-line);
+      border-radius: var(--uix-radius);
+      corner-shape: var(--uix-corner-shape);
+      background: var(--uix-surface);
+    }
+  }
+
+  /* Icons: inline SVG, centered on the cap height of the surrounding text. */
+  uix-app svg[data-icon] {
+    flex: none;
+    inline-size: var(--uix-icon-size);
+    block-size: var(--uix-icon-size);
+    vertical-align: calc((1cap - var(--uix-icon-size)) / 2);
+    stroke-width: var(--uix-icon-stroke);
+  }
+}
+
+/* Structure elements, styled by CSS alone. A row places its children side by side, a column one under the other; align places them across the axis, justify along it. */
+@layer uix.structure {
+  uix-row, uix-column { display: flex; gap: var(--uix-gap); }
+  uix-row { flex-direction: row; align-items: center; }
+  uix-column { flex-direction: column; align-items: stretch; }
+  :is(uix-row, uix-column) {
+    &[align="start"] { align-items: flex-start; }
+    &[align="center"] { align-items: center; }
+    &[align="end"] { align-items: flex-end; }
+    &[align="stretch"] { align-items: stretch; }
+    &[align="baseline"] { align-items: baseline; }
+    &[justify="center"] { justify-content: center; }
+    &[justify="end"] { justify-content: flex-end; }
+    &[justify="space-between"] { justify-content: space-between; }
+    &[gap="none"] { gap: 0; }
+    &[gap="small"] { gap: calc(var(--uix-gap) * 0.5); }
+    &[gap="large"] { gap: calc(var(--uix-gap) * 2); }
+    &[wrap] { flex-wrap: wrap; }
+  }
+  /* Sizes: in the uix.sizes layer, which comes last. */
+
+  /* grow: a share of the free space along the axis (grow alone means 1, grow="0" none). In a row, fields grow by default; buttons and choices keep the size of their content. */
+  uix-row > :is(uix-input, uix-select) { flex: 1 1 10em; }
+  /* Any child is an item, foreign elements included (a chart, a map), except the uix-* parts, floating and inline elements. */
+  :is(uix-app, uix-row, uix-column, uix-toolbar, uix-status-bar) > :not(uix-link, uix-menu, uix-menu-item, uix-separator, uix-radio, uix-splitter, uix-option, uix-option-group) {
+    &:is([grow=""], [grow="1"]) { flex: 1 1 0; }
+    &[grow="2"] { flex: 2 1 0; }
+    &[grow="3"] { flex: 3 1 0; }
+    &[grow="0"] { flex: 0 1 auto; }
+  }
+
+  /* Overflow: a box never gets smaller than its content, so content never spills over its neighbors; what does not fit makes the nearest scrolling element scroll, or else the application. Along a column, a box holding a scrolling element may get shorter, since that element takes up the overflow. */
+  uix-app { overflow: auto; }
+  :is(uix-app, uix-column) > :has([scroll], uix-prose):not([min-height]) { min-block-size: 0; }
+  uix-spacer { flex: 1 1 0; }
+
+  /* scroll: the content scrolls inside the element; the padding keeps focus rings visible. */
+  :is(uix-row, uix-column)[scroll] {
+    overflow: auto;
+    padding: calc(var(--uix-focus-width) + var(--uix-focus-offset));
+    scrollbar-width: thin;
+  }
+
+  /* Grid: tracks written like CSS grid tracks. A field spans the grid and lays its label and control on the grid's own columns (subgrid), so every label of the grid gets the same width. */
+  uix-grid {
+    display: grid;
+    grid-template-columns: var(--uix-columns, auto 1fr);
+    grid-template-rows: var(--uix-rows, none);
+    gap: var(--uix-gap) calc(var(--uix-gap) * 1.5);
+    align-items: center;
+    /* auto tracks keep the size of their content; fr tracks take the free space. */
+    justify-content: start;
+
+    /* In a grid, align places each child in its cell vertically, justify horizontally. */
+    &[align="start"] { align-items: start; }
+    &[align="end"] { align-items: end; }
+    &[align="stretch"] { align-items: stretch; }
+    &[align="baseline"] { align-items: baseline; }
+    &[justify="start"] { justify-items: start; }
+    &[justify="center"] { justify-items: center; }
+    &[justify="end"] { justify-items: end; }
+    &[gap="none"] { gap: 0; }
+    &[gap="small"] { gap: calc(var(--uix-gap) * 0.5) calc(var(--uix-gap) * 0.75); }
+    &[gap="large"] { gap: calc(var(--uix-gap) * 2) calc(var(--uix-gap) * 3); }
+
+    & > :is(uix-input, uix-select) {
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+      column-gap: normal;
+
+      & > label { grid-column: 1 / -1; grid-template-columns: subgrid; column-gap: normal; align-items: center; }
+      & > small { grid-column: 2 / -1; }
+    }
+    & > :is(uix-checkbox, uix-radio-group) { grid-column: 2 / -1; }
+
+    /* span: a child covers several columns, or the whole line. */
+    & > [span="2"] { grid-column: span 2; }
+    & > [span="3"] { grid-column: span 3; }
+    & > [span="4"] { grid-column: span 4; }
+    & > [span="all"] { grid-column: 1 / -1; }
+
+  }
+
+  /* Splitter: a hairline the user drags, or moves with the arrow keys, to resize its neighbor. */
+  uix-splitter {
+    flex: none;
+    align-self: stretch;
+    position: relative;
+    touch-action: none;
+
+    &::before { content: ""; position: absolute; transition: border-color var(--uix-motion); }
+    &:is(:hover, :focus-visible, [data-dragging])::before { border-color: var(--uix-primary); }
+    &:focus-visible { outline: none; }
+  }
+  uix-row > uix-splitter {
+    inline-size: 0.6em;
+    cursor: col-resize;
+
+    &::before { inset-block: 0; inset-inline-start: 50%; border-inline-start: max(2px, var(--uix-border-width)) solid var(--uix-border); }
+  }
+  uix-column > uix-splitter {
+    block-size: 0.6em;
+    cursor: row-resize;
+
+    &::before { inset-inline: 0; inset-block-start: 50%; border-block-start: max(2px, var(--uix-border-width)) solid var(--uix-border); }
+  }
+
+  /* Separator: a horizontal rule, vertical in a row, a toolbar or a status bar. A border, unlike a background, snaps to whole device pixels: the rule stays one pixel thick at any font size or zoom. */
+  uix-separator > hr {
+    align-self: stretch;
+    margin: 0;
+    border: 0;
+    border-block-start: max(1px, var(--uix-border-width)) solid var(--uix-border);
+  }
+  :is(uix-row, uix-toolbar, uix-status-bar) > uix-separator > hr {
+    inline-size: 0;
+    border-block-start: 0;
+    border-inline-start: max(1px, var(--uix-border-width)) solid var(--uix-border);
+  }
+
+  uix-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--uix-gap) * 0.5);
+    padding: calc(var(--uix-pad-box) * 0.5);
+    border: var(--uix-line);
+    border-radius: var(--uix-radius);
+    corner-shape: var(--uix-corner-shape);
+    background: var(--uix-surface);
+
+    & > uix-separator > hr { margin-inline: calc(var(--uix-gap) * 0.25); }
+  }
+
+  uix-status-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap);
+    padding-block-start: calc(var(--uix-pad-box) * 0.5);
+    border-block-start: var(--uix-line);
+    font-size: 0.9em;
+    color: var(--uix-text-muted);
+  }
+}
+
+@layer uix.controls {
+  uix-app :is(button, input, select, textarea) { font: inherit; color: inherit; }
+
+  /* A block container (inline-block), because text-box trim does not apply to flex containers. */
+  uix-app button {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+    padding: var(--uix-pad-block) var(--uix-pad-inline);
+    border: var(--uix-line);
+    border-radius: var(--uix-radius);
+    corner-shape: var(--uix-corner-shape);
+    background: var(--uix-surface);
+    font-weight: var(--uix-weight-medium);
+    cursor: pointer;
+    transition: var(--uix-transition);
+
+    &:hover:not(:disabled) { background: var(--uix-surface-hover); }
+    &:focus-visible { outline: var(--uix-focus-ring); outline-offset: var(--uix-focus-offset); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+    &[data-variant="primary"] {
+      border-color: transparent;
+      background: var(--uix-primary);
+      color: var(--uix-on-primary);
+      &:hover:not(:disabled) { background: color-mix(in oklch, var(--uix-primary), var(--uix-text) 15%); }
+    }
+    &[data-variant="danger"] {
+      border-color: transparent;
+      background: var(--uix-danger);
+      color: var(--uix-on-danger);
+      &:hover:not(:disabled) { background: color-mix(in oklch, var(--uix-danger), var(--uix-text) 15%); }
+    }
+    &[data-variant="ghost"] { border-color: transparent; background: transparent; }
+    &[data-size="small"] { font-size: 0.85em; }
+    &[data-size="large"] { font-size: 1.15em; }
+    & > svg[data-icon] { margin-inline-end: 0.45em; }
+    & > svg[data-icon][data-end] { margin-inline: 0.45em 0; }
+    &[data-icon-only] {
+      padding-inline: var(--uix-pad-block);
+      & > svg[data-icon] { margin-inline: 0; }
+    }
+  }
+
+  /* Text box trim: the text box shrinks from the line height to the cap height, so the padding alone sets the space around the text, and the control gets shorter. */
+  @supports (text-box: trim-both cap alphabetic) {
+    uix-app button { text-box: var(--uix-text-box); }
+  }
+
+  /* The full width of the field, given as a percentage, lets the field get as narrow as its label. */
+  uix-app :is(input:not([type="checkbox"], [type="radio"]), select, textarea) {
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding: var(--uix-pad-block) calc(var(--uix-pad-inline) * 0.7);
+    border: var(--uix-line);
+    border-radius: var(--uix-radius);
+    corner-shape: var(--uix-corner-shape);
+    background-color: var(--uix-surface);
+    transition: var(--uix-transition);
+
+    &::placeholder { color: var(--uix-text-muted); }
+    &:focus-visible { outline: var(--uix-focus-ring); outline-offset: calc(var(--uix-focus-offset) / 2); border-color: var(--uix-primary); }
+    &[aria-invalid="true"] { border-color: var(--uix-danger); }
+    &:disabled { background-color: var(--uix-canvas); color: var(--uix-text-muted); cursor: not-allowed; }
+  }
+
+  /* Single-line fields take the button height, trimmed or not. */
+  uix-app :is(input:not([type="checkbox"], [type="radio"]), select) {
+    block-size: var(--uix-control-height);
+    padding-block: 0;
+  }
+
+  /* Native option list, drawn arrow: the fallback, and the choice when --uix-select is native. */
+  uix-app select {
+    appearance: none;
+    padding-inline-end: 2.2em;
+    background-image:
+      linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 1.15em) 55%, calc(100% - 0.8em) 55%;
+    background-size: 0.35em 0.35em;
+    background-repeat: no-repeat;
+  }
+
+  /* Themed option list: on by default where supported; --uix-select: native turns it off. */
+  @supports (appearance: base-select) {
+    @container style(--uix-select: themed) {
+      uix-app select,
+      uix-app select::picker(select) { appearance: base-select; }
+
+      /* The fixed control height leaves room above and below the text: center it. */
+      uix-app select {
+        display: inline-flex;
+        align-items: center;
+        background-image: none;
+        padding-inline-end: calc(var(--uix-pad-inline) * 0.7);
+      }
+      uix-app select::picker(select) {
+        box-sizing: border-box;
+        margin-block: 0.3em;
+        padding: calc(var(--uix-pad-box) * 0.3);
+        border: var(--uix-line);
+        border-radius: var(--uix-radius);
+        corner-shape: var(--uix-corner-shape);
+        background: var(--uix-surface);
+        color: var(--uix-text);
+        box-shadow: var(--uix-shadow);
+      }
+      uix-app option {
+        padding: var(--uix-pad-block) calc(var(--uix-pad-inline) * 0.7);
+        border-radius: calc(var(--uix-radius) * 0.6);
+        transition: var(--uix-transition);
+
+        &:hover,
+        &:focus-visible { outline: none; background: var(--uix-surface-hover); }
+        &:checked { font-weight: var(--uix-weight-medium); }
+        &::checkmark { color: var(--uix-primary); }
+      }
+      uix-app optgroup { font-weight: var(--uix-weight-strong); }
+    }
+  }
+
+  uix-app input:is([type="checkbox"], [type="radio"]) {
+    inline-size: 1.05em;
+    block-size: 1.05em;
+    margin: 0;
+    accent-color: var(--uix-primary);
+  }
+
+  uix-app label {
+    display: grid;
+    row-gap: calc(var(--uix-space-outer) * 0.35lh);
+    font-weight: var(--uix-weight-medium);
+
+    & > :is(input, select, textarea) { font-weight: var(--uix-weight-normal); }
+    &:has(> input:is([type="checkbox"], [type="radio"])) {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      inline-size: auto;
+      font-weight: var(--uix-weight-normal);
+    }
+  }
+  :is(uix-input, uix-select) > small {
+    font-size: 0.9em;
+    color: var(--uix-text-muted);
+  }
+  :is(uix-input, uix-select) > label:has([aria-invalid="true"]) + small { color: var(--uix-danger); }
+
+  /* In a row, a field's label stays on one line, so the field never gets narrower than its label. */
+  uix-row > :is(uix-input, uix-select) > label { white-space: nowrap; }
+
+  uix-app fieldset {
+    display: grid;
+    gap: var(--uix-gap);
+    justify-items: stretch;
+    min-inline-size: 0;
+    margin: 0;
+    padding: calc(var(--uix-pad-box) * 0.6) var(--uix-pad-box) var(--uix-pad-box);
+    border: var(--uix-line);
+    border-radius: var(--uix-radius);
+    corner-shape: var(--uix-corner-shape);
+
+    & > legend { padding-inline: 0.35em; font-weight: var(--uix-weight-strong); }
+  }
+  /* A radio group is a fieldset without a frame: its legend reads like a field label. */
+  uix-radio-group > fieldset {
+    gap: calc(var(--uix-gap) * 0.6);
+    padding: 0;
+    border: 0;
+
+    & > legend { padding: 0; margin-block-end: calc(var(--uix-space-outer) * 0.35lh); font-weight: var(--uix-weight-medium); }
+  }
+}
+
+@layer uix.components {
+  /* Rendered structure: span[data-text], or rich children. A framed area; tone colors it. */
+  uix-panel {
+    --uix-panel-line: var(--uix-border);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--uix-gap);
+    padding: calc(var(--uix-pad-box) * 0.5) calc(var(--uix-pad-box) * 0.8);
+    border: max(1px, var(--uix-border-width)) solid var(--uix-panel-line);
+    border-radius: var(--uix-radius);
+    corner-shape: var(--uix-corner-shape);
+    background: var(--uix-surface);
+
+    &[tone="info"] { --uix-panel-line: color-mix(in oklch, var(--uix-info), transparent 40%); background: var(--uix-info-soft); }
+    &[tone="success"] { --uix-panel-line: color-mix(in oklch, var(--uix-success), transparent 40%); background: var(--uix-success-soft); }
+    &[tone="warning"] { --uix-panel-line: color-mix(in oklch, var(--uix-warning), transparent 40%); background: var(--uix-warning-soft); }
+    &[tone="danger"] { --uix-panel-line: color-mix(in oklch, var(--uix-danger), transparent 40%); background: var(--uix-danger-soft); }
+  }
+
+  /* Rendered structure: svg[data-icon], div[data-body] > (strong[data-heading], p[data-text] or rich children), button[data-dismiss]. */
+  uix-callout {
+    --uix-tone: var(--uix-info);
+    --uix-tone-soft: var(--uix-info-soft);
+
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--uix-pad-box) * 0.6);
+    inline-size: min(100%, 36em);
+    padding: calc(var(--uix-pad-box) * 0.7) var(--uix-pad-box);
+    border: var(--uix-border-width) solid color-mix(in oklch, var(--uix-tone), transparent 55%);
+    border-radius: var(--uix-radius);
+    corner-shape: var(--uix-corner-shape);
+    background: var(--uix-tone-soft);
+
+    &[tone="success"] { --uix-tone: var(--uix-success); --uix-tone-soft: var(--uix-success-soft); }
+    &[tone="warning"] { --uix-tone: var(--uix-warning); --uix-tone-soft: var(--uix-warning-soft); }
+    &[tone="danger"] { --uix-tone: var(--uix-danger); --uix-tone-soft: var(--uix-danger-soft); }
+
+    & > svg[data-icon] { margin-block-start: calc((1lh - var(--uix-icon-size)) / 2); color: var(--uix-tone); }
+    & > [data-body] { flex: 1; min-inline-size: 0; }
+    & > [data-body] > [data-heading] { display: block; margin-block-end: calc(var(--uix-gap) * 0.2); }
+    & > button[data-dismiss] { margin-block: calc(var(--uix-pad-block) * -1); margin-inline-end: calc(var(--uix-pad-box) * -0.4); }
+  }
+
+  uix-menu {
+    flex-direction: column;
+    gap: 1px;
+    min-inline-size: 13em;
+    padding: calc(var(--uix-pad-box) * 0.3);
+    border: var(--uix-line);
+    border-radius: var(--uix-radius);
+    corner-shape: var(--uix-corner-shape);
+    background: var(--uix-surface);
+    color: var(--uix-text);
+    box-shadow: var(--uix-shadow);
+
+    &:popover-open,
+    &:not([popover]) { display: flex; }
+    &:not([popover]) { inline-size: max-content; }
+
+    & > uix-menu-item > button {
+      display: block;
+      inline-size: 100%;
+      padding: var(--uix-pad-block) calc(var(--uix-pad-inline) * 0.7);
+      border: 0;
+      border-radius: calc(var(--uix-radius) * 0.6);
+      background: none;
+      color: inherit;
+      font-weight: var(--uix-weight-normal);
+      text-align: start;
+
+      &:hover:not(:disabled) { background: var(--uix-surface-hover); }
+      &:focus-visible { outline: none; background: var(--uix-surface-hover); box-shadow: inset 0 0 0 var(--uix-focus-width) var(--uix-primary); }
+      &[data-variant="danger"] { background: none; color: var(--uix-danger); }
+      &[data-variant="danger"]:is(:hover, :focus-visible) { background: var(--uix-danger-soft); }
+      & > svg[data-icon] { margin-inline-end: 0.6em; color: var(--uix-text-muted); }
+      &[data-variant="danger"] > svg[data-icon] { color: inherit; }
+      & > kbd {
+        float: inline-end;
+        margin-inline-start: 2em;
+        padding: 0;
+        border: 0;
+        background: none;
+        font: inherit;
+        font-size: 0.85em;
+        color: var(--uix-text-muted);
+      }
+    }
+    & > uix-separator > hr { margin: 0.25em 0; border: 0; border-block-start: max(1px, var(--uix-border-width)) solid var(--uix-border); }
+  }
+
+  /* Opening animation; display and overlay stay discrete so the closing fade can play. */
+  uix-menu[popover] {
+    opacity: 0;
+    translate: 0 -0.25em;
+    transition: opacity var(--uix-motion), translate var(--uix-motion), display var(--uix-motion) allow-discrete, overlay var(--uix-motion) allow-discrete;
+
+    &:popover-open {
+      opacity: 1;
+      translate: 0 0;
+
+      @starting-style {
+        opacity: 0;
+        translate: 0 -0.25em;
+      }
+    }
+  }
+
+  @supports (position-area: block-end) {
+    uix-menu[popover] {
+      inset: auto;
+      margin: 0.3em 0 0;
+      position-area: block-end span-inline-end;
+      position-try-fallbacks: flip-block, flip-inline;
+    }
+  }
+}
+
+/* ================= Showcase page chrome ================= */
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 0.9375rem/1.55 var(--font-text);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 4rem;
+}
+.sc-page { display: grid; gap: 2.5rem; }
+.sc-head code, .sc-spec code, .sc-note code, .sc-foot code {
+  font-family: var(--font-mono); font-size: 0.85em; background: var(--chip); padding: 0.1em 0.35em; border-radius: 4px;
+}
+
+.sc-head { display: grid; gap: 0.75rem; max-inline-size: 52rem; }
+.sc-mark { margin: 0; font: 600 0.8125rem/1 var(--font-mono); letter-spacing: 0.04em; color: var(--accent); }
+.sc-mark span { color: var(--muted); font-weight: 400; }
+.sc-head h1 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.375rem); line-height: 1.15; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+.sc-lede { margin: 0; color: var(--muted); max-inline-size: 66ch; }
+.sc-toc { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+.sc-toc a { display: block; font: 500 0.75rem/1 var(--font-mono); padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); text-decoration: none; }
+.sc-toc a:hover { border-color: var(--accent); color: var(--accent); }
+.sc-toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Theme settings: a drawer on the right, in the top layer, so the components get the full width; it stays open while the page is used. */
+.sc-settings-toggle {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 1rem);
+  right: max(16px, env(safe-area-inset-right, 0px));
+  z-index: 1;
+  font: 500 0.8125rem/1 var(--font-text);
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--accent);
+  box-shadow: 0 4px 16px -6px oklch(0 0 0 / 0.3);
+  cursor: pointer;
+}
+.sc-settings-toggle:focus-visible, .sc-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sc-settings {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  inline-size: min(20rem, 100vw);
+  block-size: 100dvh;
+  max-block-size: none;
+  overflow-y: auto;
+  gap: 1.25rem;
+  padding: 1.25rem max(1.25rem, env(safe-area-inset-right, 0px)) 2rem 1.25rem;
+  border: 0;
+  border-inline-start: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: -12px 0 32px -16px oklch(0 0 0 / 0.35);
+}
+.sc-settings:popover-open { display: grid; align-content: start; }
+.sc-settings-head { display: flex; justify-content: space-between; align-items: center; }
+.sc-close { font: 500 0.75rem/1 var(--font-mono); padding: 0.35rem 0.5rem; border: 1px solid var(--line); border-radius: 5px; background: transparent; color: var(--fg); cursor: pointer; }
+.sc-settings h2 { margin: 0; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.sc-group { display: grid; gap: 0.85rem; padding-block-start: 1rem; border-block-start: 1px solid var(--line); }
+.sc-group h3 { margin: 0; font: 600 0.6875rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+.sc-presets, .sc-swatches { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.sc-presets button {
+  font: 500 0.8125rem/1 var(--font-text);
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+}
+.sc-presets button:hover { border-color: var(--accent); }
+.sc-presets button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.sc-swatches button {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line);
+  cursor: pointer;
+}
+.sc-swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent); }
+.sc-settings :is(button, input, select):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sc-setting { display: grid; gap: 0.35rem; }
+.sc-setting-head { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.875rem; }
+.sc-setting-head label { font-weight: 500; }
+.sc-setting output { font: 400 0.8125rem/1.5 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.sc-setting input[type="range"] { inline-size: 100%; margin: 0; accent-color: var(--accent); }
+.sc-setting select { font: 400 0.875rem/1.3 var(--font-text); padding: 0.4rem 0.5rem; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }
+.sc-check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+.sc-check input { margin: 0; accent-color: var(--accent); inline-size: 1rem; block-size: 1rem; }
+.sc-note { margin: 0; font-size: 0.8125rem; color: var(--muted); }
+
+.sc-theme { display: grid; gap: 0.5rem; padding-block-start: 1rem; border-block-start: 1px solid var(--line); }
+.sc-theme-head { display: flex; justify-content: space-between; align-items: center; }
+.sc-theme pre { margin: 0; padding: 0.75rem; overflow-x: auto; background: var(--chip); border-radius: 8px; font: 400 0.75rem/1.55 var(--font-mono); }
+.sc-copy { font: 500 0.75rem/1 var(--font-mono); padding: 0.35rem 0.5rem; border: 1px solid var(--line); border-radius: 5px; background: transparent; color: var(--accent); cursor: pointer; }
+
+/* One component at a time: a sticky index on the left, the component page on the right. */
+.sc-body { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+.sc-nav { position: sticky; top: 1rem; }
+.sc-nav ul { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.sc-nav a { display: block; padding: 0.45rem 0.7rem; border-radius: 6px; color: var(--muted); font-size: 0.9rem; text-decoration: none; }
+.sc-nav a:hover { color: var(--fg); background: var(--chip); }
+.sc-nav a[aria-current="page"] { color: var(--accent); background: var(--chip); font-weight: 500; }
+.sc-nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sc-main { display: grid; gap: 2rem; min-inline-size: 0; }
+
+.sc-scheme { display: inline-flex; justify-self: start; padding: 2px; border: 1px solid var(--line); border-radius: 8px; }
+.sc-scheme button { font: 500 0.8125rem/1 var(--font-text); padding: 0.45rem 0.75rem; border: 0; border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; }
+.sc-scheme button[aria-pressed="true"] { background: var(--chip); color: var(--fg); }
+.sc-scheme button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sc-component { display: grid; gap: 2.5rem; }
+.sc-component[hidden] { display: none; }
+.sc-spec { display: grid; gap: 0.75rem; }
+.sc-spec h2 { margin: 0; font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; }
+.sc-tags { margin: 0; font: 400 0.8125rem/1.4 var(--font-mono); color: var(--accent); }
+.sc-spec p { margin: 0; color: var(--muted); max-inline-size: 68ch; }
+.sc-attrs { justify-self: start; margin-block-start: 0.5rem; border-collapse: collapse; font-size: 0.8125rem; }
+.sc-attrs th, .sc-attrs td { padding: 0.45rem 1.5rem 0.45rem 0; border-block-end: 1px solid var(--line); text-align: start; vertical-align: top; }
+.sc-attrs th { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.sc-attrs td { font-family: var(--font-mono); }
+.sc-attrs td:last-child { color: var(--muted); }
+
+.sc-example { display: grid; gap: 1rem; padding-block-start: 2rem; border-block-start: 1px solid var(--line); }
+.sc-example h3 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.sc-panels { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+.sc-main[data-scheme="both"] .sc-panels:not([data-wide]) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sc-main[data-scheme="light"] .sc-panel[data-scheme="dark"],
+.sc-main[data-scheme="dark"] .sc-panel[data-scheme="light"] { display: none; }
+.sc-panel { display: grid; gap: 1em; align-content: start; padding: 2.25em; border: 1px solid var(--uix-border); border-radius: 10px; min-inline-size: 0; }
+.sc-panel-label { margin: 0; font: 500 0.6875rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--uix-text-muted); }
+.sc-main:not([data-scheme="both"]) .sc-panel-label { display: none; }
+.sc-demo { display: flex; flex-wrap: wrap; align-items: start; gap: 2.25em 3.5em; min-inline-size: 0; }
+.sc-demo[data-stack] { display: grid; justify-items: start; gap: 2.25em; }
+.sc-item { display: grid; gap: 0.7em; justify-items: start; align-content: start; margin: 0; min-inline-size: 0; }
+.sc-demo[data-stack] > .sc-item { justify-self: stretch; }
+.sc-item > figcaption { font: 400 0.6875rem/1.3 var(--font-mono); color: var(--uix-text-muted); }
+/* Showcase only: the application gets a fixed height its rows and columns share, and a frame; the layout demos outline their rows, columns and grids. */
+.sc-item > uix-app { justify-self: stretch; block-size: 38em; padding: var(--uix-pad-box); border: var(--uix-line); border-radius: var(--uix-radius); box-shadow: var(--uix-shadow); }
+/* Layout pages: the containers are shaded, so the free space shows. */
+:is(#row, #column, #grid, #sizes) .sc-demo[data-stack] .sc-item > * { justify-self: stretch; }
+:is(#row, #column, #grid, #sizes) .sc-item :is(uix-row, uix-column, uix-grid) {
+  outline: 1px dashed var(--uix-border);
+  background: color-mix(in oklch, var(--uix-text) 5%, transparent);
+}
+
+/* Layout types page: gray dashes on containers, blue ones on the other elements with a box; parts without a box show nothing. */
+#layout-types .sc-item > :not(uix-menu) { justify-self: stretch; }
+#layout-types .sc-item :is(uix-row, uix-toolbar, uix-status-bar) { outline: 1px dashed var(--uix-text-muted); outline-offset: 5px; }
+#layout-types .sc-item :is(uix-input, uix-button, uix-link, uix-menu, uix-prose, uix-menu-item, uix-separator, uix-status-item, uix-spacer) { outline: 1.5px dashed var(--uix-primary); outline-offset: 2px; }
+
+.sc-codes { display: grid; gap: 0.5rem; }
+.sc-code summary { cursor: pointer; font: 500 0.8125rem/1 var(--font-mono); color: var(--accent); inline-size: fit-content; }
+.sc-code summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+.sc-code pre { margin: 0.75rem 0 0; padding: 1rem; overflow-x: auto; background: var(--chip); border-radius: 8px; font: 400 0.8125rem/1.6 var(--font-mono); }
+.sc-console { display: grid; gap: 0.5rem; padding: 0.75rem 1rem; border-inline-start: 3px solid oklch(0.76 0.15 75); border-radius: 0 8px 8px 0; background: var(--chip); }
+.sc-console p { margin: 0; font: 600 0.6875rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.sc-console pre { margin: 0; white-space: pre-wrap; font: 400 0.8125rem/1.5 var(--font-mono); }
+
+@media (max-width: 64rem) {
+  .sc-main[data-scheme="both"] .sc-panels:not([data-wide]) { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 52rem) {
+  .sc-body { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .sc-nav { position: static; }
+  .sc-nav ul { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+}
+
+.sc-foot { color: var(--muted); font-size: 0.875rem; border-block-start: 1px solid var(--line); padding-block-start: 1.25rem; max-inline-size: 74ch; }
+.sc-foot ul { margin: 0.5rem 0 0; padding-inline-start: 1.1rem; display: grid; gap: 0.35rem; }
+
+@media (max-width: 64rem) {
+  .sc-panels { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+
+<main class="sc-page">
+  <header class="sc-head">
+    <p class="sc-mark">Uix <span>v0 · mockup 15</span></p>
+    <h1>Component showcase</h1>
+    <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
+  </header>
+
+  <button type="button" class="sc-settings-toggle" popovertarget="settings">Theme settings</button>
+
+  <div class="sc-layout">
+    <aside class="sc-settings" id="settings" popover="manual" aria-labelledby="settings-title">
+      <div class="sc-settings-head">
+        <h2 id="settings-title">Theme settings</h2>
+        <button type="button" class="sc-close" popovertarget="settings" popovertargetaction="hide">Close</button>
+      </div>
+
+      <div class="sc-presets" role="group" aria-label="Density presets">
+        <button type="button" data-preset="compact" aria-pressed="false">Compact</button>
+        <button type="button" data-preset="default" aria-pressed="true">Default</button>
+        <button type="button" data-preset="comfortable" aria-pressed="false">Comfortable</button>
+      </div>
+
+      <section class="sc-group" aria-labelledby="group-type">
+        <h3 id="group-type">Type</h3>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-font">Interface font</label></div>
+          <select id="set-font" data-key="font"></select>
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-heading-font">Heading font</label></div>
+          <select id="set-heading-font" data-key="headingFont"></select>
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-mono-font">Code font</label></div>
+          <select id="set-mono-font" data-key="monoFont"></select>
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-font-size">Font size</label><output for="set-font-size"></output></div>
+          <input id="set-font-size" type="range" min="11" max="18" step="0.5" data-key="fontSize" data-format="px">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-line-height">Line height</label><output for="set-line-height"></output></div>
+          <input id="set-line-height" type="range" min="1.1" max="2.2" step="0.05" data-key="lineHeight">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-weight-normal">Normal weight</label><output for="set-weight-normal"></output></div>
+          <input id="set-weight-normal" type="range" min="300" max="500" step="100" data-key="weightNormal">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-weight-strong">Strong weight</label><output for="set-weight-strong"></output></div>
+          <input id="set-weight-strong" type="range" min="500" max="800" step="100" data-key="weightStrong">
+        </div>
+        <div class="sc-setting">
+          <label class="sc-check"><input id="set-text-trim" type="checkbox" data-key="textTrim"> Trim text box</label>
+          <p class="sc-note" id="trim-note" hidden>This browser does not support <code>text-box</code> yet: the setting has no effect.</p>
+        </div>
+      </section>
+
+      <section class="sc-group" aria-labelledby="group-shape">
+        <h3 id="group-shape">Space and shape</h3>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-space-outer">Outer spacing</label><output for="set-space-outer"></output></div>
+          <input id="set-space-outer" type="range" min="0.1" max="1.5" step="0.05" data-key="spaceOuter">
+          <p class="sc-note">Between elements: gaps of boxes, toolbars, groups.</p>
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-space-inner">Inner spacing</label><output for="set-space-inner"></output></div>
+          <input id="set-space-inner" type="range" min="0.1" max="1.5" step="0.05" data-key="spaceInner">
+          <p class="sc-note">Inside elements: padding of buttons, fields, boxes, menus.</p>
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-radius">Radius</label><output for="set-radius"></output></div>
+          <input id="set-radius" type="range" min="0" max="16" step="1" data-key="radius" data-format="px">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-corner-shape">Corner shape</label></div>
+          <select id="set-corner-shape" data-key="cornerShape">
+            <option value="round">round</option>
+            <option value="squircle">squircle</option>
+            <option value="bevel">bevel</option>
+            <option value="scoop">scoop</option>
+            <option value="notch">notch</option>
+          </select>
+          <p class="sc-note" id="corner-note" hidden>This browser does not support <code>corner-shape</code> yet: corners stay round.</p>
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-border-width">Border width</label><output for="set-border-width"></output></div>
+          <input id="set-border-width" type="range" min="0" max="3" step="1" data-key="borderWidth" data-format="px">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-shadow">Shadow strength</label><output for="set-shadow"></output></div>
+          <input id="set-shadow" type="range" min="0" max="2" step="0.1" data-key="shadow">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-icon-stroke">Icon stroke</label><output for="set-icon-stroke"></output></div>
+          <input id="set-icon-stroke" type="range" min="1" max="3" step="0.25" data-key="iconStroke">
+        </div>
+      </section>
+
+      <section class="sc-group" aria-labelledby="group-interaction">
+        <h3 id="group-interaction">Interaction</h3>
+        <div class="sc-setting">
+          <label class="sc-check"><input id="set-themed-select" type="checkbox" data-key="themedSelect"> Themed option lists</label>
+          <p class="sc-note" id="select-note" hidden>This browser does not support <code>appearance: base-select</code> yet: option lists stay native.</p>
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-focus-width">Focus ring width</label><output for="set-focus-width"></output></div>
+          <input id="set-focus-width" type="range" min="1" max="4" step="1" data-key="focusWidth" data-format="px">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-focus-offset">Focus ring offset</label><output for="set-focus-offset"></output></div>
+          <input id="set-focus-offset" type="range" min="0" max="4" step="1" data-key="focusOffset" data-format="px">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-motion">Motion</label><output for="set-motion"></output></div>
+          <input id="set-motion" type="range" min="0" max="400" step="20" data-key="motion" data-format="ms">
+        </div>
+      </section>
+
+      <section class="sc-group" aria-labelledby="group-color">
+        <h3 id="group-color">Color</h3>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-contrast">Contrast</label><output for="set-contrast"></output></div>
+          <input id="set-contrast" type="range" min="0.7" max="1.3" step="0.05" data-key="contrast">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-accent">Accent hue</label><output for="set-accent"></output></div>
+          <input id="set-accent" type="range" min="0" max="360" step="1" data-key="accentHue" data-format="deg">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-danger-hue">Danger hue</label><output for="set-danger-hue"></output></div>
+          <input id="set-danger-hue" type="range" min="0" max="360" step="1" data-key="dangerHue" data-format="deg">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-success-hue">Success hue</label><output for="set-success-hue"></output></div>
+          <input id="set-success-hue" type="range" min="0" max="360" step="1" data-key="successHue" data-format="deg">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-warning-hue">Warning hue</label><output for="set-warning-hue"></output></div>
+          <input id="set-warning-hue" type="range" min="0" max="360" step="1" data-key="warningHue" data-format="deg">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-info-hue">Info hue</label><output for="set-info-hue"></output></div>
+          <input id="set-info-hue" type="range" min="0" max="360" step="1" data-key="infoHue" data-format="deg">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><span id="bg-label">Background</span></div>
+          <div class="sc-swatches" role="group" aria-labelledby="bg-label" id="bg-swatches"></div>
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-bg-hue">Background hue</label><output for="set-bg-hue"></output></div>
+          <input id="set-bg-hue" type="range" min="0" max="360" step="1" data-key="bgHue" data-format="deg">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-bg-tint">Background tint</label><output for="set-bg-tint"></output></div>
+          <input id="set-bg-tint" type="range" min="0" max="0.06" step="0.002" data-key="bgTint">
+        </div>
+        <div class="sc-setting">
+          <div class="sc-setting-head"><label for="set-dark-lightness">Dark background lightness</label><output for="set-dark-lightness"></output></div>
+          <input id="set-dark-lightness" type="range" min="0.1" max="0.32" step="0.01" data-key="darkLightness">
+        </div>
+      </section>
+
+      <div class="sc-theme">
+        <div class="sc-theme-head"><h2>Your theme</h2><button type="button" class="sc-copy" id="copy-theme">Copy</button></div>
+        <pre><code id="theme-css"></code></pre>
+      </div>
+    </aside>
+
+    <div class="sc-body">
+      <nav class="sc-nav" aria-label="Components"><ul id="toc"></ul></nav>
+      <div class="sc-main" data-scheme="light">
+        <div class="sc-scheme" role="group" aria-label="Color scheme">
+          <button type="button" data-scheme-choice="light" aria-pressed="true">Light</button>
+          <button type="button" data-scheme-choice="dark" aria-pressed="false">Dark</button>
+          <button type="button" data-scheme-choice="both" aria-pressed="false">Side by side</button>
+        </div>
+        <div id="components"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc-foot">
+    Mockup for discussion. Points still open:
+    <ul>
+      <li>Attribute and children feeding the same content (a callout's <code>text</code>): the children win, and the console shows a warning. See the last callout.</li>
+      <li>Element and attribute names are full words in kebab-case. <code>uix-row</code>, <code>uix-column</code>, <code>uix-group</code> and <code>uix-status-item</code> are proposals.</li>
+      <li>Density presets change spacing and line height; the font size stays the same.</li>
+      <li id="attr-note"></li>
+      <li><code>corner-shape</code> and themed option lists only work in Chromium-based browsers for now. Icons come from Lucide, loaded whole from a CDN for the mockup only.</li>
+    </ul>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script>
+/* ================= Uix library (mockup): icons ================= */
+
+/**
+ * Icon providers, by prefix: each resolves an icon name to an SVG element, or null.
+ *
+ * @type {Map<string, (name: string) => SVGElement | null>}
+ */
+const uixIconProviders = new Map();
+
+/**
+ * Registers an icon provider under a prefix, as in "lucide:save".
+ *
+ * @param {string} prefix
+ * @param {(name: string) => SVGElement | null} resolve
+ */
+function registerIconProvider(prefix, resolve) {
+  uixIconProviders.set(prefix, resolve);
+}
+
+/**
+ * Creates the inline SVG of an icon reference, or returns null when it cannot be resolved.
+ *
+ * @param {string} reference Icon reference, "provider:name"; the provider defaults to lucide.
+ * @param {string} [position] "start" or "end", when the icon sits next to a label.
+ * @returns {SVGElement | null}
+ */
+function createIcon(reference, position) {
+  const [prefix, name] = reference.includes(':') ? reference.split(':') : ['lucide', reference];
+  const svg = uixIconProviders.get(prefix)?.(name) ?? null;
+  if (!svg) {
+    return null;
+  }
+  for (const attribute of ['class', 'width', 'height']) {
+    svg.removeAttribute(attribute);
+  }
+  svg.setAttribute('data-icon', `${prefix}:${name}`);
+  svg.setAttribute('aria-hidden', 'true');
+  if (position) {
+    svg.setAttribute(`data-${position}`, '');
+  }
+  return svg;
+}
+
+registerIconProvider('lucide', (name) => {
+  const node = window.lucide?.icons?.[name.replace(/(^|-)(\w)/g, (match, dash, letter) => letter.toUpperCase())];
+  return node ? window.lucide.createElement(node) : null;
+});
+
+/* ================= Uix library (mockup): helpers ================= */
+
+/**
+ * Counter for the ids that authoring elements generate.
+ *
+ * @type {number}
+ */
+let uixIdCounter = 0;
+
+/**
+ * Returns a new id, unique in the page.
+ *
+ * @returns {string}
+ */
+function uixId() {
+  uixIdCounter += 1;
+  return `uix-${uixIdCounter}`;
+}
+
+/**
+ * Copies an attribute value, or removes the attribute when the value is null.
+ *
+ * @param {Element} element
+ * @param {string} name
+ * @param {string | null} value
+ */
+function setOrRemove(element, name, value) {
+  if (value === null) {
+    element.removeAttribute(name);
+  } else {
+    element.setAttribute(name, value);
+  }
+}
+
+/**
+ * Reports an authoring mistake in the console, naming the element and how to fix it.
+ *
+ * @param {Element} element
+ * @param {string} message
+ */
+function uixWarn(element, message) {
+  console.warn(`Uix <${element.localName}>: ${message}`, element);
+}
+
+/**
+ * Size attributes.
+ *
+ * @type {string[]}
+ */
+const uixSizeAttributes = ['width', 'height', 'min-width', 'max-width', 'min-height', 'max-height'];
+
+/**
+ * Layout attributes, as a whole.
+ *
+ * @type {string[]}
+ */
+const uixLayoutAttributes = ['grow', 'span', ...uixSizeAttributes, 'align', 'justify', 'gap', 'wrap', 'scroll'];
+
+/**
+ * The layout attributes each layout type accepts.
+ *
+ * @type {Record<string, string[]>}
+ */
+const uixLayoutAccepted = {
+  container: uixLayoutAttributes,
+  item: ['grow', 'span', ...uixSizeAttributes],
+  floating: uixSizeAttributes,
+  inline: [],
+  part: [],
+};
+
+/**
+ * Why a layout attribute has no effect, by layout type; {owner} names the component of a part.
+ *
+ * @type {Record<string, string>}
+ */
+const uixLayoutReasons = {
+  item: 'only containers (rows, columns, toolbars…) arrange children',
+  floating: 'this element floats above the page, anchored to what opens it',
+  inline: 'this element flows in its text, like a word',
+  part: '{owner} lays out this element',
+};
+
+/**
+ * Warns about the layout attributes an element's layout type does not accept.
+ *
+ * @param {Element} element
+ * @param {string} type container, item, floating, inline or part.
+ * @param {string} [owner] For a part, the component that lays it out.
+ * @param {string} [hint] Advice added to the warning.
+ */
+function uixCheckLayout(element, type, owner = '', hint = '') {
+  const accepted = uixLayoutAccepted[type] ?? uixLayoutAttributes;
+  const ignored = uixLayoutAttributes.filter((name) => element.hasAttribute(name) && !accepted.includes(name));
+  if (ignored.length === 0) {
+    return;
+  }
+  const names = ignored.map((name) => `'${name}'`).join(', ');
+  const several = ignored.length > 1;
+  const reason = uixLayoutReasons[type].replace('{owner}', owner);
+  uixWarn(element, `${names} ${several ? 'have' : 'has'} no effect here: ${reason}. Remove ${several ? 'them' : 'it'}.${hint ? ` ${hint}` : ''}`);
+}
+
+/**
+ * Tells whether nodes hold authored content: an element, or text other than whitespace.
+ *
+ * @param {Iterable<Node>} nodes
+ * @returns {boolean}
+ */
+function hasContent(nodes) {
+  return [...nodes].some((node) => node.nodeType === Node.ELEMENT_NODE || node.textContent.trim() !== '');
+}
+
+/* ================= Uix library (mockup): authoring base ================= */
+
+/**
+ * Authoring element: renders its native HTML once, in light DOM, then keeps it in sync with its attributes.
+ * Subclasses implement create() and sync().
+ */
+class UixAuthoring extends HTMLElement {
+  /**
+   * Layout type, which sets who places the element and the layout attributes it accepts: container,
+   * item, floating, inline or part.
+   *
+   * @type {string}
+   */
+  static layout = 'item';
+
+  /**
+   * For a part: the component that lays it out, named in warnings.
+   *
+   * @type {string}
+   */
+  static layoutOwner = '';
+
+  /**
+   * Advice added to the warning about an ignored layout attribute.
+   *
+   * @type {string}
+   */
+  static layoutHint = '';
+
+  /**
+   * Whether the native HTML is in place.
+   *
+   * @type {boolean}
+   */
+  #ready = false;
+
+  connectedCallback() {
+    if (!this.#ready) {
+      this.create();
+      this.#ready = true;
+      const { layout, layoutOwner, layoutHint } = /** @type {typeof UixAuthoring} */ (this.constructor);
+      uixCheckLayout(this, layout, layoutOwner, layoutHint);
+    }
+    for (const name of uixSizeAttributes) {
+      uixCopyLayoutValue(this, name);
+    }
+    this.sync();
+  }
+
+  /**
+   * @param {string} name
+   */
+  attributeChangedCallback(name) {
+    if (uixSizeAttributes.includes(name)) {
+      uixCopyLayoutValue(this, name);
+    } else if (this.#ready) {
+      this.sync();
+    }
+  }
+
+  /**
+   * Builds the native HTML, unless it is already there (rendered by a server, for instance).
+   */
+  create() {
+    //
+  }
+
+  /**
+   * Copies the attributes onto the native HTML.
+   */
+  sync() {
+    //
+  }
+
+  /**
+   * The native control the element produces.
+   *
+   * @returns {HTMLElement | null}
+   */
+  get control() {
+    return null;
+  }
+
+  /**
+   * Gives focus to the native control.
+   *
+   * @param {FocusOptions} [options]
+   */
+  focus(options) {
+    this.control?.focus(options);
+  }
+
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+
+  set disabled(value) {
+    this.toggleAttribute('disabled', Boolean(value));
+  }
+}
+
+/* ================= Uix library (mockup): application and structure ================= */
+
+/**
+ * <uix-app heading="…">: the root; renders the application title as its first-level heading.
+ */
+class UixApp extends UixAuthoring {
+  static observedAttributes = ['heading'];
+
+  static layout = 'container';
+
+  sync() {
+    const text = this.getAttribute('heading');
+    let heading = this.querySelector(':scope > h1[data-heading]');
+    if (!text) {
+      heading?.remove();
+      return;
+    }
+    if (!heading) {
+      heading = document.createElement('h1');
+      heading.setAttribute('data-heading', '');
+      this.prepend(heading);
+    }
+    heading.textContent = text;
+  }
+}
+
+/**
+ * <uix-group label="…">: a framed group of fields; produces a fieldset and its legend, and moves the
+ * authored children into it.
+ */
+class UixGroup extends UixAuthoring {
+  static observedAttributes = ['label', 'disabled'];
+
+  static layout = 'container';
+
+  get fieldset() {
+    return this.querySelector(':scope > fieldset');
+  }
+
+  create() {
+    if (this.fieldset) {
+      return;
+    }
+    const fieldset = document.createElement('fieldset');
+    fieldset.append(document.createElement('legend'), ...this.childNodes);
+    this.append(fieldset);
+  }
+
+  sync() {
+    const fieldset = this.fieldset;
+    fieldset.querySelector(':scope > legend').textContent = this.getAttribute('label') ?? '';
+    fieldset.disabled = this.disabled;
+  }
+}
+
+/**
+ * <uix-status-item text="…">: one piece of information in a status bar.
+ */
+class UixStatusItem extends UixAuthoring {
+  static observedAttributes = ['text'];
+
+  create() {
+    if (!this.querySelector(':scope > span')) {
+      this.append(document.createElement('span'));
+    }
+  }
+
+  sync() {
+    this.querySelector(':scope > span').textContent = this.getAttribute('text') ?? '';
+  }
+}
+
+/**
+ * <uix-separator>: a separator in a toolbar or a menu; produces a hr, whose separator role assistive
+ * technologies know.
+ */
+class UixSeparator extends UixAuthoring {
+  static layout = 'part';
+
+  static layoutOwner = 'the toolbar, row or menu around it';
+
+  create() {
+    if (!this.querySelector(':scope > hr')) {
+      this.append(document.createElement('hr'));
+    }
+  }
+}
+
+/* ================= Uix library (mockup): layout ================= */
+
+/**
+ * Whether CSS reads lengths from attributes itself, with typed attr().
+ *
+ * @type {boolean}
+ */
+const uixNativeAttr = CSS.supports('width', 'attr(x type(<length>))');
+
+/**
+ * Row, column or grid: copies its grid tracks to custom properties, and its sizes too where CSS cannot
+ * read them from the attributes.
+ */
+class UixLayout extends HTMLElement {
+  static observedAttributes = ['width', 'height', 'min-width', 'max-width', 'min-height', 'max-height', 'columns', 'rows'];
+
+  connectedCallback() {
+    for (const name of UixLayout.observedAttributes) {
+      this.#copy(name);
+    }
+  }
+
+  /**
+   * @param {string} name
+   */
+  attributeChangedCallback(name) {
+    this.#copy(name);
+  }
+
+  /**
+   * Copies one attribute to its custom property, or removes the property with the attribute.
+   *
+   * @param {string} name
+   */
+  #copy(name) {
+    uixCopyLayoutValue(this, name);
+  }
+}
+
+/**
+ * Copies a layout attribute to its custom property, or removes the property with the attribute. Sizes
+ * are skipped where CSS reads them from the attributes itself.
+ *
+ * @param {HTMLElement} element
+ * @param {string} name
+ */
+function uixCopyLayoutValue(element, name) {
+  if (uixNativeAttr && uixSizeAttributes.includes(name)) {
+    return;
+  }
+  const value = element.getAttribute(name);
+  if (value === null) {
+    element.style.removeProperty(`--uix-${name}`);
+  } else {
+    element.style.setProperty(`--uix-${name}`, value);
+  }
+}
+
+/**
+ * <uix-row>: places its children side by side.
+ */
+class UixRow extends UixLayout {
+  //
+}
+
+/**
+ * <uix-column>: places its children one under the other.
+ */
+class UixColumn extends UixLayout {
+  //
+}
+
+/**
+ * <uix-grid columns="auto 1fr">: places its children on a grid; fields align their labels on it.
+ */
+class UixGrid extends UixLayout {
+  //
+}
+
+/**
+ * <uix-splitter persist="key">: between two children of a row or a column, lets the user resize the one
+ * with a fixed size (width in a row, height in a column), or else the previous one, with the pointer or the
+ * arrow keys (Shift for larger steps). The new size is written to that child's attribute, and kept in the
+ * browser when persist names a key.
+ */
+class UixSplitter extends HTMLElement {
+  /**
+   * Removes every listener at once when the element leaves the page.
+   *
+   * @type {AbortController | null}
+   */
+  #listeners = null;
+
+  connectedCallback() {
+    uixCheckLayout(this, 'part', 'the row or column around it');
+    this.setAttribute('role', 'separator');
+    this.setAttribute('tabindex', '0');
+    this.setAttribute('aria-orientation', this.#horizontal ? 'vertical' : 'horizontal');
+    const target = this.#target;
+    if (target) {
+      target.id ||= uixId();
+      this.setAttribute('aria-controls', target.id);
+    }
+
+    this.#listeners = new AbortController();
+    const { signal } = this.#listeners;
+    this.addEventListener('pointerdown', (event) => this.#drag(event), { signal });
+    this.addEventListener('keydown', (event) => this.#onKeydown(event), { signal });
+    this.#restore();
+    this.#update();
+  }
+
+  disconnectedCallback() {
+    this.#listeners?.abort();
+  }
+
+  /**
+   * Whether the splitter sits in a row, and so resizes widths.
+   *
+   * @returns {boolean}
+   */
+  get #horizontal() {
+    return this.parentElement?.localName !== 'uix-column';
+  }
+
+  /**
+   * The size attribute the splitter changes.
+   *
+   * @returns {string}
+   */
+  get #axis() {
+    return this.#horizontal ? 'width' : 'height';
+  }
+
+  /**
+   * The neighbor the splitter resizes: the one with a fixed size, or else the previous one.
+   *
+   * @returns {HTMLElement | null}
+   */
+  get #target() {
+    const neighbors = [this.previousElementSibling, this.nextElementSibling];
+    return neighbors.find((neighbor) => neighbor?.hasAttribute(this.#axis)) ?? neighbors[0];
+  }
+
+  /**
+   * Measures an element along the splitter's axis.
+   *
+   * @param {Element} element
+   * @returns {number}
+   */
+  #measure(element) {
+    const box = element.getBoundingClientRect();
+    return this.#horizontal ? box.width : box.height;
+  }
+
+  /**
+   * Tells which way a pointer or key movement changes the target size: 1 or -1.
+   *
+   * @returns {number}
+   */
+  #direction() {
+    const after = this.#target === this.previousElementSibling ? 1 : -1;
+    const mirrored = this.#horizontal && getComputedStyle(this).direction === 'rtl' ? -1 : 1;
+    return after * mirrored;
+  }
+
+  /**
+   * Gives the target a new size, as its bounds allow.
+   *
+   * @param {number} size Size in pixels.
+   */
+  #resize(size) {
+    const target = this.#target;
+    if (!target) {
+      return;
+    }
+    target.setAttribute(this.#axis, `${Math.round(Math.max(size, 0))}px`);
+    target.setAttribute(this.#axis, `${Math.round(this.#measure(target))}px`);
+    this.#update();
+    this.#save();
+  }
+
+  /**
+   * Starts a resize with the pointer.
+   *
+   * @param {PointerEvent} event
+   */
+  #drag(event) {
+    const target = this.#target;
+    if (!target || event.button !== 0) {
+      return;
+    }
+    event.preventDefault();
+    this.focus();
+    const position = (moveEvent) => (this.#horizontal ? moveEvent.clientX : moveEvent.clientY);
+    const start = position(event);
+    const startSize = this.#measure(target);
+    const direction = this.#direction();
+    const move = (moveEvent) => this.#resize(startSize + direction * (position(moveEvent) - start));
+    const end = () => {
+      this.removeEventListener('pointermove', move);
+      this.removeEventListener('pointerup', end);
+      this.removeEventListener('pointercancel', end);
+      this.removeAttribute('data-dragging');
+    };
+    this.setPointerCapture(event.pointerId);
+    this.setAttribute('data-dragging', '');
+    this.addEventListener('pointermove', move);
+    this.addEventListener('pointerup', end);
+    this.addEventListener('pointercancel', end);
+  }
+
+  /**
+   * Resizes with the arrow keys of the splitter's axis.
+   *
+   * @param {KeyboardEvent} event
+   */
+  #onKeydown(event) {
+    const keys = this.#horizontal ? ['ArrowLeft', 'ArrowRight'] : ['ArrowUp', 'ArrowDown'];
+    const target = this.#target;
+    if (!target || !keys.includes(event.key)) {
+      return;
+    }
+    event.preventDefault();
+    const step = parseFloat(getComputedStyle(this).fontSize) * (event.shiftKey ? 5 : 1);
+    const sign = event.key === keys[1] ? 1 : -1;
+    this.#resize(this.#measure(target) + sign * step * this.#direction());
+  }
+
+  /**
+   * Tells assistive technologies the current size.
+   */
+  #update() {
+    const target = this.#target;
+    if (target) {
+      this.setAttribute('aria-valuenow', String(Math.round(this.#measure(target))));
+    }
+  }
+
+  /**
+   * Keeps the size in the browser, under the persist key.
+   */
+  #save() {
+    const key = this.getAttribute('persist');
+    if (!key) {
+      return;
+    }
+    try {
+      localStorage.setItem(`uix-splitter:${key}`, this.#target.getAttribute(this.#axis));
+    } catch {
+      // Storage unavailable: the size is not kept.
+    }
+  }
+
+  /**
+   * Restores the size kept under the persist key.
+   */
+  #restore() {
+    const key = this.getAttribute('persist');
+    if (!key) {
+      return;
+    }
+    try {
+      const size = localStorage.getItem(`uix-splitter:${key}`);
+      if (size) {
+        this.#target?.setAttribute(this.#axis, size);
+      }
+    } catch {
+      // Storage unavailable: the authored size stays.
+    }
+  }
+}
+
+/* ================= Uix library (mockup): controls ================= */
+
+/**
+ * <uix-button label="Save" variant="primary" start-icon="lucide:save">: produces a native button. A
+ * <uix-menu> child becomes the popover the button opens.
+ */
+class UixButton extends UixAuthoring {
+  static observedAttributes = ['label', 'type', 'disabled', 'variant', 'size', 'start-icon', 'end-icon', 'icon-only'];
+
+  get control() {
+    return this.querySelector(':scope > button');
+  }
+
+  create() {
+    if (this.control) {
+      return;
+    }
+    const button = document.createElement('button');
+    const menu = this.querySelector(':scope > uix-menu');
+    if (menu) {
+      menu.id ||= uixId();
+      menu.setAttribute('popover', '');
+      button.setAttribute('popovertarget', menu.id);
+      button.setAttribute('aria-haspopup', 'menu');
+    }
+    this.prepend(button);
+  }
+
+  sync() {
+    const button = this.control;
+    const label = this.getAttribute('label') ?? '';
+    const iconOnly = this.hasAttribute('icon-only');
+    const start = this.getAttribute('start-icon');
+    const end = this.getAttribute('end-icon');
+
+    button.replaceChildren(...[
+      start && createIcon(start, 'start'),
+      iconOnly ? null : document.createTextNode(label),
+      end && createIcon(end, 'end'),
+    ].filter(Boolean));
+    button.toggleAttribute('data-icon-only', iconOnly);
+    setOrRemove(button, 'aria-label', iconOnly ? label : null);
+    setOrRemove(button, 'title', iconOnly ? label : null);
+    setOrRemove(button, 'data-variant', this.getAttribute('variant'));
+    setOrRemove(button, 'data-size', this.getAttribute('size'));
+    button.type = this.getAttribute('type') ?? 'button';
+    button.disabled = this.disabled;
+  }
+}
+
+/**
+ * <uix-link label="…" href="…">: produces a native link.
+ */
+class UixLink extends UixAuthoring {
+  static observedAttributes = ['label', 'href', 'target'];
+
+  static layout = 'inline';
+
+  static layoutHint = 'To push it to the end of a row, put a <uix-spacer> before it.';
+
+  get control() {
+    return this.querySelector(':scope > a');
+  }
+
+  create() {
+    if (!this.control) {
+      this.append(document.createElement('a'));
+    }
+  }
+
+  sync() {
+    const link = this.control;
+    link.textContent = this.getAttribute('label') ?? '';
+    setOrRemove(link, 'href', this.getAttribute('href'));
+    setOrRemove(link, 'target', this.getAttribute('target'));
+  }
+}
+
+/**
+ * <uix-input label="Name" hint="…" error="…">: produces a label wrapping a native input, and the hint or
+ * error message linked to it.
+ */
+class UixInput extends UixAuthoring {
+  static observedAttributes = ['label', 'name', 'type', 'value', 'placeholder', 'hint', 'error', 'disabled', 'required'];
+
+  /**
+   * Id of the hint or error message.
+   *
+   * @type {string}
+   */
+  #messageId = uixId();
+
+  get control() {
+    return this.querySelector(':scope > label > input');
+  }
+
+  create() {
+    if (this.control) {
+      return;
+    }
+    const label = document.createElement('label');
+    label.append(document.createTextNode(''), document.createElement('input'));
+    this.append(label);
+  }
+
+  sync() {
+    const input = this.control;
+    input.parentElement.firstChild.nodeValue = `${this.getAttribute('label') ?? ''} `;
+    for (const name of ['name', 'type', 'value', 'placeholder']) {
+      setOrRemove(input, name, this.getAttribute(name));
+    }
+    input.disabled = this.disabled;
+    input.required = this.hasAttribute('required');
+
+    const message = this.getAttribute('error') ?? this.getAttribute('hint');
+    let small = this.querySelector(':scope > small');
+    if (message) {
+      small ??= this.appendChild(document.createElement('small'));
+      small.id = this.#messageId;
+      small.textContent = message;
+    } else {
+      small?.remove();
+    }
+    setOrRemove(input, 'aria-describedby', message ? this.#messageId : null);
+    setOrRemove(input, 'aria-invalid', this.hasAttribute('error') ? 'true' : null);
+  }
+
+  get value() {
+    return this.control?.value ?? '';
+  }
+
+  set value(value) {
+    if (this.control) {
+      this.control.value = value;
+    }
+  }
+}
+
+/**
+ * One option of a list, as data.
+ *
+ * @typedef {object} UixOptionData
+ * @property {string} [value] Submitted value; the label when absent.
+ * @property {string} [label] Shown text; the value when absent.
+ * @property {boolean} [selected]
+ * @property {boolean} [disabled]
+ * @property {UixOptionData[]} [options] Present on a group, whose label is then the group name.
+ */
+
+/**
+ * <uix-select label="Plan"><uix-option label="…"></uix-option></uix-select>: produces a label wrapping a
+ * native select. The <uix-option> and <uix-option-group> children are read once, then removed; the options
+ * property, for programmatic use, replaces the list with data.
+ */
+class UixSelect extends UixAuthoring {
+  static observedAttributes = ['label', 'name', 'disabled', 'required'];
+
+  get control() {
+    return this.querySelector(':scope > label > select');
+  }
+
+  create() {
+    if (this.control) {
+      return;
+    }
+    const data = UixSelect.#read(this);
+    this.querySelectorAll(':scope > :is(uix-option, uix-option-group)').forEach((source) => source.remove());
+    const label = document.createElement('label');
+    const select = document.createElement('select');
+    label.append(document.createTextNode(''), select);
+    this.append(label);
+    this.options = data;
+  }
+
+  sync() {
+    const select = this.control;
+    select.parentElement.firstChild.nodeValue = `${this.getAttribute('label') ?? ''} `;
+    setOrRemove(select, 'name', this.getAttribute('name'));
+    select.disabled = this.disabled;
+    select.required = this.hasAttribute('required');
+  }
+
+  /**
+   * Reads the authored option elements as data.
+   *
+   * @param {Element} parent
+   * @returns {UixOptionData[]}
+   */
+  static #read(parent) {
+    return [...parent.querySelectorAll(':scope > :is(uix-option, uix-option-group)')].map((source) => (
+      source.localName === 'uix-option-group'
+        ? { label: source.getAttribute('label') ?? '', options: UixSelect.#read(source) }
+        : {
+          value: source.getAttribute('value') ?? undefined,
+          label: source.getAttribute('label') ?? undefined,
+          selected: source.hasAttribute('selected'),
+          disabled: source.hasAttribute('disabled'),
+        }
+    ));
+  }
+
+  /**
+   * Builds native options and groups from data.
+   *
+   * @param {UixOptionData[]} data
+   * @returns {Array<HTMLOptionElement | HTMLOptGroupElement>}
+   */
+  static #build(data) {
+    return data.map((item) => {
+      if (item.options) {
+        const group = document.createElement('optgroup');
+        group.label = item.label ?? '';
+        group.append(...UixSelect.#build(item.options));
+        return group;
+      }
+      const label = item.label ?? item.value ?? '';
+      const option = new Option(label, item.value ?? label, Boolean(item.selected), Boolean(item.selected));
+      option.disabled = Boolean(item.disabled);
+      return option;
+    });
+  }
+
+  /**
+   * @param {UixOptionData[]} data
+   */
+  set options(data) {
+    this.control?.replaceChildren(...UixSelect.#build(data));
+  }
+
+  get value() {
+    return this.control?.value ?? '';
+  }
+
+  set value(value) {
+    if (this.control) {
+      this.control.value = value;
+    }
+  }
+}
+
+/**
+ * <uix-checkbox label="…" checked>: produces a label wrapping a native checkbox.
+ */
+class UixCheckbox extends UixAuthoring {
+  static observedAttributes = ['label', 'name', 'value', 'checked', 'disabled'];
+
+  /**
+   * Type of the native input.
+   *
+   * @type {string}
+   */
+  static inputType = 'checkbox';
+
+  get control() {
+    return this.querySelector(':scope > label > input');
+  }
+
+  create() {
+    if (this.control) {
+      return;
+    }
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = this.constructor.inputType;
+    label.append(input, document.createTextNode(''));
+    this.append(label);
+  }
+
+  sync() {
+    const input = this.control;
+    input.nextSibling.nodeValue = ` ${this.getAttribute('label') ?? ''}`;
+    setOrRemove(input, 'name', this.getAttribute('name') ?? this.closest('uix-radio-group')?.getAttribute('name') ?? null);
+    setOrRemove(input, 'value', this.getAttribute('value'));
+    input.toggleAttribute('checked', this.hasAttribute('checked'));
+    input.disabled = this.disabled;
+  }
+
+  get checked() {
+    return this.control?.checked ?? false;
+  }
+
+  set checked(value) {
+    if (this.control) {
+      this.control.checked = Boolean(value);
+    }
+  }
+}
+
+/**
+ * <uix-radio label="…" value="…">: one choice of a <uix-radio-group>, whose name it takes.
+ */
+class UixRadio extends UixCheckbox {
+  static inputType = 'radio';
+
+  static layout = 'part';
+
+  static layoutOwner = 'its <uix-radio-group>';
+}
+
+/**
+ * <uix-radio-group label="…" name="…">: a group of exclusive choices; produces a fieldset whose legend is
+ * the group label.
+ */
+class UixRadioGroup extends UixGroup {
+  static observedAttributes = ['label', 'name', 'disabled'];
+
+  sync() {
+    super.sync();
+    const name = this.getAttribute('name');
+    this.querySelectorAll('input[type="radio"]').forEach((input) => setOrRemove(input, 'name', name));
+  }
+}
+
+/* ================= Uix library (mockup): components ================= */
+
+/**
+ * <uix-callout tone="success" heading="…" text="…" dismissible>: produces a message box with an icon, a
+ * heading, a text and an optional dismiss button. Children are rich content that takes the place of the
+ * text attribute; when both are given, the children win and a warning is logged. Dismissing dispatches a
+ * cancelable "uix-dismiss" event, then removes the callout.
+ */
+class UixCallout extends UixAuthoring {
+  static observedAttributes = ['tone', 'heading', 'text', 'icon', 'dismissible'];
+
+  /**
+   * Icon shown for each tone when the icon attribute is absent.
+   *
+   * @type {Record<string, string>}
+   */
+  static defaultIcons = {
+    info: 'lucide:info',
+    success: 'lucide:circle-check',
+    warning: 'lucide:triangle-alert',
+    danger: 'lucide:circle-x',
+  };
+
+  /**
+   * Whether the callout was authored with rich content.
+   *
+   * @type {boolean}
+   */
+  #rich = false;
+
+  get control() {
+    return this.querySelector(':scope > button[data-dismiss]');
+  }
+
+  create() {
+    if (this.querySelector(':scope > [data-body]')) {
+      return;
+    }
+    this.#rich = hasContent(this.childNodes);
+    const body = document.createElement('div');
+    body.setAttribute('data-body', '');
+    body.append(...this.childNodes);
+    this.append(body);
+  }
+
+  sync() {
+    const tone = this.getAttribute('tone') ?? 'info';
+    const body = this.querySelector(':scope > [data-body]');
+
+    this.querySelector(':scope > svg[data-icon]')?.remove();
+    const reference = this.getAttribute('icon') ?? UixCallout.defaultIcons[tone] ?? UixCallout.defaultIcons.info;
+    const icon = reference === 'none' ? null : createIcon(reference);
+    if (icon) {
+      this.prepend(icon);
+    }
+
+    for (const generated of body.querySelectorAll(':scope > :is([data-heading], [data-text])')) {
+      generated.remove();
+    }
+    const text = this.getAttribute('text');
+    if (text && this.#rich) {
+      uixWarn(this, 'both the \'text\' attribute and child content are given. The child content is shown and \'text\' is ignored: remove one of them.');
+    } else if (text) {
+      const paragraph = document.createElement('p');
+      paragraph.setAttribute('data-text', '');
+      paragraph.textContent = text;
+      body.prepend(paragraph);
+    }
+    const heading = this.getAttribute('heading');
+    if (heading) {
+      const strong = document.createElement('strong');
+      strong.setAttribute('data-heading', '');
+      strong.textContent = heading;
+      body.prepend(strong);
+    }
+
+    this.control?.remove();
+    if (this.hasAttribute('dismissible')) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('data-variant', 'ghost');
+      button.setAttribute('data-icon-only', '');
+      button.setAttribute('data-dismiss', '');
+      button.setAttribute('aria-label', 'Dismiss');
+      button.title = 'Dismiss';
+      button.append(createIcon('lucide:x') ?? document.createTextNode('×'));
+      button.addEventListener('click', () => {
+        if (this.dispatchEvent(new CustomEvent('uix-dismiss', { bubbles: true, cancelable: true }))) {
+          this.remove();
+        }
+      });
+      this.append(button);
+    }
+  }
+}
+
+/**
+ * <uix-panel text="…" tone="info">: a framed area holding a short text, or rich children, which win over
+ * text.
+ */
+class UixPanel extends UixAuthoring {
+  static observedAttributes = ['text'];
+
+  /**
+   * Whether the panel was authored with rich content.
+   *
+   * @type {boolean}
+   */
+  #rich = false;
+
+  create() {
+    if (this.querySelector(':scope > [data-text]')) {
+      return;
+    }
+    this.#rich = hasContent(this.childNodes);
+    if (!this.#rich) {
+      const text = document.createElement('span');
+      text.setAttribute('data-text', '');
+      this.append(text);
+    }
+  }
+
+  sync() {
+    const text = this.getAttribute('text');
+    if (this.#rich) {
+      if (text !== null) {
+        uixWarn(this, 'both the \'text\' attribute and child content are given. The child content is shown and \'text\' is ignored: remove one of them.');
+      }
+      return;
+    }
+    this.querySelector(':scope > [data-text]').textContent = text ?? '';
+  }
+}
+
+/**
+ * <uix-menu-item label="…" icon="…" shortcut="…" variant="danger">: one command of a menu; produces a
+ * button with the menuitem role.
+ */
+class UixMenuItem extends UixAuthoring {
+  static observedAttributes = ['label', 'icon', 'shortcut', 'variant', 'disabled'];
+
+  static layout = 'part';
+
+  static layoutOwner = 'its <uix-menu>';
+
+  static layoutHint = 'To size the menu, put the attribute on the <uix-menu>.';
+
+  get control() {
+    return this.querySelector(':scope > button');
+  }
+
+  create() {
+    if (!this.control) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('role', 'menuitem');
+      this.append(button);
+    }
+  }
+
+  sync() {
+    const button = this.control;
+    const icon = this.getAttribute('icon');
+    const shortcut = this.getAttribute('shortcut');
+    let kbd = null;
+    if (shortcut) {
+      kbd = document.createElement('kbd');
+      kbd.textContent = shortcut;
+    }
+    button.replaceChildren(...[
+      icon && createIcon(icon, 'start'),
+      document.createTextNode(this.getAttribute('label') ?? ''),
+      kbd,
+    ].filter(Boolean));
+    setOrRemove(button, 'aria-keyshortcuts', shortcut ? shortcut.replace(/\s+/g, '+') : null);
+    setOrRemove(button, 'data-variant', this.getAttribute('variant'));
+    button.disabled = this.disabled;
+  }
+}
+
+/**
+ * <uix-menu>: a list of <uix-menu-item>; inside a <uix-button>, the popover that button opens. Adds the ARIA
+ * menu keyboard pattern.
+ */
+class UixMenu extends HTMLElement {
+  /**
+   * Removes every listener at once when the element leaves the page.
+   *
+   * @type {AbortController | null}
+   */
+  #listeners = null;
+
+  connectedCallback() {
+    uixCheckLayout(this, 'floating');
+    for (const name of uixSizeAttributes) {
+      uixCopyLayoutValue(this, name);
+    }
+    this.setAttribute('role', 'menu');
+    this.#listeners = new AbortController();
+    const { signal } = this.#listeners;
+
+    this.addEventListener('beforetoggle', (event) => {
+      if (event.newState === 'open' && this.id) {
+        this.#anchor();
+      }
+    }, { signal });
+    this.addEventListener('toggle', (event) => {
+      if (event.newState === 'open') {
+        this.#items()[0]?.focus();
+      }
+    }, { signal });
+    this.addEventListener('keydown', (event) => this.#onKeydown(event), { signal });
+    this.addEventListener('click', (event) => {
+      const item = event.target instanceof Element ? event.target.closest('button[role="menuitem"]') : null;
+      if (this.popover && item && this.contains(item)) {
+        this.hidePopover();
+      }
+    }, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#listeners?.abort();
+  }
+
+  /**
+   * Anchors the popover to the button that opens it.
+   */
+  #anchor() {
+    const invoker = document.querySelector(`button:is([popovertarget="${this.id}"], [commandfor="${this.id}"])`);
+    if (!invoker) {
+      return;
+    }
+    const name = `--uix-anchor-${this.id}`;
+    invoker.style.setProperty('anchor-name', name);
+    this.style.setProperty('position-anchor', name);
+  }
+
+  /**
+   * Lists the items that can receive focus.
+   *
+   * @returns {HTMLElement[]}
+   */
+  #items() {
+    return [...this.querySelectorAll('button[role="menuitem"]:not(:disabled)')];
+  }
+
+  /**
+   * Moves focus between items with the arrow, Home and End keys.
+   *
+   * @param {KeyboardEvent} event
+   */
+  #onKeydown(event) {
+    const items = this.#items();
+    const index = items.indexOf(document.activeElement);
+    const target = {
+      ArrowDown: items[(index + 1) % items.length],
+      ArrowUp: items.at(Math.max(index, 0) - 1),
+      Home: items[0],
+      End: items.at(-1),
+    }[event.key];
+
+    if (target) {
+      event.preventDefault();
+      target.focus();
+    }
+  }
+}
+
+for (const [name, constructor] of [
+  ['uix-app', UixApp],
+  ['uix-group', UixGroup],
+  ['uix-status-item', UixStatusItem],
+  ['uix-separator', UixSeparator],
+  ['uix-button', UixButton],
+  ['uix-link', UixLink],
+  ['uix-input', UixInput],
+  ['uix-select', UixSelect],
+  ['uix-checkbox', UixCheckbox],
+  ['uix-radio', UixRadio],
+  ['uix-radio-group', UixRadioGroup],
+  ['uix-callout', UixCallout],
+  ['uix-panel', UixPanel],
+  ['uix-menu-item', UixMenuItem],
+  ['uix-menu', UixMenu],
+  ['uix-row', UixRow],
+  ['uix-column', UixColumn],
+  ['uix-grid', UixGrid],
+  ['uix-splitter', UixSplitter],
+]) {
+  /* Elements with a box follow changes to their size attributes. */
+  if (constructor.prototype instanceof UixAuthoring && ['container', 'item'].includes(constructor.layout)) {
+    constructor.observedAttributes = [...new Set([...(constructor.observedAttributes ?? []), ...uixSizeAttributes])];
+  }
+  if (!customElements.get(name)) {
+    customElements.define(name, constructor);
+  }
+}
+
+/* ================= Showcase: components ================= */
+
+const projectItems = `
+  <uix-menu-item label="Rename" icon="lucide:pencil" shortcut="F2"></uix-menu-item>
+  <uix-menu-item label="Duplicate" icon="lucide:copy" shortcut="Ctrl D"></uix-menu-item>
+  <uix-menu-item label="Move to archive" icon="lucide:archive"></uix-menu-item>
+  <uix-menu-item label="Share" icon="lucide:share-2" disabled></uix-menu-item>
+  <uix-separator></uix-separator>
+  <uix-menu-item label="Delete project" icon="lucide:trash-2" variant="danger"></uix-menu-item>`;
+
+/**
+ * Builds the markup of a row or column of buttons, for the layout demos.
+ *
+ * @param {string} tag uix-row or uix-column.
+ * @param {string} attributes Attributes of the row or column, with a leading space.
+ * @param {string[]} labels Button labels; the last one is the primary button.
+ * @returns {string}
+ */
+function buttons(tag, attributes, labels) {
+  const items = labels.map((label, index) => `  <uix-button label="${label}"${index === labels.length - 1 ? ' variant="primary"' : ''}></uix-button>`);
+  return `<${tag}${attributes}>\n${items.join('\n')}\n</${tag}>`;
+}
+
+/*
+ * Each component: id, title, tag(s), description, attributes, and rows(p) returning
+ * [state, stacked, items]; an item is [caption, html] or [caption, html, script], the script receiving
+ * the first <uix-select> of the item as "select". p prefixes the names that must differ between panels.
+ */
+/**
+ * A placeholder for any content: a panel, toned by its label.
+ *
+ * @param {string} label
+ * @param {string} [attributes] With a leading space.
+ * @returns {string}
+ */
+function block(label, attributes = '') {
+  const tones = ['info', 'success', 'warning', 'danger'];
+  const sum = [...label].reduce((total, character) => total + character.charCodeAt(0), 0);
+  const tone = attributes.includes('tone=') ? '' : ` tone="${tones[(sum + 3) % 4]}"`;
+  return `<uix-panel text="${label}"${tone}${attributes}></uix-panel>`;
+}
+
+/**
+ * A layout container and its children, indented.
+ *
+ * @param {string} tag
+ * @param {string} attributes With a leading space.
+ * @param {string[]} items Markup of each child.
+ * @returns {string}
+ */
+function box(tag, attributes, items) {
+  return `<${tag}${attributes}>\n${items.map((item) => item.replace(/^/gm, '  ')).join('\n')}\n</${tag}>`;
+}
+
+/**
+ * Blocks lettered from A.
+ *
+ * @param {number} count
+ * @returns {string[]}
+ */
+function many(count) {
+  return Array.from({ length: count }, (_, index) => block(String.fromCharCode(65 + index)));
+}
+
+const abc = many(3);
+const spacer = '<uix-spacer></uix-spacer>';
+const tall = [block('A'), block('B', ' height="3lh"'), block('C', ' height="5lh"')];
+const wide = [block('A'), block('Wider'), block('The widest block')];
+/**
+ * The nine placements of two blocks in a container larger than they are.
+ *
+ * @param {string} tag uix-row or uix-column.
+ * @param {string[]} items
+ * @returns {Array<[string, string]>}
+ */
+function placements(tag, items) {
+  const values = ['start', 'center', 'end'];
+  return values.flatMap((align) => values.map((justify) => [
+    `justify="${justify}" align="${align}"`,
+    box(tag, ` width="24ch" height="9lh" justify="${justify}" align="${align}"`, items),
+  ]));
+}
+
+const lettered = [
+  '<uix-button label="Small" size="small"></uix-button>',
+  block('Text at the top', ' height="5lh"'),
+  '<uix-button label="Large" size="large"></uix-button>',
+];
+
+const components = [
+  {
+    id: 'app',
+    title: 'Application',
+    tags: 'uix-app',
+    text: 'A complete application in a fixed-size window. The middle row takes the height left by the toolbar and the status bar. The side panels have a size, bounds and a splitter that remembers the size; the main column grows. Its content scrolls, while its buttons stay at the bottom. Forms align their labels with a grid; in the invitation row, the email field grows by default and the role list opts out.',
+    attrs: 'uix-app: heading · uix-row / uix-column: width · min-width · max-width · grow · scroll · uix-splitter: persist · uix-grid: columns',
+    wide: true,
+    rows: (p) => [
+      ['Application', true, [['uix-app heading="…"', `<uix-app heading="Northwind">
+  <uix-toolbar>
+    <uix-button label="New project" variant="primary" start-icon="lucide:plus"></uix-button>
+    <uix-button label="Import" start-icon="lucide:upload"></uix-button>
+    <uix-separator></uix-separator>
+    <uix-button label="More" end-icon="lucide:chevron-down">
+      <uix-menu>
+        <uix-menu-item label="Export settings" icon="lucide:download"></uix-menu-item>
+        <uix-menu-item label="Import settings" icon="lucide:upload"></uix-menu-item>
+        <uix-separator></uix-separator>
+        <uix-menu-item label="Reset to defaults" variant="danger"></uix-menu-item>
+      </uix-menu>
+    </uix-button>
+    <uix-spacer></uix-spacer>
+    <uix-button label="Help" variant="ghost" icon-only start-icon="lucide:circle-help"></uix-button>
+    <uix-button label="Settings" variant="ghost" icon-only start-icon="lucide:settings"></uix-button>
+  </uix-toolbar>
+  <uix-row align="stretch" grow>
+    <uix-column width="26ch" min-width="16ch" max-width="44ch" align="start" gap="small" scroll>
+      <uix-button label="Overview" variant="ghost" start-icon="lucide:layout-dashboard"></uix-button>
+      <uix-button label="Projects" variant="ghost" start-icon="lucide:folder"></uix-button>
+      <uix-button label="Members" variant="ghost" start-icon="lucide:users"></uix-button>
+      <uix-button label="Billing" variant="ghost" start-icon="lucide:credit-card"></uix-button>
+      <uix-button label="Integrations" variant="ghost" start-icon="lucide:plug"></uix-button>
+      <uix-button label="Security" variant="ghost" start-icon="lucide:shield"></uix-button>
+      <uix-button label="Audit log" variant="ghost" start-icon="lucide:scroll-text"></uix-button>
+    </uix-column>
+    <uix-splitter persist="${p}northwind-navigation"></uix-splitter>
+    <uix-column grow>
+      <uix-column grow scroll>
+        <uix-callout tone="warning" heading="Storage almost full"
+                     text="Northwind Studio uses 46 GB of its 50 GB." dismissible></uix-callout>
+        <uix-group label="Workspace">
+          <uix-grid columns="auto minmax(0, 56ch)">
+            <uix-input label="Name" name="name" value="Northwind Studio"></uix-input>
+            <uix-input label="Address" name="address" value="northwind.app.example"
+                       hint="Changing it breaks the links already shared."></uix-input>
+            <uix-select label="Plan" name="plan">
+              <uix-option label="Team"></uix-option>
+              <uix-option label="Business" selected></uix-option>
+              <uix-option label="Enterprise"></uix-option>
+            </uix-select>
+            <uix-select label="Region" name="region">
+              <uix-option-group label="Europe">
+                <uix-option label="Paris" value="eu-west"></uix-option>
+                <uix-option label="Frankfurt" value="eu-central" selected></uix-option>
+              </uix-option-group>
+              <uix-option-group label="Americas">
+                <uix-option label="Virginia" value="us-east"></uix-option>
+              </uix-option-group>
+            </uix-select>
+          </uix-grid>
+        </uix-group>
+        <uix-group label="Billing">
+          <uix-grid columns="auto minmax(0, 56ch)">
+            <uix-input label="Billing email" name="billing-email" type="email" value="billing@northwind"
+                       error="Enter a full address, like billing@northwind.com."></uix-input>
+            <uix-radio-group label="Billing period" name="${p}period">
+              <uix-radio label="Monthly" value="monthly" checked></uix-radio>
+              <uix-radio label="Yearly (2 months free)" value="yearly"></uix-radio>
+            </uix-radio-group>
+            <uix-checkbox label="Send invoices to the billing email" name="send-invoices" checked></uix-checkbox>
+          </uix-grid>
+        </uix-group>
+        <uix-group label="Invite members">
+          <uix-row align="end" wrap>
+            <uix-input label="Email" name="invite-email" type="email" placeholder="name@company.com"></uix-input>
+            <uix-select label="Role" name="invite-role" grow="0">
+              <uix-option label="Member"></uix-option>
+              <uix-option label="Admin"></uix-option>
+              <uix-option label="Guest"></uix-option>
+            </uix-select>
+            <uix-button label="Invite" start-icon="lucide:user-plus"></uix-button>
+          </uix-row>
+        </uix-group>
+      </uix-column>
+      <uix-row justify="end">
+        <uix-button label="Cancel"></uix-button>
+        <uix-button label="Save" variant="primary" start-icon="lucide:save"></uix-button>
+      </uix-row>
+    </uix-column>
+    <uix-splitter persist="${p}northwind-help"></uix-splitter>
+    <uix-column width="34ch" min-width="24ch" max-width="56ch">
+      <uix-prose>
+        <h3>Workspace settings</h3>
+        <p>The <strong>address</strong> is the start of every link to Northwind Studio. Change it only before sharing links.</p>
+        <p>The <strong>region</strong> sets where your files are stored. Moving them to another region takes up to a day.</p>
+        <ul>
+          <li>Invoices go to the billing email.</li>
+          <li>Admins can change these settings.</li>
+        </ul>
+      </uix-prose>
+    </uix-column>
+  </uix-row>
+  <uix-status-bar>
+    <uix-status-item text="Saved 2 minutes ago"></uix-status-item>
+    <uix-spacer></uix-spacer>
+    <uix-status-item text="12 members · 46 GB of 50 GB"></uix-status-item>
+  </uix-status-bar>
+</uix-app>`]]],
+    ],
+  },
+  {
+    id: 'row',
+    title: 'Row',
+    tags: 'uix-row · uix-spacer',
+    text: 'A row places its children side by side. justify places them along the row, horizontally; align across it, vertically; gap sets the space between them; wrap lets them flow onto more lines; grow, on a child, gives it a share of the free space. Colored panels (uix-panel) stand for any content; the shaded area is the row.',
+    attrs: 'justify: start | center | end | space-between · align: start | center | end | stretch | baseline · gap: none | small | large · wrap · grow (on a child): 1 | 0 | 2 | 3',
+    rows: () => [
+      ['justify: horizontal', true, [
+        ['(justify="start")', box('uix-row', '', abc)],
+        ['justify="center"', box('uix-row', ' justify="center"', abc)],
+        ['justify="end"', box('uix-row', ' justify="end"', abc)],
+        ['justify="space-between"', box('uix-row', ' justify="space-between"', abc)],
+      ]],
+      ['uix-spacer', true, [
+        ['one spacer: what follows goes to the end', box('uix-row', '', [block('A'), block('B'), spacer, block('C')])],
+        ['two spacers share the free space', box('uix-row', '', [block('A'), spacer, block('B'), spacer, block('C')])],
+      ]],
+      ['align: vertical', false, [
+        ['(align="center")', box('uix-row', '', tall)],
+        ['align="start"', box('uix-row', ' align="start"', tall)],
+        ['align="end"', box('uix-row', ' align="end"', tall)],
+        ['align="stretch"', box('uix-row', ' align="stretch"', tall)],
+      ]],
+      ['justify × align: a row larger than its content', false, placements('uix-row', [block('A'), block('B', ' height="3lh"')])],
+      ['align="baseline": the texts share one line', false, [
+        ['(align="center")', box('uix-row', '', lettered)],
+        ['align="baseline"', box('uix-row', ' align="baseline"', lettered)],
+      ]],
+      ['gap', false, [
+        ['gap="none"', box('uix-row', ' gap="none"', abc)],
+        ['gap="small"', box('uix-row', ' gap="small"', abc)],
+        ['(default gap)', box('uix-row', '', abc)],
+        ['gap="large"', box('uix-row', ' gap="large"', abc)],
+      ]],
+      ['wrap', true, [
+        ['width="30ch", no wrap: the row widens, since its content cannot wrap', box('uix-row', ' width="30ch"', many(7))],
+        ['width="30ch" wrap: the blocks flow onto more lines', box('uix-row', ' width="30ch" wrap', many(7))],
+      ]],
+      ['grow: shares of the free space', true, [
+        ['grow on one child', box('uix-row', '', [block('grow', ' grow'), block('B'), block('C')])],
+        ['grow on each child: equal shares, whatever their content', box('uix-row', '', [block('grow', ' grow tone="info"'), block('grow · longer content', ' grow tone="success"'), block('grow', ' grow tone="warning"')])],
+        ['grow · grow="2" · grow="3"', box('uix-row', '', [block('grow', ' grow'), block('grow 2', ' grow="2"'), block('grow 3', ' grow="3"')])],
+      ]],
+      ['Nesting', true, [
+        ['uix-row > uix-column: three columns side by side, each placing its own blocks', box('uix-row', ' align="start"', [
+          box('uix-column', '', [block('A'), block('B')]),
+          box('uix-column', ' grow align="center"', [block('C'), block('Wider D')]),
+          box('uix-column', ' align="end"', [block('E'), block('Wider F')]),
+        ])],
+        ['uix-row > uix-column > uix-row: a side column and a main column holding rows', box('uix-row', ' align="stretch" height="14lh"', [
+          box('uix-column', ' width="16ch"', [block('Nav'), block('Nav'), spacer, block('Nav')]),
+          box('uix-column', ' grow', [
+            box('uix-row', ' justify="space-between"', [block('Title'), block('Action')]),
+            block('Content', ' grow'),
+            box('uix-row', ' justify="end"', [block('Cancel'), block('Save')]),
+          ]),
+        ])],
+      ]],
+    ],
+  },
+  {
+    id: 'column',
+    title: 'Column',
+    tags: 'uix-column · uix-spacer',
+    text: 'A column places its children one under the other. justify places them along the column, vertically; align across it, horizontally (baseline is for rows and grids); gap, wrap and grow work as in a row. justify and vertical grow show only when the column is taller than its content: a written height, grow in a parent column, or a row that stretches it.',
+    attrs: 'justify: start | center | end | space-between · align: start | center | end | stretch · gap: none | small | large · wrap · grow (on a child): 1 | 0 | 2 | 3',
+    rows: () => [
+      ['justify: vertical', false, [
+        ['height="12lh" (justify="start")', box('uix-column', ' width="14ch" height="12lh"', abc)],
+        ['justify="center"', box('uix-column', ' width="14ch" height="12lh" justify="center"', abc)],
+        ['justify="end"', box('uix-column', ' width="14ch" height="12lh" justify="end"', abc)],
+        ['justify="space-between"', box('uix-column', ' width="14ch" height="12lh" justify="space-between"', abc)],
+        ['uix-spacer', box('uix-column', ' width="14ch" height="12lh"', [block('A'), block('B'), spacer, block('C')])],
+      ]],
+      ['align: horizontal', false, [
+        ['(align="stretch")', box('uix-column', '', wide)],
+        ['align="start"', box('uix-column', ' align="start"', wide)],
+        ['align="center"', box('uix-column', ' align="center"', wide)],
+        ['align="end"', box('uix-column', ' align="end"', wide)],
+      ]],
+      ['justify × align: a column larger than its content', false, placements('uix-column', [block('A'), block('Wider')])],
+      ['gap', false, [
+        ['gap="none"', box('uix-column', ' gap="none"', abc)],
+        ['gap="small"', box('uix-column', ' gap="small"', abc)],
+        ['(default gap)', box('uix-column', '', abc)],
+        ['gap="large"', box('uix-column', ' gap="large"', abc)],
+      ]],
+      ['grow: vertical shares', false, [
+        ['height="14lh", grow on one child', box('uix-column', ' height="14lh"', [block('grow', ' grow'), block('B'), block('C')])],
+        ['grow · grow="2" · grow="3"', box('uix-column', ' height="14lh"', [block('grow', ' grow'), block('grow 2', ' grow="2"'), block('grow 3', ' grow="3"')])],
+      ]],
+      ['wrap', false, [
+        ['height="10lh", no wrap: the column grows, since its content cannot wrap', box('uix-column', ' height="10lh"', many(6))],
+        ['height="10lh" wrap: the blocks flow into more columns', box('uix-column', ' height="10lh" wrap', many(6))],
+      ]],
+      ['Nesting', true, [
+        ['uix-column > uix-row', box('uix-column', '', [
+          box('uix-row', '', [block('Title', ' grow'), block('A'), block('B')]),
+          box('uix-row', ' align="stretch"', [block('Side'), block('Content', ' grow height="5lh"')]),
+          box('uix-row', ' justify="end"', [block('C'), block('D')]),
+        ])],
+        ['uix-column > uix-row > uix-column: an application skeleton', box('uix-column', ' height="16lh"', [
+          block('Header'),
+          box('uix-row', ' grow align="stretch"', [
+            box('uix-column', ' width="14ch"', [block('Nav'), block('Nav')]),
+            box('uix-column', ' grow justify="center" align="center"', [block('Centered content')]),
+            box('uix-column', ' width="14ch" justify="end"', [block('Aside')]),
+          ]),
+          block('Footer'),
+        ])],
+      ]],
+    ],
+  },
+  {
+    id: 'grid',
+    title: 'Grid',
+    tags: 'uix-grid',
+    text: 'A grid places its children on columns and rows, written as CSS grid tracks; each child takes one cell, or more with span. align places a child in its cell vertically, justify horizontally. Fields span a whole line and lay their label and control on the grid columns, so every label gets the same width.',
+    attrs: 'columns: CSS tracks (auto 1fr) · rows: CSS tracks · align: start | center | end | stretch | baseline · justify: start | center | end | stretch · gap: none | small | large · span (on a child): 2 | 3 | 4 | all',
+    rows: () => [
+      ['columns', true, [
+        ['(columns="auto 1fr")', box('uix-grid', '', [block('Label'), block('Takes the rest'), block('Longer label'), block('Takes the rest')])],
+        ['columns="1fr 1fr 1fr"', box('uix-grid', ' columns="1fr 1fr 1fr"', many(6))],
+        ['columns="12ch 1fr 2fr"', box('uix-grid', ' columns="12ch 1fr 2fr"', [block('12ch'), block('1fr'), block('2fr')])],
+      ]],
+      ['rows', false, [
+        ['height="14lh" rows="auto 1fr auto" columns="1fr"', box('uix-grid', ' height="14lh" rows="auto 1fr auto" columns="1fr"', [block('Header'), block('1fr: the rest'), block('Footer')])],
+      ]],
+      ['align: vertical, in each cell', false, [
+        ['(align="center")', box('uix-grid', ' columns="1fr 1fr 1fr"', tall)],
+        ['align="start"', box('uix-grid', ' columns="1fr 1fr 1fr" align="start"', tall)],
+        ['align="end"', box('uix-grid', ' columns="1fr 1fr 1fr" align="end"', tall)],
+        ['align="stretch"', box('uix-grid', ' columns="1fr 1fr 1fr" align="stretch"', tall)],
+        ['align="baseline"', box('uix-grid', ' columns="1fr 1fr 1fr" align="baseline"', lettered)],
+      ]],
+      ['justify: horizontal, in each cell', true, [
+        ['(justify="stretch")', box('uix-grid', ' columns="1fr 1fr 1fr"', abc)],
+        ['justify="start"', box('uix-grid', ' columns="1fr 1fr 1fr" justify="start"', abc)],
+        ['justify="center"', box('uix-grid', ' columns="1fr 1fr 1fr" justify="center"', abc)],
+        ['justify="end"', box('uix-grid', ' columns="1fr 1fr 1fr" justify="end"', abc)],
+      ]],
+      ['gap', false, [
+        ['gap="none"', box('uix-grid', ' columns="1fr 1fr" gap="none"', many(4))],
+        ['gap="small"', box('uix-grid', ' columns="1fr 1fr" gap="small"', many(4))],
+        ['(default gap)', box('uix-grid', ' columns="1fr 1fr"', many(4))],
+        ['gap="large"', box('uix-grid', ' columns="1fr 1fr" gap="large"', many(4))],
+      ]],
+      ['span', true, [
+        ['columns="1fr 1fr 1fr"', box('uix-grid', ' columns="1fr 1fr 1fr"', [block('A'), block('span 2', ' span="2"'), block('span all', ' span="all"'), block('D'), block('E'), block('F')])],
+      ]],
+      ['Fields on a grid', true, [
+        ['columns="auto minmax(0, 48ch)"', '<uix-grid columns="auto minmax(0, 48ch)">\n  <uix-input label="Name" name="member-name" value="Ada Lovelace"></uix-input>\n  <uix-input label="Email address" name="member-email" type="email" value="ada@northwind.example"\n             hint="Used to sign in."></uix-input>\n  <uix-select label="Role" name="member-role">\n    <uix-option label="Member"></uix-option>\n    <uix-option label="Administrator" selected></uix-option>\n  </uix-select>\n  <uix-checkbox label="Can manage billing"></uix-checkbox>\n</uix-grid>'],
+      ]],
+    ],
+  },
+  {
+    id: 'sizes',
+    title: 'Sizes and scroll',
+    tags: 'width · height · min-* · max-* · uix-splitter · scroll',
+    text: 'Sizes take any CSS length; the examples write widths in ch and heights in lh. A written size gives way only to content that cannot wrap, unless min-width or min-height is written too. A splitter resizes the neighbor that has a size, within its bounds, with the pointer or the arrow keys. scroll makes the content scroll inside the element.',
+    table: `<table class="sc-attrs">
+  <thead><tr><th scope="col">Attribute</th><th scope="col">Values</th><th scope="col">On</th></tr></thead>
+  <tbody>
+    <tr><td>width · height</td><td>any CSS length</td><td>containers, items, floating elements</td></tr>
+    <tr><td>min-width · max-width · min-height · max-height</td><td>any CSS length</td><td>containers, items, floating elements</td></tr>
+    <tr><td>scroll</td><td>(no value)</td><td>uix-row · uix-column</td></tr>
+    <tr><td>persist</td><td>a storage key</td><td>uix-splitter</td></tr>
+  </tbody>
+</table>`,
+    attrs: '',
+    rows: () => [
+      ['width', true, [
+        ['width="24ch" next to grow', box('uix-row', '', [box('uix-column', ' width="24ch"', [block('width 24ch')]), block('grow', ' grow tone="success"')])],
+      ]],
+      ['Bounds and splitter: horizontal', true, [
+        ['width="24ch" min-width="12ch" max-width="48ch", then a splitter: drag it, or focus it and use the arrow keys', box('uix-row', ' align="stretch" height="6lh"', [
+          box('uix-column', ' width="24ch" min-width="12ch" max-width="48ch"', [block('12ch to 48ch', ' grow')]),
+          '<uix-splitter></uix-splitter>',
+          box('uix-column', ' grow', [block('grow', ' grow tone="success"')]),
+        ])],
+      ]],
+      ['Bounds and splitter: vertical', false, [
+        ['height="5lh" min-height="3lh" max-height="11lh", then a splitter', box('uix-column', ' height="16lh" width="36ch"', [
+          box('uix-row', ' align="stretch" height="5lh" min-height="3lh" max-height="11lh"', [block('3lh to 11lh', ' grow')]),
+          '<uix-splitter></uix-splitter>',
+          box('uix-row', ' align="stretch" grow', [block('grow', ' grow tone="success"')]),
+        ])],
+      ]],
+      ['A written size and its content', false, [
+        ['width="16ch", content that wraps: the width holds', box('uix-column', ' width="16ch"', [block('Text that wraps onto several lines')])],
+        ['width="16ch", a word that cannot wrap: the column widens', box('uix-column', ' width="16ch"', [block('unbreakable_identifier_2026', ' tone="success"')])],
+        ['min-width="0" as well: the width holds and the content spills', box('uix-column', ' width="16ch" min-width="0"', [block('unbreakable_identifier_2026', ' tone="warning"')])],
+      ]],
+      ['scroll', false, [
+        ['height="10lh" scroll: vertical', box('uix-column', ' height="10lh" width="24ch" scroll', many(8))],
+        ['width="36ch" scroll: horizontal', box('uix-row', ' width="36ch" scroll', many(8))],
+      ]],
+    ],
+  },
+  {
+    id: 'layout-types',
+    title: 'Layout types',
+    tags: 'how each uix-* tag takes part in the layout',
+    text: 'Every component has a layout type, which sets who places it and which layout attributes it accepts. A layout attribute outside that set has no effect, and the console says why. In the examples, gray dashes outline containers, blue dashes the other elements that have a box; parts and data leave no box.',
+    table: `<table class="sc-attrs">
+  <thead><tr><th scope="col">Type</th><th scope="col">Placed by</th><th scope="col">Layout attributes</th><th scope="col">Tags</th></tr></thead>
+  <tbody>
+    <tr><td>container</td><td>its parent container; it places its children</td><td>align · justify · gap · wrap · scroll, and those of an item</td><td>uix-app · uix-row · uix-column · uix-grid · uix-toolbar · uix-status-bar · uix-group · uix-radio-group</td></tr>
+    <tr><td>item</td><td>its parent container</td><td>grow · span (in a grid) · width · height · min-width · max-width · min-height · max-height</td><td>uix-input · uix-select · uix-button · uix-checkbox · uix-callout · uix-panel · uix-prose · uix-status-item · uix-spacer; any foreign element (grow and span only)</td></tr>
+    <tr><td>floating</td><td>anchored to what opens it, above the page</td><td>width · height · min-width · max-width · min-height · max-height</td><td>uix-menu (later: dialog, toast)</td></tr>
+    <tr><td>inline</td><td>the text around it, like a word</td><td>none</td><td>uix-link</td></tr>
+    <tr><td>part</td><td>the component it belongs to</td><td>none</td><td>uix-menu-item · uix-separator · uix-radio · uix-splitter</td></tr>
+    <tr><td>data</td><td>never shown; its component reads it</td><td>none</td><td>uix-option · uix-option-group</td></tr>
+  </tbody>
+</table>`,
+    attrs: '',
+    rows: () => [
+      ['Container and items: grow acts on the items', true, [
+        ['uix-input grows by default in a uix-row; each uix-button keeps the size of its label', `<uix-row align="end">
+  <uix-input label="Search members" placeholder="Name or email"></uix-input>
+  <uix-button label="Filter" start-icon="lucide:filter"></uix-button>
+  <uix-button label="Invite" variant="primary"></uix-button>
+</uix-row>`],
+        ['grow="0" on uix-input, grow on uix-button: the button takes the free space', `<uix-row align="end">
+  <uix-input label="Promo code" grow="0"></uix-input>
+  <uix-button label="Apply the code" variant="primary" grow></uix-button>
+</uix-row>`],
+      ]],
+      ['Status items are items: grow and width act on them', true, [
+        ['grow on the message; a fixed width on the cursor position, so the next item does not move as the numbers change', `<uix-status-bar>
+  <uix-status-item text="Saved 2 minutes ago" grow></uix-status-item>
+  <uix-status-item text="Ln 12, Col 4" width="14ch"></uix-status-item>
+  <uix-status-item text="UTF-8"></uix-status-item>
+</uix-status-bar>`],
+      ]],
+      ['Inline: a link flows in its sentence', true, [
+        ['uix-link inside uix-prose, cut across two lines like any words', `<uix-prose>
+  <p>Invoices go to the billing email of the workspace. To send them somewhere else, open the <uix-link label="billing settings of the workspace" href="#billing"></uix-link>, change the address, then save.</p>
+</uix-prose>`],
+      ]],
+      ['Parts: their component lays them out', false, [
+        ['uix-separator in uix-toolbar: no box, the toolbar places its line', `<uix-toolbar>
+  <uix-button label="Cut" start-icon="lucide:scissors"></uix-button>
+  <uix-button label="Copy" start-icon="lucide:copy"></uix-button>
+  <uix-separator></uix-separator>
+  <uix-button label="Undo" start-icon="lucide:undo-2"></uix-button>
+</uix-toolbar>`],
+        ['uix-menu-item in a floating uix-menu: no box, the menu places its buttons', `<uix-menu>
+  <uix-menu-item label="Rename" icon="lucide:pencil"></uix-menu-item>
+  <uix-menu-item label="Duplicate" icon="lucide:copy"></uix-menu-item>
+  <uix-separator></uix-separator>
+  <uix-menu-item label="Delete" icon="lucide:trash-2" variant="danger"></uix-menu-item>
+</uix-menu>`],
+      ]],
+      ['Warning: width on a part', false, [
+        ['width on uix-menu-item: ignored', `<uix-menu>
+  <uix-menu-item label="Rename" icon="lucide:pencil" width="40ch"></uix-menu-item>
+  <uix-menu-item label="Duplicate" icon="lucide:copy"></uix-menu-item>
+</uix-menu>`],
+        ['The fix: width on the uix-menu', `<uix-menu width="40ch">
+  <uix-menu-item label="Rename" icon="lucide:pencil"></uix-menu-item>
+  <uix-menu-item label="Duplicate" icon="lucide:copy"></uix-menu-item>
+</uix-menu>`],
+      ]],
+      ['Warning: grow on an inline element', true, [
+        ['grow on uix-link: ignored', `<uix-row align="center">
+  <uix-button label="Save" variant="primary"></uix-button>
+  <uix-link label="Billing settings" href="#billing" grow></uix-link>
+</uix-row>`],
+        ['The fix: a uix-spacer pushes the link to the end', `<uix-row align="center">
+  <uix-button label="Save" variant="primary"></uix-button>
+  <uix-spacer></uix-spacer>
+  <uix-link label="Billing settings" href="#billing"></uix-link>
+</uix-row>`],
+      ]],
+      ['Warning: a container attribute on an item', true, [
+        ['align on uix-button: ignored, only containers arrange children', `<uix-row>
+  <uix-button label="Export" start-icon="lucide:download" align="center"></uix-button>
+</uix-row>`],
+      ]],
+    ],
+  },
+  {
+    id: 'panel',
+    title: 'Panel',
+    tags: 'uix-panel',
+    text: 'A framed area holding a short text, or rich children, which win over text. tone colors it. The layout pages use panels to stand for any content.',
+    attrs: 'text · tone: info | success | warning | danger',
+    rows: () => [
+      ['Tones', false, [
+        ['(no tone)', '<uix-panel text="Neutral"></uix-panel>'],
+        ['tone="info"', '<uix-panel text="Information" tone="info"></uix-panel>'],
+        ['tone="success"', '<uix-panel text="Success" tone="success"></uix-panel>'],
+        ['tone="warning"', '<uix-panel text="Warning" tone="warning"></uix-panel>'],
+        ['tone="danger"', '<uix-panel text="Danger" tone="danger"></uix-panel>'],
+      ]],
+      ['Rich content', false, [
+        ['children', '<uix-panel tone="info">\n  <uix-link label="Read the billing guide" href="#billing"></uix-link>\n  <uix-button label="Open billing" variant="primary"></uix-button>\n</uix-panel>'],
+      ]],
+    ],
+  },
+  {
+    id: 'button',
+    title: 'Button',
+    tags: 'uix-button',
+    text: 'Sizes only change the font size; padding, height and icons follow. An icon-only button keeps its label for assistive technologies and as a tooltip.',
+    attrs: 'label · variant: primary | danger | ghost · size: small | large · start-icon · end-icon · icon-only · disabled · type',
+    rows: () => [
+      ['Variants', false, [
+        ['variant="primary"', '<uix-button label="Save changes" variant="primary"></uix-button>'],
+        ['(no variant)', '<uix-button label="Cancel"></uix-button>'],
+        ['variant="ghost"', '<uix-button label="Skip for now" variant="ghost"></uix-button>'],
+        ['variant="danger"', '<uix-button label="Delete project" variant="danger"></uix-button>'],
+      ]],
+      ['Icons', false, [
+        ['start-icon', '<uix-button label="Save" variant="primary" start-icon="lucide:save"></uix-button>'],
+        ['end-icon', '<uix-button label="Export" end-icon="lucide:download"></uix-button>'],
+        ['icon-only', '<uix-button label="More actions" icon-only start-icon="lucide:ellipsis"></uix-button>'],
+      ]],
+      ['Sizes', false, [
+        ['size="small"', '<uix-button label="Small" size="small"></uix-button>'],
+        ['(no size)', '<uix-button label="Medium"></uix-button>'],
+        ['size="large"', '<uix-button label="Large" size="large"></uix-button>'],
+      ]],
+      ['Disabled', false, [
+        ['variant="primary" disabled', '<uix-button label="Save changes" variant="primary" disabled></uix-button>'],
+        ['disabled', '<uix-button label="Cancel" disabled></uix-button>'],
+      ]],
+    ],
+  },
+  {
+    id: 'menu',
+    title: 'Menu',
+    tags: 'uix-menu · uix-menu-item · uix-separator',
+    text: 'A uix-menu inside a uix-button becomes the popover that button opens, anchored to it. Open it, then use the arrow keys, Home, End and Escape.',
+    attrs: 'uix-menu-item: label · icon · shortcut · variant: danger · disabled',
+    rows: () => [
+      ['Menu button', false, [['uix-button > uix-menu', `<uix-button label="Project actions" end-icon="lucide:chevron-down">
+  <uix-menu>${projectItems.replace(/\n/g, '\n  ')}
+  </uix-menu>
+</uix-button>`]]],
+      ['Open (static)', false, [['uix-menu', `<uix-menu>${projectItems}
+</uix-menu>`]]],
+    ],
+  },
+  {
+    id: 'input',
+    title: 'Text field',
+    tags: 'uix-input',
+    text: 'The hint, or the error that replaces it, is linked to the field so screen readers announce it.',
+    attrs: 'label · name · type · value · placeholder · hint · error · required · disabled',
+    rows: () => [
+      ['Hint', true, [['hint', '<uix-input label="Workspace name" name="workspace" value="Northwind Studio"\n           hint="Shown in invitations and on invoices."></uix-input>']]],
+      ['Empty', true, [['placeholder', '<uix-input label="Billing email" name="email" type="email"\n           placeholder="billing@company.com"></uix-input>']]],
+      ['Invalid', true, [['error', '<uix-input label="Billing email" name="email" type="email" value="billing@northwind"\n           error="Enter a full address, like billing@northwind.com."></uix-input>']]],
+      ['Disabled', true, [['disabled', '<uix-input label="Workspace URL" value="northwind.app.example" disabled></uix-input>']]],
+    ],
+  },
+  {
+    id: 'select',
+    title: 'Select',
+    tags: 'uix-select · uix-option · uix-option-group',
+    text: 'Options are written as uix-option children, grouped by uix-option-group, and read once. Open a list: where the browser supports it, the options follow the theme.',
+    attrs: 'uix-select: label · name · required · disabled · uix-option: label · value · selected · disabled · uix-option-group: label',
+    rows: () => [
+      ['Options', true, [['uix-option', `<uix-select label="Plan" name="plan">
+  <uix-option label="Team" value="team"></uix-option>
+  <uix-option label="Business" value="business" selected></uix-option>
+  <uix-option label="Enterprise" value="enterprise"></uix-option>
+</uix-select>`]]],
+      ['Groups', true, [['uix-option-group', `<uix-select label="Region" name="region">
+  <uix-option-group label="Europe">
+    <uix-option label="Paris" value="eu-west"></uix-option>
+    <uix-option label="Frankfurt" value="eu-central" selected></uix-option>
+  </uix-option-group>
+  <uix-option-group label="Americas">
+    <uix-option label="Virginia" value="us-east"></uix-option>
+    <uix-option label="São Paulo" value="sa-east" disabled></uix-option>
+  </uix-option-group>
+</uix-select>`]]],
+      ['Disabled', true, [['disabled', '<uix-select label="Currency" name="currency" disabled>\n  <uix-option label="Euro"></uix-option>\n</uix-select>']]],
+    ],
+  },
+  {
+    id: 'choices',
+    title: 'Checkbox and radio',
+    tags: 'uix-checkbox · uix-radio-group · uix-radio',
+    text: 'A radio group gives its name to its radios; its label is the legend of the produced fieldset.',
+    attrs: 'uix-checkbox: label · name · value · checked · disabled · uix-radio-group: label · name · disabled · uix-radio: label · value · checked · disabled',
+    rows: (p) => [
+      ['Checkboxes', false, [
+        ['checked', '<uix-checkbox label="Email me about new members" checked></uix-checkbox>'],
+        ['(unchecked)', '<uix-checkbox label="Allow guests"></uix-checkbox>'],
+        ['disabled', '<uix-checkbox label="Single sign-on" disabled></uix-checkbox>'],
+      ]],
+      ['Radio group', true, [['uix-radio-group > uix-radio', `<uix-radio-group label="Billing" name="${p}billing">
+  <uix-radio label="Monthly billing" value="monthly" checked></uix-radio>
+  <uix-radio label="Yearly billing (2 months free)" value="yearly"></uix-radio>
+</uix-radio-group>`]]],
+    ],
+  },
+  {
+    id: 'callout',
+    title: 'Callout',
+    tags: 'uix-callout',
+    text: 'Each tone has its own hue setting and default icon. Children are rich content, such as a link; they replace the text attribute.',
+    attrs: 'tone: info | success | warning | danger · heading · text · icon (or none) · dismissible',
+    rows: () => [
+      ['Tones', true, [
+        ['(tone="info")', '<uix-callout heading="Invitations expire after 7 days"\n             text="Resend one from the member list if it has expired."></uix-callout>'],
+        ['tone="success" dismissible', '<uix-callout tone="success" heading="Payment received"\n             text="Your Business plan is active until 12 March 2027." dismissible></uix-callout>'],
+        ['tone="warning"', '<uix-callout tone="warning" heading="Storage almost full"\n             text="Northwind Studio uses 46 GB of its 50 GB."></uix-callout>'],
+      ]],
+      ['Rich content', true, [['children', '<uix-callout tone="danger" heading="Sync failed" dismissible>\n  The last 3 changes were not saved. <uix-link label="Retry now" href="#retry"></uix-link>\n</uix-callout>']]],
+      ['Conflict', true, [['text and children: the children win, with a console warning', '<uix-callout heading="Maintenance tonight" text="This text is ignored.">\n  Northwind is read-only from 22:00 to 23:00. <uix-link label="Status page" href="#status"></uix-link>\n</uix-callout>']]],
+    ],
+  },
+  {
+    id: 'link',
+    title: 'Link',
+    tags: 'uix-link',
+    text: 'A link, alone or inside rich content.',
+    attrs: 'label · href · target',
+    rows: () => [
+      ['Link', false, [['uix-link', '<uix-link label="Billing settings" href="#billing"></uix-link>']]],
+    ],
+  },
+  {
+    id: 'prose',
+    title: 'Prose',
+    tags: 'uix-prose',
+    text: 'The one place for native content HTML, when an application really needs a block of text: help, terms, release notes.',
+    attrs: 'h1–h3 · p · ul · ol · strong · a · code · kbd · pre',
+    rows: () => [
+      ['Text block', true, [['uix-prose', `<uix-prose>
+  <h2>Invoices</h2>
+  <p>Invoices are issued on the <strong>first day</strong> of each month. Press <kbd>Ctrl</kbd> <kbd>P</kbd> to print one, or call <code>GET /invoices/2026-11</code>.</p>
+  <ul>
+    <li>Paid invoices can be downloaded for 10 years.</li>
+    <li>Change the billing address in <a href="#billing">Billing settings</a>.</li>
+  </ul>
+  <pre><code>curl https://api.northwind.app.example/invoices/2026-11</code></pre>
+</uix-prose>`]]],
+    ],
+  },
+];
+
+const schemes = [['light', 'Light'], ['dark', 'Dark']];
+const voidTags = new Set(['input', 'hr', 'br', 'img', 'meta', 'link', 'source']);
+
+/**
+ * Escapes text for use inside HTML.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/**
+ * Serializes a node as indented HTML, for display; icon paths are shortened to an ellipsis.
+ *
+ * @param {Node} node
+ * @param {number} depth
+ * @returns {string}
+ */
+function serialize(node, depth = 0) {
+  const pad = '  '.repeat(depth);
+  if (node.nodeType === Node.TEXT_NODE) {
+    const text = node.textContent.replace(/\s+/g, ' ').trim();
+    return text ? `${pad}${escapeHtml(text)}` : '';
+  }
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return '';
+  }
+  const tag = node.localName;
+  const attributes = [...node.attributes]
+    .map((attribute) => (attribute.value === '' ? attribute.name : `${attribute.name}="${escapeHtml(attribute.value)}"`))
+    .join(' ');
+  const open = `<${tag}${attributes ? ` ${attributes}` : ''}>`;
+  if (tag === 'svg') {
+    return `${pad}${open}…</svg>`;
+  }
+  if (voidTags.has(tag)) {
+    return `${pad}${open}`;
+  }
+  const children = [...node.childNodes];
+  if (children.every((child) => child.nodeType === Node.TEXT_NODE)) {
+    return `${pad}${open}${escapeHtml(node.textContent.replace(/\s+/g, ' ').trim())}</${tag}>`;
+  }
+  const inner = children.map((child) => serialize(child, depth + 1)).filter(Boolean);
+  return [`${pad}${open}`, ...inner, `${pad}</${tag}>`].join('\n');
+}
+
+/**
+ * Writes the source shown for an item: its HTML, and its script when it has one.
+ *
+ * @param {string} html
+ * @param {string} [script]
+ * @returns {string}
+ */
+function itemSource(html, script) {
+  if (!script) {
+    return html;
+  }
+  const name = html.match(/name="([^"]+)"/)?.[1];
+  return `${html}\n<script>\n  const select = document.querySelector('uix-select[name="${name}"]');\n  ${script.replace(/\n/g, '\n  ')}\n<\/script>`;
+}
+
+const container = document.getElementById('components');
+const main = document.querySelector('.sc-main');
+
+/**
+ * Turns a component's attribute summary into table rows: element, attribute, values.
+ *
+ * @param {string} summary Entries separated by " · ", as "name: values"; an entry starting with
+ *     "uix-…: " starts the attributes of that element.
+ * @returns {Array<[string, string, string]>}
+ */
+function attributeRows(summary) {
+  let element = '';
+  return summary.split(' · ').map((entry) => {
+    let token = entry;
+    const group = token.match(/^(uix-[\w-]+(?: \/ uix-[\w-]+)*): (.+)$/);
+    if (group) {
+      [, element, token] = group;
+    }
+    const [name, values = ''] = token.split(/: (.+)/);
+    return [element, name, values];
+  });
+}
+
+/**
+ * Builds the attribute table of a component.
+ *
+ * @param {string} summary
+ * @returns {string}
+ */
+function attributeTable(summary) {
+  const rows = attributeRows(summary);
+  const grouped = rows.some(([element]) => element);
+  const head = `${grouped ? '<th scope="col">Element</th>' : ''}<th scope="col">Attribute</th><th scope="col">Values</th>`;
+  const body = rows.map(([element, name, values]) => `<tr>${grouped ? `<td>${escapeHtml(element)}</td>` : ''}<td>${escapeHtml(name)}</td><td>${escapeHtml(values)}</td></tr>`).join('');
+  return `<table class="sc-attrs"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+}
+
+/**
+ * Uix warnings given while an example renders, shown under that example as the console would.
+ *
+ * @type {string[]}
+ */
+const uixWarnings = [];
+const consoleWarn = console.warn.bind(console);
+console.warn = (message, ...rest) => {
+  consoleWarn(message, ...rest);
+  if (typeof message === 'string' && message.startsWith('Uix ')) {
+    uixWarnings.push(message);
+  }
+};
+
+document.getElementById('toc').innerHTML = components
+  .map(({ id, title }) => `<li><a href="#${id}">${title}</a></li>`).join('');
+
+for (const component of components) {
+  const section = document.createElement('section');
+  section.className = 'sc-component';
+  section.id = component.id;
+  section.hidden = true;
+  section.innerHTML = `
+    <div class="sc-spec">
+      <h2>${component.title}</h2>
+      <p class="sc-tags">${component.tags}</p>
+      <p>${component.text}</p>
+      ${component.table ?? (component.attrs ? attributeTable(component.attrs) : '')}
+    </div>`;
+  container.append(section);
+
+  const byScheme = [['light', 'Light', component.rows('light-')], ['dark', 'Dark', component.rows('dark-')]];
+  component.rows('').forEach(([state, stack, items], index) => {
+    const example = document.createElement('article');
+    example.className = 'sc-example';
+    example.innerHTML = `
+      <h3>${state}</h3>
+      <div class="sc-panels"${component.wide ? ' data-wide' : ''}></div>
+      <div class="sc-codes">
+        <details class="sc-code"><summary>Source</summary><pre><code></code></pre></details>
+        <details class="sc-code"><summary>Produced HTML</summary><pre><code></code></pre></details>
+      </div>`;
+    section.append(example);
+
+    const panels = example.querySelector('.sc-panels');
+    uixWarnings.length = 0;
+    for (const [scheme, label, rows] of byScheme) {
+      const [, , schemeItems] = rows[index];
+      const panel = document.createElement('uix-app');
+      panel.className = 'sc-panel';
+      panel.dataset.scheme = scheme;
+      panel.style.colorScheme = scheme;
+      panel.innerHTML = `<p class="sc-panel-label">${label}</p>
+        <div class="sc-demo"${stack ? ' data-stack' : ''}>${schemeItems.map(([caption, html]) => `
+          <figure class="sc-item">${html}<figcaption>${escapeHtml(caption)}</figcaption></figure>`).join('')}
+        </div>`;
+      panels.append(panel);
+
+      /* Run the item scripts, as a page would after its markup. */
+      const figures = panel.querySelectorAll('.sc-item');
+      schemeItems.forEach(([, , script], itemIndex) => {
+        if (script) {
+          new Function('select', script)(figures[itemIndex].querySelector('uix-select'));
+        }
+      });
+    }
+
+    const warnings = [...new Set(uixWarnings)];
+    if (warnings.length > 0) {
+      const output = document.createElement('div');
+      output.className = 'sc-console';
+      output.innerHTML = '<p>Console</p><pre></pre>';
+      output.querySelector('pre').textContent = warnings.join('\n');
+      panels.after(output);
+    }
+
+    const [source, produced] = example.querySelectorAll('.sc-code code');
+    source.textContent = items.map(([, html, script]) => itemSource(html, script)).join('\n\n');
+    produced.textContent = [...panels.firstElementChild.querySelectorAll('.sc-item')]
+      .map((figure) => [...figure.children]
+        .filter((child) => child.localName !== 'figcaption')
+        .map((child) => serialize(child))
+        .join('\n'))
+      .join('\n\n');
+  });
+}
+
+/**
+ * Shows the component named in the address, or the first one, and marks it in the index.
+ */
+function route() {
+  const wanted = location.hash.slice(1);
+  const current = components.some(({ id }) => id === wanted) ? wanted : components[0].id;
+  for (const section of container.children) {
+    section.hidden = section.id !== current;
+  }
+  for (const link of document.querySelectorAll('#toc a')) {
+    if (link.getAttribute('href') === `#${current}`) {
+      link.setAttribute('aria-current', 'page');
+    } else {
+      link.removeAttribute('aria-current');
+    }
+  }
+}
+
+window.addEventListener('hashchange', () => {
+  route();
+  window.scrollTo({ top: 0 });
+});
+route();
+
+for (const button of document.querySelectorAll('[data-scheme-choice]')) {
+  button.addEventListener('click', () => {
+    main.dataset.scheme = button.dataset.schemeChoice;
+    for (const other of document.querySelectorAll('[data-scheme-choice]')) {
+      other.setAttribute('aria-pressed', String(other === button));
+    }
+  });
+}
+
+/* In the showcase, a dismissed callout comes back after a moment. */
+document.addEventListener('uix-dismiss', (event) => {
+  event.preventDefault();
+  event.target.hidden = true;
+  setTimeout(() => { event.target.hidden = false; }, 1500);
+});
+
+/* ================= Showcase: fonts ================= */
+const systemStack = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+const systemMonoStack = 'ui-monospace, "Cascadia Mono", Consolas, monospace';
+const fontGroups = [
+  ['Sans serif', 'system-ui, sans-serif', ['Inter', 'Roboto', 'Open Sans', 'Lato', 'Source Sans 3', 'Noto Sans', 'IBM Plex Sans', 'Work Sans', 'Nunito Sans', 'DM Sans', 'Manrope', 'Figtree', 'Public Sans']],
+  ['Wide', 'system-ui, sans-serif', ['Lexend', 'Atkinson Hyperlegible', 'Montserrat', 'Poppins']],
+  ['Serif', 'Georgia, serif', ['Merriweather', 'Source Serif 4', 'Lora', 'PT Serif', 'Noto Serif', 'IBM Plex Serif']],
+  ['Monospace', 'ui-monospace, Consolas, monospace', ['JetBrains Mono', 'Fira Code', 'Source Code Pro', 'Roboto Mono', 'IBM Plex Mono']],
+];
+const staticFonts = new Set(['Lato', 'PT Serif', 'Atkinson Hyperlegible', 'Merriweather']);
+const fallbackOf = new Map(fontGroups.flatMap(([, fallback, names]) => names.map((name) => [name, fallback])));
+const loadedFonts = new Set(['IBM Plex Sans', 'IBM Plex Mono']);
+
+/**
+ * Builds the options of a font list.
+ *
+ * @param {string} firstLabel Label of the empty choice.
+ * @param {Array} groups Font groups to list.
+ * @returns {string}
+ */
+function fontOptions(firstLabel, groups) {
+  return `<option value="">${firstLabel}</option>`
+    + groups.map(([group, , names]) => `<optgroup label="${group}">${names.map((name) => `<option value="${name}">${name}</option>`).join('')}</optgroup>`).join('');
+}
+
+document.getElementById('set-font').innerHTML = fontOptions('System UI', fontGroups);
+document.getElementById('set-heading-font').innerHTML = fontOptions('Same as interface', fontGroups);
+document.getElementById('set-mono-font').innerHTML = fontOptions('System monospace', fontGroups.filter(([group]) => group === 'Monospace'));
+
+/**
+ * Builds the CSS font stack of a family.
+ *
+ * @param {string} name Family name.
+ * @returns {string}
+ */
+function fontStack(name) {
+  return `"${name}", ${fallbackOf.get(name)}`;
+}
+
+/**
+ * Loads a Google font the first time it is chosen.
+ *
+ * @param {string} name Family name; empty for a system font.
+ */
+function loadFont(name) {
+  if (!name || loadedFonts.has(name)) {
+    return;
+  }
+  loadedFonts.add(name);
+  const weights = staticFonts.has(name) ? '400;700' : '400;500;600;700';
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name).replace(/%20/g, '+')}:wght@${weights}&display=swap`;
+  document.head.append(link);
+}
+
+/* ================= Showcase: theme settings ================= */
+const presets = {
+  compact: { lineHeight: 1.25, spaceOuter: 0.35, spaceInner: 0.35 },
+  default: { lineHeight: 1.3, spaceOuter: 0.5, spaceInner: 0.5 },
+  comfortable: { lineHeight: 1.45, spaceOuter: 0.75, spaceInner: 0.75 },
+};
+const backgrounds = [
+  ['Neutral gray', 0, 0, 0.2],
+  ['Slate', 250, 0.012, 0.2],
+  ['Blue', 255, 0.035, 0.19],
+  ['Indigo', 275, 0.03, 0.19],
+  ['Teal', 200, 0.025, 0.2],
+  ['Green gray', 150, 0.015, 0.2],
+  ['Warm gray', 60, 0.012, 0.2],
+  ['Sepia', 70, 0.03, 0.21],
+  ['Plum', 330, 0.02, 0.2],
+  ['Near black', 0, 0, 0.13],
+];
+const state = {
+  ...presets.default,
+  fontSize: 13,
+  radius: 4,
+  font: '',
+  headingFont: '',
+  monoFont: '',
+  weightNormal: 400,
+  weightStrong: 600,
+  textTrim: false,
+  cornerShape: 'round',
+  borderWidth: 1,
+  shadow: 1,
+  iconStroke: 2,
+  themedSelect: true,
+  focusWidth: 2,
+  focusOffset: 2,
+  motion: 120,
+  contrast: 1,
+  accentHue: 250,
+  dangerHue: 25,
+  successHue: 150,
+  warningHue: 75,
+  infoHue: 235,
+  bgHue: 250,
+  bgTint: 0.012,
+  darkLightness: 0.2,
+};
+const controls = [...document.querySelectorAll('[data-key]')];
+const root = document.documentElement;
+
+document.getElementById('bg-swatches').innerHTML = backgrounds.map(([name, hue, tint, lightness]) => `
+  <button type="button" aria-label="${name}" title="${name}" data-bg="${hue} ${tint} ${lightness}"
+          style="background: oklch(${lightness} ${tint} ${hue})" aria-pressed="false"></button>`).join('');
+
+/**
+ * Lists the theme custom properties for the current settings.
+ *
+ * @returns {Record<string, string>}
+ */
+function themeVariables() {
+  return {
+    '--uix-font': state.font ? fontStack(state.font) : systemStack,
+    '--uix-font-heading': state.headingFont ? fontStack(state.headingFont) : 'var(--uix-font)',
+    '--uix-font-mono': state.monoFont ? fontStack(state.monoFont) : systemMonoStack,
+    '--uix-font-size': `${state.fontSize}px`,
+    '--uix-line-height': `${state.lineHeight}`,
+    '--uix-weight-normal': `${state.weightNormal}`,
+    '--uix-weight-strong': `${state.weightStrong}`,
+    '--uix-text-box': state.textTrim ? 'trim-both cap alphabetic' : 'normal',
+    '--uix-text-trim': state.textTrim ? '1' : '0',
+    '--uix-space-outer': `${state.spaceOuter}`,
+    '--uix-space-inner': `${state.spaceInner}`,
+    '--uix-radius': `${state.radius}px`,
+    '--uix-corner-shape': state.cornerShape,
+    '--uix-border-width': `${state.borderWidth}px`,
+    '--uix-shadow-strength': `${state.shadow}`,
+    '--uix-icon-stroke': `${state.iconStroke}`,
+    '--uix-select': state.themedSelect ? 'themed' : 'native',
+    '--uix-focus-width': `${state.focusWidth}px`,
+    '--uix-focus-offset': `${state.focusOffset}px`,
+    '--uix-motion': `${state.motion}ms`,
+    '--uix-contrast': `${state.contrast}`,
+    '--uix-accent': `oklch(0.55 0.15 ${state.accentHue})`,
+    '--uix-danger-hue': `${state.dangerHue}`,
+    '--uix-success-hue': `${state.successHue}`,
+    '--uix-warning-hue': `${state.warningHue}`,
+    '--uix-info-hue': `${state.infoHue}`,
+    '--uix-dark-base': `oklch(${state.darkLightness} ${state.bgTint} ${state.bgHue})`,
+  };
+}
+
+/**
+ * Formats a setting value for its readout.
+ *
+ * @param {HTMLElement} control
+ * @returns {string}
+ */
+function readout(control) {
+  const value = state[control.dataset.key];
+  const suffix = { px: 'px', deg: '°', ms: ' ms' }[control.dataset.format] ?? '';
+  return `${value}${suffix}`;
+}
+
+/**
+ * Applies the settings to the page and refreshes the controls, readouts and theme listing.
+ */
+function apply() {
+  const variables = themeVariables();
+  for (const [name, value] of Object.entries(variables)) {
+    root.style.setProperty(name, value);
+  }
+  for (const control of controls) {
+    const value = state[control.dataset.key];
+    if (control.type === 'checkbox') {
+      control.checked = value;
+    } else {
+      control.value = String(value);
+    }
+    const output = document.querySelector(`output[for="${control.id}"]`);
+    if (output) {
+      output.textContent = readout(control);
+    }
+  }
+  for (const button of document.querySelectorAll('[data-preset]')) {
+    const values = presets[button.dataset.preset];
+    button.setAttribute('aria-pressed', String(Object.entries(values).every(([key, value]) => state[key] === value)));
+  }
+  for (const button of document.querySelectorAll('[data-bg]')) {
+    const [hue, tint, lightness] = button.dataset.bg.split(' ').map(Number);
+    button.setAttribute('aria-pressed', String(state.bgHue === hue && state.bgTint === tint && state.darkLightness === lightness));
+  }
+  loadFont(state.font);
+  loadFont(state.headingFont);
+  loadFont(state.monoFont);
+  document.getElementById('theme-css').textContent =
+    `:root {\n${Object.entries(variables).map(([name, value]) => `  ${name}: ${value};`).join('\n')}\n}`;
+}
+
+for (const control of controls) {
+  control.addEventListener(control.type === 'range' ? 'input' : 'change', () => {
+    state[control.dataset.key] = control.type === 'checkbox' ? control.checked
+      : control.type === 'range' ? Number(control.value)
+      : control.value;
+    apply();
+  });
+}
+for (const button of document.querySelectorAll('[data-preset]')) {
+  button.addEventListener('click', () => {
+    Object.assign(state, presets[button.dataset.preset]);
+    apply();
+  });
+}
+for (const button of document.querySelectorAll('[data-bg]')) {
+  button.addEventListener('click', () => {
+    [state.bgHue, state.bgTint, state.darkLightness] = button.dataset.bg.split(' ').map(Number);
+    apply();
+  });
+}
+
+apply();
+
+if (!CSS.supports('corner-shape', 'squircle')) {
+  document.getElementById('corner-note').hidden = false;
+}
+if (!CSS.supports('text-box', 'trim-both cap alphabetic')) {
+  document.getElementById('trim-note').hidden = false;
+}
+document.getElementById('attr-note').textContent = uixNativeAttr
+  ? 'This browser reads sizes from the attributes with CSS typed attr(): no JavaScript involved.'
+  : 'This browser lacks CSS typed attr(): a few lines of JavaScript copy the sizes to custom properties.';
+
+if (!CSS.supports('appearance', 'base-select')) {
+  document.getElementById('select-note').hidden = false;
+}
+
+document.getElementById('copy-theme').addEventListener('click', (event) => {
+  const button = event.currentTarget;
+  const code = document.getElementById('theme-css');
+  navigator.clipboard.writeText(code.textContent).then(() => {
+    button.textContent = 'Copied';
+  }, () => {
+    const range = document.createRange();
+    range.selectNodeContents(code);
+    const selection = getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    button.textContent = 'Selected';
+  }).finally(() => {
+    setTimeout(() => { button.textContent = 'Copy'; }, 1600);
+  });
+});
+</script>
