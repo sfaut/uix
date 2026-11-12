@@ -164,7 +164,7 @@ over HTTP locally). It is also published as a private artifact,
 <https://claude.ai/artifact/APutT4LLK3SKG57L8TmX76>; keep both in step. The file is the page as served
 online, wrapped by the artifact service in a document skeleton (the first line up to `<body>`, and the
 closing `</body></html>`): remove that skeleton before publishing it again. Its Palettes page embeds
-`palettes/*.json`. `docs/STATUS.md` sums up where the
+`palettes/*/palette.json`. `docs/STATUS.md` sums up where the
 design stands and what is left: read it when resuming the work, and update it as decisions are made. Choices still open (Tailwind theme, code style for HTML, CSS and
 JavaScript) are made with the maintainer; do not decide them alone.
 The code style must avoid repetition: the early sketches, with a class on every child element, were

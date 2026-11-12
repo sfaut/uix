@@ -1,53 +1,30 @@
 # Palettes
 
-Color palettes of well-known frameworks, for reference while designing the Uix colors. One file per
-framework, shaped `{"<framework>": {"v<version>": {...}}}`. Values keep the notation of their source
-(hex, `oklch()`, `rgba()`). Collected on 2026-11-12, by reading each source as text (nothing was run).
+Color palettes of well-known frameworks, for reference while designing the Uix colors. One folder per
+framework, holding `palette.json`, shaped `{"<framework>": {"v<version>": {...}}}`, and a `README.md` on
+the history and use of its colors. Values keep the notation of their source (hex, `oklch()`, `rgba()`).
+Collected on 2026-11-12, by reading each source as text (nothing was run).
 
-| File | Version | Source | Content |
+| Folder | Version | Source | Content |
 |---|---|---|---|
-| `tailwind.json` | v4.3.5, v3.4.19 | npm `tailwindcss`: `theme.css` (v4), `lib/public/colors.js` (v3) | 50–950 per color; v4 in OKLCH, v3 in hex. The deprecated v3 aliases (`lightBlue`…) are left out. |
-| `bootstrap.json` | v5.3.9 | npm `bootstrap`: `scss/_variables.scss` | 100–900 per color, computed as Sass does (`tint-color` mixes with white, `shade-color` with black), checked against `$blue-100` and `$blue-900`; grays; `theme` maps the theme colors. |
-| `material-ui.json` | v9.5.0 | npm `@mui/material`: `colors/` | The Material Design 2 palette: 50–900 and A100–A700 (see "Material UI: the A shades" below). |
-| `radix.json` | v3.0.0 | npm `@radix-ui/colors` | Steps 1–12, `light` and `dark`, sRGB. The Display P3 and alpha variants are left out. |
-| `open-props.json` | v1.7.23 | npm `open-props`: `src/props.colors*.css` | `hex`: 0–12 per color. `oklch`: one lightness and chroma scale (0–15) applied to `--color-hue`, and the named hues. |
-| `mantine.json` | v9.8.0 | npm `@mantine/core`: `default-colors` | Ten shades, indexed 0–9 as in Mantine. |
-| `ant-design.json` | v8.0.1 | npm `@ant-design/colors`: `presets` | Ten shades, numbered 1–10 as in the Ant Design documentation (6 is the primary shade), `light` and `dark`; `primary` lists the seed colors. |
-| `chakra.json` | v3.38.0 | npm `@chakra-ui/react`: `theme/tokens/colors` | 50–950 per color; semantic tokens are left out. |
-| `carbon.json` | v11.62.0 | npm `@carbon/colors`: `tokens/colors.tokens.json` (DTCG) | 10–100 per color, and their hover variants. |
-| `pico.json` | v2.1.1 | npm `@picocss/pico`: `scss/colors/_index.scss` | 50–950 per color; `default` names the shade each plain color name points to. |
-| `wave-ui.json` | v4.2.5 | npm `wave-ui`: `utils/colors.js`, `utils/config.js` | `palette`: each color with six lighter and six darker shades; `theme`: the default light and dark theme colors. |
-| `shadcn.json` | v4.23.0 (CLI) | registry `ui.shadcn.com/r/colors/<base>.json` | Semantic tokens (`background`, `primary`, `border`…) of each base color, `light` and `dark`. Its color scales are Tailwind's. |
-| `flux.json` | v2.21.0 | `fluxui.dev/themes` | Accent themes (`accent`, `accent-content`, `accent-foreground`), `light` and `dark`, as Tailwind CSS v4 color names (`red-500`). |
-
-## Notes
-
-### Material UI: the A shades
-
-Material UI ships the palette of Material Design 2 (2014) as it was. Its shades serve two roles:
-
-- 50–900 make the primary color of an application: 500 for the app bar, 700 for the status bar, 100 for
-  light backgrounds.
-- A100, A200, A400 and A700 ("A" for accent) make the accent color, the one that draws the eye: floating
-  action button, switches, sliders, checked boxes, progress bars, selected text. They are more saturated
-  variants of the same hue, tuned by hand (red: 500 `#f44336`, A200 `#ff5252`, A400 `#ff1744`, A700
-  `#d50000`). The guidelines took A200 as the accent, and A100, A400 or A700 for a lighter or darker one.
-
-The 2014 specification gives no accent shades to grey, blue grey and brown. Material UI still ships them,
-so every color has the same keys, as copies: for these three colors, A100, A200, A400 and A700 equal 100,
-200, 400 and 700.
-
-Material Design 3 (2021) replaced this palette with tonal palettes computed from one seed color, on a tone
-scale from 0 to 100.
-
-For Uix: these shades meet a real need, a more vivid variant of the accent for what must draw the eye.
-Uix can derive it from the accent color by raising the chroma with relative color syntax, where Material
-Design 2 tuned each hue by hand.
+| [`tailwind`](tailwind/) | v4.3.5, v3.4.19 | npm `tailwindcss`: `theme.css` (v4), `lib/public/colors.js` (v3) | 50–950 per color; v4 in OKLCH, v3 in hex. The deprecated v3 aliases (`lightBlue`…) are left out. |
+| [`bootstrap`](bootstrap/) | v5.3.9 | npm `bootstrap`: `scss/_variables.scss` | 100–900 per color, computed as Sass does (`tint-color` mixes with white, `shade-color` with black), checked against `$blue-100` and `$blue-900`; grays; `theme` maps the theme colors. |
+| [`material-ui`](material-ui/) | v9.5.0 | npm `@mui/material`: `colors/` | The Material Design 2 palette: 50–900 and A100–A700. |
+| [`radix`](radix/) | v3.0.0 | npm `@radix-ui/colors` | Steps 1–12, `light` and `dark`, sRGB. The Display P3 and alpha variants are left out. |
+| [`open-props`](open-props/) | v1.7.23 | npm `open-props`: `src/props.colors*.css` | `hex`: 0–12 per color. `oklch`: one lightness and chroma scale (0–15) applied to `--color-hue`, and the named hues. |
+| [`mantine`](mantine/) | v9.8.0 | npm `@mantine/core`: `default-colors` | Ten shades, indexed 0–9 as in Mantine. |
+| [`ant-design`](ant-design/) | v8.0.1 | npm `@ant-design/colors`: `presets` | Ten shades, numbered 1–10 as in the Ant Design documentation (6 is the primary shade), `light` and `dark`; `primary` lists the seed colors. |
+| [`chakra`](chakra/) | v3.38.0 | npm `@chakra-ui/react`: `theme/tokens/colors` | 50–950 per color; semantic tokens are left out. |
+| [`carbon`](carbon/) | v11.62.0 | npm `@carbon/colors`: `tokens/colors.tokens.json` (DTCG) | 10–100 per color, and their hover variants. |
+| [`pico`](pico/) | v2.1.1 | npm `@picocss/pico`: `scss/colors/_index.scss` | 50–950 per color; `default` names the shade each plain color name points to. |
+| [`wave-ui`](wave-ui/) | v4.2.5 | npm `wave-ui`: `utils/colors.js`, `utils/config.js` | `palette`: each color with six lighter and six darker shades; `theme`: the default light and dark theme colors. |
+| [`shadcn`](shadcn/) | v4.23.0 (CLI) | registry `ui.shadcn.com/r/colors/<base>.json` | Semantic tokens (`background`, `primary`, `border`…) of each base color, `light` and `dark`. Its color scales are Tailwind's. |
+| [`flux`](flux/) | v2.21.0 | `fluxui.dev/themes` | Accent themes (`accent`, `accent-content`, `accent-foreground`), `light` and `dark`, as Tailwind CSS v4 color names (`red-500`). |
 
 ## Regenerate
 
-`extract.mjs` writes every file from the downloaded sources, reading them as text. The versions are written
-in the script (folder names, version keys): update them there first.
+`scripts/extract.mjs` writes every `palette.json` from the downloaded sources, reading them as text. The
+versions are written in the script (folder names, version keys): update them there first.
 
 1. In an empty folder outside the repository, download the npm packages without running their scripts, and
    unpack each one into a folder named after its tarball:
@@ -70,9 +47,9 @@ in the script (folder names, version keys): update them there first.
 
    The list of shadcn/ui base colors comes from its CLI (`shadcn` on npm).
 
-3. Run `node extract.mjs <packages folder> <downloads folder> <output folder>`. The script stops when a source
-   has changed shape and yields nothing.
+3. Run `node palettes/scripts/extract.mjs <packages folder> <downloads folder> palettes`. The script stops
+   when a source has changed shape and yields nothing.
 
-The showcase (`prototype/showcase.html`, Palettes page) embeds these files in a
+The showcase (`prototype/showcase.html`, Palettes page) embeds the palettes in a
 `<script type="application/json" id="sc-palettes-data">` element, so it stands alone online. After
-regenerating, run `node palettes/embed.mjs` to embed the new files.
+regenerating, run `node palettes/scripts/embed.mjs` to embed the new files.
