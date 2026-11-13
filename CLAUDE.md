@@ -139,6 +139,9 @@ Settled decisions:
 - Every element inside `<uix-app>` uses `box-sizing: border-box`, with no setting to change it.
 - JavaScript is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source file is the
   file served, with no compilation step.
+- Code style: 4-space indentation; double quotes (JavaScript strings, HTML attributes, CSS strings);
+  modern CSS (layers, nesting, logical properties, relative colors, `light-dark()`). The mockup keeps
+  its own style.
 - Design tokens: source of truth in DTCG format (`.tokens.json`), turned into CSS custom properties by
   Style Dictionary. The format is documented in `README.md`.
 - Planned tooling (not installed yet): Lightning CSS (bundling, browser targets, minification), Stylelint
@@ -187,8 +190,8 @@ artifact before changing the file, and bring the file back in step with each pub
 online, wrapped by the artifact service in a document skeleton (the first line up to `<body>`, and the
 closing `</body></html>`): remove that skeleton before publishing it again. Its Palettes page embeds
 `palettes/data/*.json`. `docs/STATUS.md` sums up where the
-design stands and what is left: read it when resuming the work, and update it as decisions are made. Choices still open (Tailwind theme, code style for HTML, CSS and
-JavaScript) are made with the maintainer; do not decide them alone.
+design stands and what is left: read it when resuming the work, and update it as decisions are made. Choices still open (Tailwind theme, the rest of the code style) are made with the
+maintainer; do not decide them alone.
 The code style must avoid repetition: the early sketches, with a class on every child element, were
 rejected for that reason.
 
