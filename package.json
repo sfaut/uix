@@ -1,0 +1,13 @@
+{
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "packages/uix"
+    ],
+    "scripts": {
+        "check": "tsc --project tsconfig.json"
+    },
+    "devDependencies": {
+        "typescript": "^7.0.2"
+    }
+}

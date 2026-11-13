@@ -145,7 +145,7 @@ Settled decisions:
   style.
 - Design tokens: source of truth in DTCG format (`.tokens.json`), turned into CSS custom properties by
   Style Dictionary. The format is documented in `README.md`.
-- Planned tooling (not installed yet): Lightning CSS (bundling, browser targets, minification), Stylelint
+- Planned tooling (not installed yet, apart from TypeScript): Lightning CSS (bundling, browser targets, minification), Stylelint
   and ESLint, Vitest (JS) and Playwright with axe-core (visual regression, accessibility), Astro Starlight
   for the documentation.
 - The documentation is also the component workshop (no Storybook): each component page shows live
@@ -154,6 +154,11 @@ Settled decisions:
   Examples write widths in `ch` (`width="26ch"`) and heights in `lh` (`height="6lh"`).
 - Documentation is multilingual: English is the base, translations follow (French first).
 - License: MIT (`LICENSE`).
+
+## Commands
+
+- `npm install`: installs the development tools (TypeScript), for the npm workspace of `packages/uix`.
+- `npm run check`: type-checks the JavaScript sources (`tsc` with `checkJs`, through `tsconfig.json`).
 
 ## Working rules
 
