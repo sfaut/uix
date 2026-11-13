@@ -140,8 +140,9 @@ Settled decisions:
 - JavaScript is written as ES modules with JSDoc types, checked by `tsc --checkJs`: the source file is the
   file served, with no compilation step.
 - Code style: 4-space indentation; double quotes (JavaScript strings, HTML attributes, CSS strings);
-  modern CSS (layers, nesting, logical properties, relative colors, `light-dark()`). The mockup keeps
-  its own style.
+  modern CSS (layers, nesting, logical properties, relative colors, `light-dark()`); modern JavaScript
+  (private fields, optional chaining, `??`, destructuring, template literals). The mockup keeps its own
+  style.
 - Design tokens: source of truth in DTCG format (`.tokens.json`), turned into CSS custom properties by
   Style Dictionary. The format is documented in `README.md`.
 - Planned tooling (not installed yet): Lightning CSS (bundling, browser targets, minification), Stylelint
