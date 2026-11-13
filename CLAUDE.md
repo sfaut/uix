@@ -102,7 +102,7 @@ Settled decisions:
   (`--uix-background-pattern-size`, `-thickness`, `-contrast`). Custom SVG tiles, used as a mask colored
   by the theme, will come later.
 - Uix is for pure application UIs, which hold no prose: the application title is an attribute
-  (`<uix-app heading="…">`), and a block of text, when one is really needed, goes in `<uix-prose>`, the
+  (`<uix-app heading="…">`), shown after the logo image when `logo="…"` gives one, and a block of text, when one is really needed, goes in `<uix-prose>`, the
   only place where users write native content HTML (paragraphs, lists, headings). Layout uses structure
   elements, as in XUL / XAML (boxes, spacer, group box…).
 - Icons: Lucide by default, other providers possible. An icon is referenced as `provider:name` in

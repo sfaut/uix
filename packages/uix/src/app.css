@@ -197,11 +197,16 @@
     }
 }
 
-/* The application title. */
+/* The application title, after the logo when there is one. */
 @layer uix.content {
     uix-app > [data-heading] {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
         font: var(--uix-weight-strong) 1.35em / 1.2 var(--uix-font-heading);
         text-wrap: balance;
+
+        & > [data-logo] { flex: none; block-size: 1.5em; inline-size: auto; }
     }
 }
 

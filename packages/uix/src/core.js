@@ -61,6 +61,21 @@ export function warn(element, message) {
 }
 
 /**
+ * Copies an attribute value, or removes the attribute when the value is null.
+ *
+ * @param {Element} element
+ * @param {string} name
+ * @param {string | null} value
+ */
+export function setOrRemove(element, name, value) {
+    if (value === null) {
+        element.removeAttribute(name);
+    } else {
+        element.setAttribute(name, value);
+    }
+}
+
+/**
  * Warns about the layout attributes an element does not accept: by default, those its layout type does not
  * accept. One warning per reason.
  *

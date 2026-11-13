@@ -1,12 +1,13 @@
-import { UixAuthoring, define, sizeAttributes, warn } from "./core.js";
+import { UixAuthoring, define, setOrRemove, sizeAttributes, warn } from "./core.js";
 
 /**
- * <uix-app heading="…" background-pattern="…">: the root of an application. Renders the title as a
- * first-level heading, a div with the heading role, in every application, nested or not; warns about an
+ * <uix-app heading="…" logo="…" background-pattern="…">: the root of an application. Renders the title as
+ * a first-level heading, a div with the heading role, in every application, nested or not, after the logo
+ * image when there is one (an image URL; decorative, since the title names the application); warns about an
  * unknown background pattern.
  */
 export class UixApp extends UixAuthoring {
-    static observedAttributes = ["heading", "background-pattern"];
+    static observedAttributes = ["heading", "logo", "background-pattern"];
 
     static layout = "container";
 
@@ -44,19 +45,34 @@ export class UixApp extends UixAuthoring {
         }
 
         const text = this.getAttribute("heading");
+        const logo = this.getAttribute("logo");
         let heading = this.querySelector(":scope > [data-heading]");
-        if (!text) {
+        if (!text && !logo) {
             heading?.remove();
             return;
         }
         if (!heading) {
             heading = document.createElement("div");
             heading.setAttribute("data-heading", "");
-            heading.setAttribute("role", "heading");
-            heading.setAttribute("aria-level", "1");
             this.prepend(heading);
         }
-        heading.textContent = text;
+        setOrRemove(heading, "role", text ? "heading" : null);
+        setOrRemove(heading, "aria-level", text ? "1" : null);
+
+        let image = null;
+        if (logo) {
+            image = document.createElement("img");
+            image.setAttribute("data-logo", "");
+            image.alt = "";
+            image.src = logo;
+        }
+        let title = null;
+        if (text) {
+            title = document.createElement("span");
+            title.setAttribute("data-text", "");
+            title.textContent = text;
+        }
+        heading.replaceChildren(...[image, title].filter((node) => node !== null));
     }
 }
 
