@@ -74,7 +74,8 @@ Settled decisions:
   across the axis: vertical in a row, horizontal in a column; in a grid, vertical in each cell),
   `justify` (`start | center | end | space-between`, along the axis; in a grid, horizontal in each cell), `gap` (`none | small |
   large`), `wrap`, `grow` (alone = 1, or `0`, `2`, `3`: a share of the free space), `width`, `height`,
-  `min-width`, `max-width`, `min-height`, `max-height` (any CSS length), `scroll`; `columns` and `rows`
+  `min-width`, `max-width`, `min-height`, `max-height` (any CSS length), `scroll`, `padding` (alone = the inner
+  spacing, or `small`, `large`, `none`; no padding by default, except on the application); `columns` and `rows`
   (CSS grid tracks) on `uix-grid`; `span` (`2 | 3 | 4 | all`) on a child of `uix-grid`; `persist` on
   `uix-splitter`. A foreign element (not a `uix-*` tag) inside a container accepts `grow` and `span`, but
   no size: native elements already give `width` another meaning (pixels on `<img>`, `<canvas>`).

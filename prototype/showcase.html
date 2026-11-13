@@ -49,6 +49,7 @@
 @property --uix-max-height { syntax: "*"; inherits: false; }
 @property --uix-columns { syntax: "*"; inherits: false; }
 @property --uix-rows { syntax: "*"; inherits: false; }
+@property --uix-box-padding { syntax: "*"; inherits: false; }
 
 @layer uix.sizes {
   /* Sizes written as attributes, on containers, items and floating elements: any CSS length. Where CSS reads typed attr(), it takes them from the attributes; elsewhere the elements copy them to custom properties. This layer comes last, so a written size wins over a component's default. A fixed size does not shrink. */
@@ -356,6 +357,15 @@
     &[gap="large"] { gap: calc(var(--uix-gap) * 2); }
     &[wrap] { flex-wrap: wrap; }
   }
+
+  /* padding: a margin inside the edges of the box, from the inner spacing. padding alone gives the inner spacing, small half of it, large twice it, none nothing; the application has the inner spacing by default. */
+  :is(uix-app, uix-row, uix-column, uix-grid) {
+    &[padding=""] { --uix-box-padding: var(--uix-pad-box); }
+    &[padding="small"] { --uix-box-padding: calc(var(--uix-pad-box) * 0.5); }
+    &[padding="large"] { --uix-box-padding: calc(var(--uix-pad-box) * 2); }
+    &[padding="none"] { --uix-box-padding: 0px; }
+    &[padding] { padding: var(--uix-box-padding); }
+  }
   /* Sizes: in the uix.sizes layer, which comes last. */
 
   /* grow: a share of the free space along the axis (grow alone means 1, grow="0" none). In a row, fields grow by default; buttons and choices keep the size of their content. */
@@ -376,10 +386,10 @@
   :is(uix-app, uix-column) > :has([scroll], uix-prose):not([min-height]) { min-block-size: 0; }
   uix-spacer { flex: 1 1 0; }
 
-  /* scroll: the content scrolls inside the element; the padding keeps focus rings visible. */
+  /* scroll: the content scrolls inside the element; the padding, at least, keeps focus rings visible. */
   :is(uix-row, uix-column)[scroll] {
     overflow: auto;
-    padding: calc(var(--uix-focus-width) + var(--uix-focus-offset));
+    padding: max(var(--uix-box-padding, 0px), calc(var(--uix-focus-width) + var(--uix-focus-offset)));
     scrollbar-width: thin;
   }
 
@@ -1356,7 +1366,7 @@ const uixSizeAttributes = ['width', 'height', 'min-width', 'max-width', 'min-hei
  *
  * @type {string[]}
  */
-const uixLayoutAttributes = ['grow', 'span', ...uixSizeAttributes, 'align', 'justify', 'gap', 'wrap', 'scroll'];
+const uixLayoutAttributes = ['grow', 'span', ...uixSizeAttributes, 'align', 'justify', 'gap', 'wrap', 'scroll', 'padding'];
 
 /**
  * The layout attributes each layout type accepts.
@@ -2629,7 +2639,7 @@ const components = [
     title: 'Application',
     tags: 'uix-app',
     text: 'A complete application in a 16:9 screen. The application takes all the space of its parent, the whole window when it sits right in the body, with a margin inside its edges; it has no size attribute. The middle row takes the height left by the toolbar and the status bar. The side panels have a size, bounds and a splitter that remembers the size; the main column grows. Its content scrolls, while its buttons stay at the bottom. Forms align their labels with a grid; in the invitation row, the email field grows by default and the role list opts out. background-pattern draws a tile repeated over the canvas, dots by default; the theme sets its tile size, thickness and contrast.',
-    attrs: 'uix-app: heading · background-pattern: none | dots | staggered-dots | grid | graph-paper | horizontal-lines | vertical-lines | diagonal-lines | crosshatch | checkerboard | zigzag · uix-row / uix-column: width · min-width · max-width · grow · scroll · uix-splitter: persist · uix-grid: columns',
+    attrs: 'uix-app: heading · padding: (alone) | small | large | none · background-pattern: none | dots | staggered-dots | grid | graph-paper | horizontal-lines | vertical-lines | diagonal-lines | crosshatch | checkerboard | zigzag · uix-row / uix-column: width · min-width · max-width · grow · scroll · uix-splitter: persist · uix-grid: columns',
     wide: true,
     rows: (p) => [
       ['Application', true, [['uix-app heading="…"', `<uix-app heading="Northwind">
@@ -2746,7 +2756,7 @@ const components = [
     title: 'Row',
     tags: 'uix-row · uix-spacer',
     text: 'A row places its children side by side. justify places them along the row, horizontally; align across it, vertically; gap sets the space between them; wrap lets them flow onto more lines; grow, on a child, gives it a share of the free space. Colored panels (uix-panel) stand for any content; the shaded area is the row.',
-    attrs: 'justify: start | center | end | space-between · align: start | center | end | stretch | baseline · gap: none | small | large · wrap · grow (on a child): 1 | 0 | 2 | 3',
+    attrs: 'justify: start | center | end | space-between · align: start | center | end | stretch | baseline · gap: none | small | large · padding: (alone) | small | large | none · wrap · grow (on a child): 1 | 0 | 2 | 3',
     rows: () => [
       ['justify: horizontal', true, [
         ['(justify="start")', box('uix-row', '', abc)],
@@ -2774,6 +2784,12 @@ const components = [
         ['gap="small"', box('uix-row', ' gap="small"', abc)],
         ['(default gap)', box('uix-row', '', abc)],
         ['gap="large"', box('uix-row', ' gap="large"', abc)],
+      ]],
+      ['padding', false, [
+        ['(no padding)', box('uix-row', '', abc)],
+        ['padding="small"', box('uix-row', ' padding="small"', abc)],
+        ['padding', box('uix-row', ' padding', abc)],
+        ['padding="large"', box('uix-row', ' padding="large"', abc)],
       ]],
       ['wrap', true, [
         ['width="30ch", no wrap: the row widens, since its content cannot wrap', box('uix-row', ' width="30ch"', many(7))],
@@ -2806,7 +2822,7 @@ const components = [
     title: 'Column',
     tags: 'uix-column · uix-spacer',
     text: 'A column places its children one under the other. justify places them along the column, vertically; align across it, horizontally (baseline is for rows and grids); gap, wrap and grow work as in a row. justify and vertical grow show only when the column is taller than its content: a written height, grow in a parent column, or a row that stretches it.',
-    attrs: 'justify: start | center | end | space-between · align: start | center | end | stretch · gap: none | small | large · wrap · grow (on a child): 1 | 0 | 2 | 3',
+    attrs: 'justify: start | center | end | space-between · align: start | center | end | stretch · gap: none | small | large · padding: (alone) | small | large | none · wrap · grow (on a child): 1 | 0 | 2 | 3',
     rows: () => [
       ['justify: vertical', false, [
         ['height="12lh" (justify="start")', box('uix-column', ' width="14ch" height="12lh"', abc)],
@@ -2859,7 +2875,7 @@ const components = [
     title: 'Grid',
     tags: 'uix-grid',
     text: 'A grid places its children on columns and rows, written as CSS grid tracks; each child takes one cell, or more with span. align places a child in its cell vertically, justify horizontally. Fields span a whole line and lay their label and control on the grid columns, so every label gets the same width.',
-    attrs: 'columns: CSS tracks (auto 1fr) · rows: CSS tracks · align: start | center | end | stretch | baseline · justify: start | center | end | stretch · gap: none | small | large · span (on a child): 2 | 3 | 4 | all',
+    attrs: 'columns: CSS tracks (auto 1fr) · rows: CSS tracks · align: start | center | end | stretch | baseline · justify: start | center | end | stretch · gap: none | small | large · padding: (alone) | small | large | none · span (on a child): 2 | 3 | 4 | all',
     rows: () => [
       ['columns', true, [
         ['(columns="auto 1fr")', box('uix-grid', '', [block('Label'), block('Takes the rest'), block('Longer label'), block('Takes the rest')])],
