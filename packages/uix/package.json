@@ -1,0 +1,26 @@
+{
+    "name": "@sfaut/uix",
+    "version": "0.0.0",
+    "description": "A design system for web applications: plain HTML and CSS, with custom elements where HTML falls short.",
+    "license": "MIT",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sfaut/uix.git",
+        "directory": "packages/uix"
+    },
+    "files": [
+        "src"
+    ],
+    "exports": {
+        "./uix.css": "./src/uix.css",
+        "./uix.js": "./src/uix.js",
+        "./app.css": "./src/app.css",
+        "./app.js": "./src/app.js"
+    },
+    "sideEffects": [
+        "*.css",
+        "./src/app.js",
+        "./src/uix.js"
+    ]
+}

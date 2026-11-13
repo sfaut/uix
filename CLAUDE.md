@@ -188,7 +188,10 @@ Cases met while prototyping, to avoid repeating them:
 
 ## Status
 
-The repository holds no library code yet. `prototype/showcase.html` is the design mockup: the library CSS
+The library code starts in `packages/uix/src`, ported from the mockup one component at a time: one
+stylesheet and one module per component (`app.css`, `app.js`), the shared JavaScript in `core.js`, and
+`uix.css` / `uix.js` gathering everything. `packages/uix/demo/*.html` load the sources as they are: serve the
+repository root over HTTP and open them. `prototype/showcase.html` is the design mockup: the library CSS
 and JavaScript and the showcase, in one page served as is (Chrome refuses it from `file://`: serve it
 over HTTP locally). The reference is the private artifact
 <https://claude.ai/artifact/APutT4LLK3SKG57L8TmX76>, and the file is its clone, kept up to date: read the

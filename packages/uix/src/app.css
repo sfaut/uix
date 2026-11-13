@@ -1,0 +1,208 @@
+/*
+ * <uix-app>: the root of a Uix application. It declares the cascade layers, holds the theme settings and
+ * derives every other value from them, and lays out the application as a vertical box that takes all the
+ * space of its parent.
+ */
+@layer uix.settings, uix.base, uix.content, uix.structure, uix.controls, uix.components, uix.sizes;
+
+/* The only values a theme sets. */
+@layer uix.settings {
+    :root {
+        --uix-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        --uix-font-heading: var(--uix-font);
+        --uix-font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+        --uix-font-size: 13px;
+        --uix-line-height: 1.3;
+        --uix-weight-normal: 400;
+        --uix-weight-strong: 600;
+        --uix-text-box: normal;
+        --uix-text-trim: 0;
+        --uix-space-outer: 0.5;
+        --uix-space-inner: 0.5;
+        --uix-radius: 4px;
+        --uix-corner-shape: round;
+        --uix-border-width: 1px;
+        --uix-shadow-strength: 1;
+        --uix-icon-stroke: 2;
+        --uix-select: themed;
+        --uix-focus-width: 2px;
+        --uix-focus-offset: 2px;
+        --uix-motion: 120ms;
+        --uix-motion-feedback: var(--uix-motion);
+        --uix-motion-enter: calc(var(--uix-motion) * 1.5);
+        --uix-motion-exit: calc(var(--uix-motion) * 0.75);
+        --uix-ease: ease;
+        --uix-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+        --uix-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+        --uix-motion-distance: 0.25em;
+        --uix-contrast: 1;
+        --uix-background-pattern-size: 16px;
+        --uix-background-pattern-thickness: 1px;
+        --uix-background-pattern-contrast: 1;
+        --uix-accent: oklch(0.55 0.15 250);
+        --uix-danger-hue: 25;
+        --uix-success-hue: 150;
+        --uix-warning-hue: 75;
+        --uix-info-hue: 235;
+        --uix-dark-base: oklch(0.2 0.012 250);
+    }
+}
+
+/* Everything else derives from the settings. Neutrals take the hue and tint of the dark base, in both themes; contrast scales their distance from the canvas. */
+@layer uix.base {
+    uix-app, uix-app *, uix-app *::before, uix-app *::after { box-sizing: border-box; }
+
+    uix-app {
+        --uix-canvas: light-dark(oklch(from var(--uix-dark-base) 0.975 calc(c * 0.5) h), var(--uix-dark-base));
+        --uix-surface: light-dark(oklch(from var(--uix-dark-base) 0.997 calc(c * 0.25) h), oklch(from var(--uix-dark-base) calc(l + 0.05) c h));
+        --uix-surface-hover: light-dark(
+            oklch(from var(--uix-dark-base) calc(0.975 - 0.035 * var(--uix-contrast)) calc(c * 0.8) h),
+            oklch(from var(--uix-dark-base) calc(l + 0.11 * var(--uix-contrast)) calc(c * 1.2) h));
+        --uix-border: light-dark(
+            oklch(from var(--uix-dark-base) calc(0.975 - 0.125 * var(--uix-contrast)) c h),
+            oklch(from var(--uix-dark-base) calc(l + 0.18 * var(--uix-contrast)) calc(c * 1.3) h));
+        --uix-text: light-dark(
+            oklch(from var(--uix-dark-base) max(0.08, 0.975 - 0.735 * var(--uix-contrast)) c h),
+            oklch(from var(--uix-dark-base) min(0.99, l + 0.73 * var(--uix-contrast)) calc(c * 0.5) h));
+        --uix-text-muted: light-dark(
+            oklch(from var(--uix-dark-base) max(0.2, 0.975 - 0.495 * var(--uix-contrast)) c h),
+            oklch(from var(--uix-dark-base) min(0.9, l + 0.52 * var(--uix-contrast)) c h));
+        --uix-primary: light-dark(var(--uix-accent), oklch(from var(--uix-accent) 0.74 calc(c * 0.85) h));
+        --uix-on-primary: light-dark(oklch(1 0 0), oklch(from var(--uix-accent) 0.18 0.03 h));
+        --uix-danger: light-dark(oklch(0.54 0.18 var(--uix-danger-hue)), oklch(0.72 0.15 var(--uix-danger-hue)));
+        --uix-danger-soft: light-dark(oklch(0.96 0.03 var(--uix-danger-hue)), oklch(0.27 0.05 var(--uix-danger-hue)));
+        --uix-on-danger: light-dark(oklch(1 0 0), oklch(0.18 0.04 var(--uix-danger-hue)));
+        --uix-success: light-dark(oklch(0.52 0.13 var(--uix-success-hue)), oklch(0.75 0.14 var(--uix-success-hue)));
+        --uix-success-soft: light-dark(oklch(0.96 0.03 var(--uix-success-hue)), oklch(0.27 0.05 var(--uix-success-hue)));
+        --uix-warning: light-dark(oklch(0.58 0.13 var(--uix-warning-hue)), oklch(0.8 0.13 var(--uix-warning-hue)));
+        --uix-warning-soft: light-dark(oklch(0.96 0.04 var(--uix-warning-hue)), oklch(0.28 0.05 var(--uix-warning-hue)));
+        --uix-info: light-dark(oklch(0.53 0.14 var(--uix-info-hue)), oklch(0.75 0.12 var(--uix-info-hue)));
+        --uix-info-soft: light-dark(oklch(0.96 0.03 var(--uix-info-hue)), oklch(0.27 0.05 var(--uix-info-hue)));
+        --uix-shadow: 0 0.6em 1.6em -0.6em light-dark(
+            oklch(from var(--uix-dark-base) 0.3 c h / calc(0.3 * var(--uix-shadow-strength))),
+            oklch(0 0 0 / calc(0.65 * var(--uix-shadow-strength))));
+        --uix-weight-medium: calc((var(--uix-weight-normal) + var(--uix-weight-strong)) / 2);
+        --uix-line: var(--uix-border-width) solid var(--uix-border);
+        --uix-focus-ring: var(--uix-focus-width) solid var(--uix-primary);
+        --uix-transition: background-color var(--uix-motion-feedback) var(--uix-ease), border-color var(--uix-motion-feedback) var(--uix-ease), color var(--uix-motion-feedback) var(--uix-ease), box-shadow var(--uix-motion-feedback) var(--uix-ease), outline-color var(--uix-motion-feedback) var(--uix-ease);
+        /* Outer spacing: between elements. Inner spacing: inside controls and boxes. */
+        --uix-gap: calc(var(--uix-space-outer) * 1lh);
+        --uix-pad-block: calc(var(--uix-space-inner) * 0.45lh);
+        --uix-pad-inline: calc(var(--uix-space-inner) * 1.4em + 0.35em);
+        --uix-pad-box: calc(var(--uix-space-inner) * 1lh);
+        --uix-icon-size: 1.15em;
+        --uix-control-height: calc(1lh + 2 * var(--uix-pad-block) + 2 * var(--uix-border-width));
+
+        /* The application root is a vertical box, like a XUL window, with a margin inside its edges. */
+        display: flex;
+        flex-direction: column;
+        gap: var(--uix-gap);
+        padding: var(--uix-pad-box);
+        font: var(--uix-weight-normal) var(--uix-font-size) / var(--uix-line-height) var(--uix-font);
+        color: var(--uix-text);
+        background-color: var(--uix-canvas);
+    }
+
+    /* Background pattern: a tile repeated over the canvas, drawn with gradients in a color a little darker than the canvas (lighter in the dark theme). background-pattern picks it: dots by default, and for a value Uix does not know. Filled patterns (checkerboard, zigzag) take half the color, so they weigh as much as the lines. */
+    uix-app {
+        --uix-background-pattern-color: light-dark(
+            oklch(from var(--uix-dark-base) calc(0.975 - 0.06 * var(--uix-background-pattern-contrast)) calc(c * 0.5) h),
+            oklch(from var(--uix-dark-base) calc(l + 0.06 * var(--uix-background-pattern-contrast)) c h));
+
+        background-image: radial-gradient(circle, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent calc(var(--uix-background-pattern-thickness) + 0.5px));
+        background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+        background-position: 0 0;
+
+        &[background-pattern="none"] { background-image: none; }
+        &[background-pattern="staggered-dots"] {
+            background-image:
+                radial-gradient(circle, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent calc(var(--uix-background-pattern-thickness) + 0.5px)),
+                radial-gradient(circle, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent calc(var(--uix-background-pattern-thickness) + 0.5px));
+            background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+            background-position: 0 0, calc(var(--uix-background-pattern-size) / 2) calc(var(--uix-background-pattern-size) / 2);
+        }
+        &[background-pattern="grid"] {
+            background-image:
+                linear-gradient(var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness)),
+                linear-gradient(to right, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness));
+            background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+            background-position: 0 0;
+        }
+        &[background-pattern="graph-paper"] {
+            background-image:
+                linear-gradient(var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness)),
+                linear-gradient(to right, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness)),
+                linear-gradient(color-mix(in oklch, var(--uix-background-pattern-color), transparent 55%) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness)),
+                linear-gradient(to right, color-mix(in oklch, var(--uix-background-pattern-color), transparent 55%) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness));
+            background-size: calc(var(--uix-background-pattern-size) * 5) calc(var(--uix-background-pattern-size) * 5), calc(var(--uix-background-pattern-size) * 5) calc(var(--uix-background-pattern-size) * 5), var(--uix-background-pattern-size) var(--uix-background-pattern-size), var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+            background-position: 0 0;
+        }
+        &[background-pattern="horizontal-lines"] {
+            background-image:
+                linear-gradient(var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness));
+            background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+            background-position: 0 0;
+        }
+        &[background-pattern="vertical-lines"] {
+            background-image:
+                linear-gradient(to right, var(--uix-background-pattern-color) var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness));
+            background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+            background-position: 0 0;
+        }
+        &[background-pattern="diagonal-lines"] {
+            background-image:
+                repeating-linear-gradient(45deg, var(--uix-background-pattern-color) 0 var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness) calc(var(--uix-background-pattern-size) * 0.7071));
+            background-size: auto;
+            background-position: 0 0;
+        }
+        &[background-pattern="crosshatch"] {
+            background-image:
+                repeating-linear-gradient(45deg, var(--uix-background-pattern-color) 0 var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness) calc(var(--uix-background-pattern-size) * 0.7071)),
+                repeating-linear-gradient(-45deg, var(--uix-background-pattern-color) 0 var(--uix-background-pattern-thickness), transparent var(--uix-background-pattern-thickness) calc(var(--uix-background-pattern-size) * 0.7071));
+            background-size: auto;
+            background-position: 0 0;
+        }
+        &[background-pattern="checkerboard"] {
+            background-image:
+                conic-gradient(color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 0 50%, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 0 75%, transparent 0);
+            background-size: calc(var(--uix-background-pattern-size) * 2) calc(var(--uix-background-pattern-size) * 2);
+            background-position: 0 0;
+        }
+        &[background-pattern="zigzag"] {
+            background-image:
+                linear-gradient(135deg, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 25%),
+                linear-gradient(225deg, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 25%),
+                linear-gradient(315deg, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 25%),
+                linear-gradient(45deg, color-mix(in oklch, var(--uix-background-pattern-color), transparent 50%) 25%, transparent 25%);
+            background-size: var(--uix-background-pattern-size) var(--uix-background-pattern-size);
+            background-position: calc(var(--uix-background-pattern-size) / -2) 0, calc(var(--uix-background-pattern-size) / -2) 0, 0 0, 0 0;
+        }
+    }
+
+    /* With text box trim, a control's text takes the cap height instead of the line height. */
+    @supports (text-box: trim-both cap alphabetic) {
+        uix-app {
+            --uix-control-height: calc(var(--uix-text-trim) * 1cap + (1 - var(--uix-text-trim)) * 1lh + 2 * var(--uix-pad-block) + 2 * var(--uix-border-width));
+        }
+    }
+
+    /* Reduced motion: nothing slides any more; fades and color changes stay, short, so changes remain visible. Important, so a theme cannot bring the sliding back. */
+    @media (prefers-reduced-motion: reduce) {
+        uix-app { --uix-motion-distance: 0px !important; }
+    }
+}
+
+/* The application title. */
+@layer uix.content {
+    uix-app > [data-heading] {
+        font: var(--uix-weight-strong) 1.35em / 1.2 var(--uix-font-heading);
+        text-wrap: balance;
+    }
+}
+
+/* Size: the application takes all the space of its parent, and has no size attribute. Right in the body, it fills the window, and the body loses its margin. */
+@layer uix.structure {
+    uix-app { block-size: 100%; overflow: auto; }
+    body > uix-app { block-size: 100dvh; }
+    body:has(> uix-app) { margin: 0; }
+}

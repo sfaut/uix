@@ -1,0 +1,4 @@
+/*
+ * Uix, everything at once: one stylesheet, for a page that loads Uix from a CDN.
+ */
+@import url("app.css");
