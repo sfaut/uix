@@ -8,6 +8,8 @@
 /* The only values a theme sets. */
 @layer uix.settings {
     :root {
+        /* Light or dark as the system is; a page that sets color-scheme itself, unlayered, wins. */
+        color-scheme: light dark;
         --uix-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         --uix-font-heading: var(--uix-font);
         --uix-font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;

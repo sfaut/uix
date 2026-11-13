@@ -79,6 +79,8 @@
 /* The only values a theme sets. */
 @layer uix.settings {
   :root {
+    /* Light or dark as the system is; a page that sets color-scheme itself, unlayered, wins. */
+    color-scheme: light dark;
     --uix-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --uix-font-heading: var(--uix-font);
     --uix-font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
@@ -1005,7 +1007,7 @@ div.sc-panel {
 
 <main class="sc-page">
   <header class="sc-head">
-    <p class="sc-mark">Uix <span>v0 · mockup 24</span></p>
+    <p class="sc-mark">Uix <span>v0 · mockup 25</span></p>
     <h1>Component showcase</h1>
     <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
   </header>

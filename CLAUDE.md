@@ -133,7 +133,8 @@ Settled decisions:
   off. Every dimension derives from the settings (`em`, `lh`, `calc()`) and every color from the accent
   (relative color syntax, `light-dark()`), so changing a setting re-themes everything. The dark theme is
   computed from the light theme and one dark base background color (grayish, bluish…), whose hue and
-  tint every dark neutral keeps. DTCG tokens hold the default values; the derivation formulas live in
+  tint every dark neutral keeps. The theme follows the system (light or dark) by default; a page sets
+  `color-scheme` to force one. DTCG tokens hold the default values; the derivation formulas live in
   the CSS. Density (compact, comfortable) means a tighter or looser interface: it changes spacing and
   line height, never the font size.
 - Every element inside `<uix-app>` uses `box-sizing: border-box`, with no setting to change it.
