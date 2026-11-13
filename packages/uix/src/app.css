@@ -5,6 +5,9 @@
  */
 @layer uix.settings, uix.base, uix.content, uix.structure, uix.controls, uix.components, uix.sizes;
 
+/* The padding a box gets from its attribute must not be inherited by the boxes inside. */
+@property --uix-box-padding { syntax: "*"; inherits: false; }
+
 /* The only values a theme sets. */
 @layer uix.settings {
     :root {
@@ -207,4 +210,27 @@
     uix-app { block-size: 100%; overflow: auto; }
     body > uix-app { block-size: 100dvh; }
     body:has(> uix-app) { margin: 0; }
+
+    /* The application is a column: align places its children across it, justify along it. Browsers read align as the obsolete HTML attribute, which would also align the text inside: the text keeps the alignment of the parent. */
+    uix-app {
+        &[align] { text-align: inherit; }
+        &[align="start"] { align-items: flex-start; }
+        &[align="center"] { align-items: center; }
+        &[align="end"] { align-items: flex-end; }
+        &[align="stretch"] { align-items: stretch; }
+        &[align="baseline"] { align-items: baseline; }
+        &[justify="center"] { justify-content: center; }
+        &[justify="end"] { justify-content: flex-end; }
+        &[justify="space-between"] { justify-content: space-between; }
+        &[gap="none"] { gap: 0; }
+        &[gap="small"] { gap: calc(var(--uix-gap) * 0.5); }
+        &[gap="large"] { gap: calc(var(--uix-gap) * 2); }
+
+        /* padding alone gives the inner spacing (the default), small half of it, large twice it, none nothing. */
+        &[padding=""] { --uix-box-padding: var(--uix-pad-box); }
+        &[padding="small"] { --uix-box-padding: calc(var(--uix-pad-box) * 0.5); }
+        &[padding="large"] { --uix-box-padding: calc(var(--uix-pad-box) * 2); }
+        &[padding="none"] { --uix-box-padding: 0px; }
+        &[padding] { padding: var(--uix-box-padding); }
+    }
 }

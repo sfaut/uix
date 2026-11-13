@@ -16,7 +16,7 @@ export const sizeAttributes = ["width", "height", "min-width", "max-width", "min
  *
  * @type {readonly string[]}
  */
-export const layoutAttributes = ["grow", "span", ...sizeAttributes, "align", "justify", "gap", "wrap", "scroll"];
+export const layoutAttributes = ["grow", "span", ...sizeAttributes, "align", "justify", "gap", "wrap", "scroll", "padding"];
 
 /**
  * The layout attributes each layout type accepts.
@@ -62,7 +62,7 @@ export function warn(element, message) {
 
 /**
  * Warns about the layout attributes an element does not accept: by default, those its layout type does not
- * accept.
+ * accept. One warning per reason.
  *
  * @param {Element} element
  * @param {string} type
@@ -71,26 +71,30 @@ export function warn(element, message) {
  * @param {string} [options.owner]
  *     For a part, the component that lays it out.
  * @param {string} [options.hint]
- *     Advice added to the warning.
+ *     Advice added to the warning that gives the reason of the type.
  * @param {readonly string[]} [options.accepted]
  *     The attributes the element accepts, when they differ from its type's.
- * @param {string} [options.reason]
- *     Why the others have no effect, when the reason of its type does not apply.
+ * @param {Readonly<Record<string, string>>} [options.reasons]
+ *     Why an attribute has no effect, by attribute, when the reason of the type does not apply.
  */
 export function checkLayout(element, type, {
     owner = "",
     hint = "",
     accepted = acceptedByType[type] ?? layoutAttributes,
-    reason = reasonsByType[type] ?? "",
+    reasons = {},
 } = {}) {
-    const ignored = layoutAttributes.filter((name) => element.hasAttribute(name) && !accepted.includes(name));
-    if (ignored.length === 0) {
-        return;
+    /** @type {Map<string, string[]>} */
+    const byReason = new Map();
+    for (const name of layoutAttributes.filter((attribute) => element.hasAttribute(attribute) && !accepted.includes(attribute))) {
+        const reason = reasons[name] ?? reasonsByType[type] ?? `<${element.localName}> does not use it`;
+        byReason.set(reason, [...(byReason.get(reason) ?? []), name]);
     }
-    const names = ignored.map((name) => `'${name}'`).join(", ");
-    const several = ignored.length > 1;
-    const why = reason.replace("{owner}", owner);
-    warn(element, `${names} ${several ? "have" : "has"} no effect here: ${why}. Remove ${several ? "them" : "it"}.${hint ? ` ${hint}` : ""}`);
+    for (const [reason, ignored] of byReason) {
+        const names = ignored.map((name) => `'${name}'`).join(", ");
+        const several = ignored.length > 1;
+        const advice = hint && reason === reasonsByType[type] ? ` ${hint}` : "";
+        warn(element, `${names} ${several ? "have" : "has"} no effect here: ${reason.replace("{owner}", owner)}. Remove ${several ? "them" : "it"}.${advice}`);
+    }
 }
 
 /**
@@ -154,12 +158,12 @@ export class UixAuthoring extends HTMLElement {
     static layoutAccepted = null;
 
     /**
-     * Why the layout attributes it does not accept have no effect, when the reason of its layout type does
-     * not apply.
+     * Why a layout attribute it does not accept has no effect, by attribute, when the reason of its layout
+     * type does not apply.
      *
-     * @type {string}
+     * @type {Readonly<Record<string, string>>}
      */
-    static layoutReason = "";
+    static layoutReasons = {};
 
     /**
      * The layout attributes the element accepts.
@@ -186,7 +190,7 @@ export class UixAuthoring extends HTMLElement {
                 owner: type.layoutOwner,
                 hint: type.layoutHint,
                 accepted: type.acceptedLayoutAttributes,
-                reason: type.layoutReason || undefined,
+                reasons: type.layoutReasons,
             });
         }
         for (const name of sizeAttributes.filter((size) => type.acceptedLayoutAttributes.includes(size))) {

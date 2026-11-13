@@ -1,4 +1,4 @@
-import { UixAuthoring, define, layoutAttributes, sizeAttributes, warn } from "./core.js";
+import { UixAuthoring, define, sizeAttributes, warn } from "./core.js";
 
 /**
  * <uix-app heading="…" background-pattern="…">: the root of an application. Renders the title as a
@@ -10,11 +10,13 @@ export class UixApp extends UixAuthoring {
 
     static layout = "container";
 
-    static layoutAccepted = layoutAttributes.filter((name) => !sizeAttributes.includes(name));
+    static layoutAccepted = ["grow", "span", "align", "justify", "gap", "padding"];
 
-    static layoutReason = "the application always takes all the space of its parent";
-
-    static layoutHint = "Size its parent instead.";
+    static layoutReasons = {
+        ...Object.fromEntries(sizeAttributes.map((name) => [name, "the application always takes all the space of its parent; size its parent instead"])),
+        wrap: "the application stacks its children in a column, which never wraps",
+        scroll: "the application always scrolls what does not fit",
+    };
 
     /**
      * Values of background-pattern.
