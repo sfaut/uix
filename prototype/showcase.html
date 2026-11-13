@@ -409,7 +409,7 @@
       column-gap: normal;
 
       & > label { grid-column: 1 / -1; grid-template-columns: subgrid; column-gap: normal; align-items: center; }
-      & > small { grid-column: 2 / -1; }
+      & > [data-message] { grid-column: 2 / -1; }
     }
     & > :is(uix-checkbox, uix-radio-group) { grid-column: 2 / -1; }
 
@@ -446,13 +446,11 @@
   }
 
   /* Separator: a horizontal rule, vertical in a row, a toolbar or a status bar. A border, unlike a background, snaps to whole device pixels: the rule stays one pixel thick at any font size or zoom. */
-  uix-separator > hr {
+  uix-separator > [role="separator"] {
     align-self: stretch;
-    margin: 0;
-    border: 0;
     border-block-start: max(1px, var(--uix-border-width)) solid var(--uix-border);
   }
-  :is(uix-row, uix-toolbar, uix-status-bar) > uix-separator > hr {
+  :is(uix-row, uix-toolbar, uix-status-bar) > uix-separator > [role="separator"] {
     inline-size: 0;
     border-block-start: 0;
     border-inline-start: max(1px, var(--uix-border-width)) solid var(--uix-border);
@@ -469,7 +467,7 @@
     corner-shape: var(--uix-corner-shape);
     background: var(--uix-surface);
 
-    & > uix-separator > hr { margin-inline: calc(var(--uix-gap) * 0.25); }
+    & > uix-separator > [role="separator"] { margin-inline: calc(var(--uix-gap) * 0.25); }
   }
 
   uix-status-bar {
@@ -639,11 +637,11 @@
       font-weight: var(--uix-weight-normal);
     }
   }
-  :is(uix-input, uix-select) > small {
+  :is(uix-input, uix-select) > [data-message] {
     font-size: 0.9em;
     color: var(--uix-text-muted);
   }
-  :is(uix-input, uix-select) > label:has([aria-invalid="true"]) + small { color: var(--uix-danger); }
+  :is(uix-input, uix-select) > label:has([aria-invalid="true"]) + [data-message] { color: var(--uix-danger); }
 
   /* In a row, a field's label stays on one line, so the field never gets narrower than its label. */
   uix-row > :is(uix-input, uix-select) > label { white-space: nowrap; }
@@ -691,7 +689,7 @@
     &[tone="danger"] { --uix-panel-line: color-mix(in oklch, var(--uix-danger), transparent 40%); background: var(--uix-danger-soft); }
   }
 
-  /* Rendered structure: svg[data-icon], div[data-body] > (strong[data-heading], p[data-text] or rich children), button[data-dismiss]. */
+  /* Rendered structure: svg[data-icon], div[data-body] > (div[data-heading], div[data-text] or rich children), button[data-dismiss]. */
   uix-callout {
     --uix-tone: var(--uix-info);
     --uix-tone-soft: var(--uix-info-soft);
@@ -712,7 +710,7 @@
 
     & > svg[data-icon] { margin-block-start: calc((1lh - var(--uix-icon-size)) / 2); color: var(--uix-tone); }
     & > [data-body] { flex: 1; min-inline-size: 0; }
-    & > [data-body] > [data-heading] { display: block; margin-block-end: calc(var(--uix-gap) * 0.2); }
+    & > [data-body] > [data-heading] { margin-block-end: calc(var(--uix-gap) * 0.2); font-weight: var(--uix-weight-strong); }
     & > button[data-dismiss] { margin-block: calc(var(--uix-pad-block) * -1); margin-inline-end: calc(var(--uix-pad-box) * -0.4); }
   }
 
@@ -749,18 +747,14 @@
       &[data-variant="danger"]:is(:hover, :focus-visible) { background: var(--uix-danger-soft); }
       & > svg[data-icon] { margin-inline-end: 0.6em; color: var(--uix-text-muted); }
       &[data-variant="danger"] > svg[data-icon] { color: inherit; }
-      & > kbd {
+      & > [data-shortcut] {
         float: inline-end;
         margin-inline-start: 2em;
-        padding: 0;
-        border: 0;
-        background: none;
-        font: inherit;
         font-size: 0.85em;
         color: var(--uix-text-muted);
       }
     }
-    & > uix-separator > hr { margin: 0.25em 0; border: 0; border-block-start: max(1px, var(--uix-border-width)) solid var(--uix-border); }
+    & > uix-separator > [role="separator"] { margin-block: 0.25em; }
   }
 
   /* Opening and closing: a transition takes the values of the state it goes to, so the open state carries the entering ones and the closed state the leaving ones. display and overlay stay discrete so the closing fade can play. */
@@ -1011,7 +1005,7 @@ div.sc-panel {
 
 <main class="sc-page">
   <header class="sc-head">
-    <p class="sc-mark">Uix <span>v0 · mockup 23</span></p>
+    <p class="sc-mark">Uix <span>v0 · mockup 24</span></p>
     <h1>Component showcase</h1>
     <p class="sc-lede">Pick a component on the left. Each example is written with <code>uix-*</code> tags only; unfold its source, or the native HTML Uix produced from it. Theme settings are behind the button at the top right.</p>
   </header>
@@ -1634,8 +1628,7 @@ class UixStatusItem extends UixAuthoring {
 }
 
 /**
- * <uix-separator>: a separator in a toolbar or a menu; produces a hr, whose separator role assistive
- * technologies know.
+ * <uix-separator>: a separator in a toolbar or a menu; produces a div with the separator role.
  */
 class UixSeparator extends UixAuthoring {
   static layout = 'part';
@@ -1643,8 +1636,10 @@ class UixSeparator extends UixAuthoring {
   static layoutOwner = 'the toolbar, row or menu around it';
 
   create() {
-    if (!this.querySelector(':scope > hr')) {
-      this.append(document.createElement('hr'));
+    if (!this.querySelector(':scope > [role="separator"]')) {
+      const rule = document.createElement('div');
+      rule.setAttribute('role', 'separator');
+      this.append(rule);
     }
   }
 }
@@ -2037,13 +2032,16 @@ class UixInput extends UixAuthoring {
     input.required = this.hasAttribute('required');
 
     const message = this.getAttribute('error') ?? this.getAttribute('hint');
-    let small = this.querySelector(':scope > small');
+    let element = this.querySelector(':scope > [data-message]');
     if (message) {
-      small ??= this.appendChild(document.createElement('small'));
-      small.id = this.#messageId;
-      small.textContent = message;
+      if (!element) {
+        element = this.appendChild(document.createElement('div'));
+        element.setAttribute('data-message', '');
+      }
+      element.id = this.#messageId;
+      element.textContent = message;
     } else {
-      small?.remove();
+      element?.remove();
     }
     setOrRemove(input, 'aria-describedby', message ? this.#messageId : null);
     setOrRemove(input, 'aria-invalid', this.hasAttribute('error') ? 'true' : null);
@@ -2298,17 +2296,17 @@ class UixCallout extends UixAuthoring {
     if (text && this.#rich) {
       uixWarn(this, 'both the \'text\' attribute and child content are given. The child content is shown and \'text\' is ignored: remove one of them.');
     } else if (text) {
-      const paragraph = document.createElement('p');
+      const paragraph = document.createElement('div');
       paragraph.setAttribute('data-text', '');
       paragraph.textContent = text;
       body.prepend(paragraph);
     }
     const heading = this.getAttribute('heading');
     if (heading) {
-      const strong = document.createElement('strong');
-      strong.setAttribute('data-heading', '');
-      strong.textContent = heading;
-      body.prepend(strong);
+      const title = document.createElement('div');
+      title.setAttribute('data-heading', '');
+      title.textContent = heading;
+      body.prepend(title);
     }
 
     this.control?.remove();
@@ -2399,15 +2397,16 @@ class UixMenuItem extends UixAuthoring {
     const button = this.control;
     const icon = this.getAttribute('icon');
     const shortcut = this.getAttribute('shortcut');
-    let kbd = null;
+    let keys = null;
     if (shortcut) {
-      kbd = document.createElement('kbd');
-      kbd.textContent = shortcut;
+      keys = document.createElement('span');
+      keys.setAttribute('data-shortcut', '');
+      keys.textContent = shortcut;
     }
     button.replaceChildren(...[
       icon && createIcon(icon, 'start'),
       document.createTextNode(this.getAttribute('label') ?? ''),
-      kbd,
+      keys,
     ].filter(Boolean));
     setOrRemove(button, 'aria-keyshortcuts', shortcut ? shortcut.replace(/\s+/g, '+') : null);
     setOrRemove(button, 'data-variant', this.getAttribute('variant'));
