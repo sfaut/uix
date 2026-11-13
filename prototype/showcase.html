@@ -342,21 +342,24 @@
   uix-row { flex-direction: row; align-items: center; }
   uix-column { flex-direction: column; align-items: stretch; }
   /* Browsers read align as the obsolete HTML attribute, which also aligns the text inside (align="end" puts it on the right): the text keeps the alignment of the parent. */
-  :is(uix-row, uix-column, uix-grid)[align] { text-align: inherit; }
-  :is(uix-row, uix-column) {
+  :is(uix-app, uix-row, uix-column, uix-grid)[align] { text-align: inherit; }
+  /* The application is a column too; toolbars and status bars are rows that take justify and gap. */
+  :is(uix-app, uix-row, uix-column) {
     &[align="start"] { align-items: flex-start; }
     &[align="center"] { align-items: center; }
     &[align="end"] { align-items: flex-end; }
     &[align="stretch"] { align-items: stretch; }
     &[align="baseline"] { align-items: baseline; }
+  }
+  :is(uix-app, uix-row, uix-column, uix-toolbar, uix-status-bar) {
     &[justify="center"] { justify-content: center; }
     &[justify="end"] { justify-content: flex-end; }
     &[justify="space-between"] { justify-content: space-between; }
     &[gap="none"] { gap: 0; }
     &[gap="small"] { gap: calc(var(--uix-gap) * 0.5); }
     &[gap="large"] { gap: calc(var(--uix-gap) * 2); }
-    &[wrap] { flex-wrap: wrap; }
   }
+  :is(uix-row, uix-column)[wrap] { flex-wrap: wrap; }
 
   /* padding: a margin inside the edges of the box, from the inner spacing. padding alone gives the inner spacing, small half of it, large twice it, none nothing; the application has the inner spacing by default. */
   :is(uix-app, uix-row, uix-column, uix-grid) {
@@ -387,7 +390,7 @@
   uix-spacer { flex: 1 1 0; }
 
   /* scroll: the content scrolls inside the element; the padding, at least, keeps focus rings visible. */
-  :is(uix-row, uix-column)[scroll] {
+  :is(uix-row, uix-column, uix-grid)[scroll] {
     overflow: auto;
     padding: max(var(--uix-box-padding, 0px), calc(var(--uix-focus-width) + var(--uix-focus-offset)));
     scrollbar-width: thin;
@@ -1395,25 +1398,29 @@ const uixLayoutReasons = {
 
 /**
  * Warns about the layout attributes an element does not accept: by default, those its layout type does not
- * accept.
+ * accept. One warning per reason.
  *
  * @param {Element} element
  * @param {string} type container, item, floating, inline or part.
  * @param {object} [options]
  * @param {string} [options.owner] For a part, the component that lays it out.
- * @param {string} [options.hint] Advice added to the warning.
+ * @param {string} [options.hint] Advice added to the warning that gives the reason of the type.
  * @param {string[]} [options.accepted] The attributes the element accepts, when they differ from its type's.
- * @param {string} [options.reason] Why the others have no effect, when the reason of its type does not apply.
+ * @param {Record<string, string>} [options.reasons] Why an attribute has no effect, by attribute, when the reason of the type does not apply.
  */
-function uixCheckLayout(element, type, { owner = '', hint = '', accepted = uixLayoutAccepted[type] ?? uixLayoutAttributes, reason = uixLayoutReasons[type] ?? '' } = {}) {
-  const ignored = uixLayoutAttributes.filter((name) => element.hasAttribute(name) && !accepted.includes(name));
-  if (ignored.length === 0) {
-    return;
+function uixCheckLayout(element, type, { owner = '', hint = '', accepted = uixLayoutAccepted[type] ?? uixLayoutAttributes, reasons = {} } = {}) {
+  /** @type {Map<string, string[]>} */
+  const byReason = new Map();
+  for (const name of uixLayoutAttributes.filter((attribute) => element.hasAttribute(attribute) && !accepted.includes(attribute))) {
+    const reason = reasons[name] ?? uixLayoutReasons[type] ?? `<${element.localName}> does not use it`;
+    byReason.set(reason, [...(byReason.get(reason) ?? []), name]);
   }
-  const names = ignored.map((name) => `'${name}'`).join(', ');
-  const several = ignored.length > 1;
-  reason = reason.replace('{owner}', owner);
-  uixWarn(element, `${names} ${several ? 'have' : 'has'} no effect here: ${reason}. Remove ${several ? 'them' : 'it'}.${hint ? ` ${hint}` : ''}`);
+  for (const [reason, ignored] of byReason) {
+    const names = ignored.map((name) => `'${name}'`).join(', ');
+    const several = ignored.length > 1;
+    const advice = hint && reason === uixLayoutReasons[type] ? ` ${hint}` : '';
+    uixWarn(element, `${names} ${several ? 'have' : 'has'} no effect here: ${reason.replace('{owner}', owner)}. Remove ${several ? 'them' : 'it'}.${advice}`);
+  }
 }
 
 /**
@@ -1463,12 +1470,21 @@ class UixAuthoring extends HTMLElement {
   static layoutAccepted = null;
 
   /**
-   * Why the layout attributes it does not accept have no effect, when the reason of its layout type does
-   * not apply.
+   * Why a layout attribute it does not accept has no effect, by attribute, when the reason of its layout
+   * type does not apply.
    *
-   * @type {string}
+   * @type {Record<string, string>}
    */
-  static layoutReason = '';
+  static layoutReasons = {};
+
+  /**
+   * The layout attributes the element accepts.
+   *
+   * @returns {string[]}
+   */
+  static get acceptedLayoutAttributes() {
+    return this.layoutAccepted ?? uixLayoutAccepted[this.layout] ?? uixLayoutAttributes;
+  }
 
   /**
    * Whether the native HTML is in place.
@@ -1478,18 +1494,18 @@ class UixAuthoring extends HTMLElement {
   #ready = false;
 
   connectedCallback() {
+    const type = /** @type {typeof UixAuthoring} */ (this.constructor);
     if (!this.#ready) {
       this.create();
       this.#ready = true;
-      const { layout, layoutOwner, layoutHint, layoutAccepted, layoutReason } = /** @type {typeof UixAuthoring} */ (this.constructor);
-      uixCheckLayout(this, layout, {
-        owner: layoutOwner,
-        hint: layoutHint,
-        accepted: layoutAccepted ?? undefined,
-        reason: layoutReason || undefined,
+      uixCheckLayout(this, type.layout, {
+        owner: type.layoutOwner,
+        hint: type.layoutHint,
+        accepted: type.acceptedLayoutAttributes,
+        reasons: type.layoutReasons,
       });
     }
-    for (const name of uixSizeAttributes) {
+    for (const name of uixSizeAttributes.filter((size) => type.acceptedLayoutAttributes.includes(size))) {
       uixCopyLayoutValue(this, name);
     }
     this.sync();
@@ -1558,11 +1574,13 @@ class UixApp extends UixAuthoring {
 
   static layout = 'container';
 
-  static layoutAccepted = uixLayoutAttributes.filter((name) => !uixSizeAttributes.includes(name));
+  static layoutAccepted = ['grow', 'span', 'align', 'justify', 'gap', 'padding'];
 
-  static layoutReason = 'the application always takes all the space of its parent';
-
-  static layoutHint = 'Size its parent instead.';
+  static layoutReasons = {
+    ...Object.fromEntries(uixSizeAttributes.map((name) => [name, 'the application always takes all the space of its parent; size its parent instead'])),
+    wrap: 'the application stacks its children in a column, which never wraps',
+    scroll: 'the application always scrolls what does not fit',
+  };
 
   /**
    * Values of background-pattern.
@@ -1602,6 +1620,13 @@ class UixGroup extends UixAuthoring {
 
   static layout = 'container';
 
+  static layoutAccepted = ['grow', 'span', ...uixSizeAttributes];
+
+  static layoutReasons = Object.fromEntries(['align', 'justify', 'gap', 'wrap', 'scroll', 'padding'].map((name) => [
+    name,
+    'a group stacks what it holds; put a <uix-row>, <uix-column> or <uix-grid> inside to arrange it',
+  ]));
+
   get fieldset() {
     return this.querySelector(':scope > fieldset');
   }
@@ -1620,6 +1645,54 @@ class UixGroup extends UixAuthoring {
     fieldset.querySelector(':scope > legend').textContent = this.getAttribute('label') ?? '';
     fieldset.disabled = this.disabled;
   }
+}
+
+/**
+ * Reasons why a toolbar or a status bar ignores layout attributes: both are rows that center and wrap their
+ * items, inside their own padding.
+ *
+ * @param {string} name toolbar or status bar.
+ * @returns {Record<string, string>}
+ */
+function uixBarReasons(name) {
+  return {
+    align: `a ${name} centers its items on their line`,
+    wrap: `a ${name} always wraps what does not fit`,
+    scroll: `a ${name} wraps what does not fit, so it never scrolls`,
+    padding: `a ${name} sets its own padding`,
+  };
+}
+
+/**
+ * <uix-toolbar>: a row of buttons and fields, framed; styled by CSS alone, registered for the layout checks
+ * (and for the sizes, where CSS cannot read them from the attributes).
+ */
+class UixToolbar extends UixAuthoring {
+  static layout = 'container';
+
+  static layoutAccepted = ['grow', 'span', ...uixSizeAttributes, 'justify', 'gap'];
+
+  static layoutReasons = uixBarReasons('toolbar');
+}
+
+/**
+ * <uix-status-bar>: a line of status items at the bottom of the application; styled by CSS alone,
+ * registered for the layout checks.
+ */
+class UixStatusBar extends UixAuthoring {
+  static layout = 'container';
+
+  static layoutAccepted = ['grow', 'span', ...uixSizeAttributes, 'justify', 'gap'];
+
+  static layoutReasons = uixBarReasons('status bar');
+}
+
+/**
+ * <uix-spacer>: takes the free space of its row or column, pushing what follows to the end; styled by CSS
+ * alone, registered for the layout checks.
+ */
+class UixSpacer extends UixAuthoring {
+  //
 }
 
 /**
@@ -1666,33 +1739,11 @@ class UixSeparator extends UixAuthoring {
 const uixNativeAttr = CSS.supports('width', 'attr(x type(<length>))');
 
 /**
- * Row, column or grid: copies its grid tracks to custom properties, and its sizes too where CSS cannot
- * read them from the attributes.
+ * Row, column or grid: a container with nothing to render; its sizes are copied to custom properties where
+ * CSS cannot read them from the attributes.
  */
-class UixLayout extends HTMLElement {
-  static observedAttributes = ['width', 'height', 'min-width', 'max-width', 'min-height', 'max-height', 'columns', 'rows'];
-
-  connectedCallback() {
-    for (const name of UixLayout.observedAttributes) {
-      this.#copy(name);
-    }
-  }
-
-  /**
-   * @param {string} name
-   */
-  attributeChangedCallback(name) {
-    this.#copy(name);
-  }
-
-  /**
-   * Copies one attribute to its custom property, or removes the property with the attribute.
-   *
-   * @param {string} name
-   */
-  #copy(name) {
-    uixCopyLayoutValue(this, name);
-  }
+class UixLayout extends UixAuthoring {
+  static layout = 'container';
 }
 
 /**
@@ -1729,10 +1780,22 @@ class UixColumn extends UixLayout {
 }
 
 /**
- * <uix-grid columns="auto 1fr">: places its children on a grid; fields align their labels on it.
+ * <uix-grid columns="auto 1fr">: places its children on a grid; fields align their labels on it. Copies its
+ * tracks to custom properties.
  */
 class UixGrid extends UixLayout {
-  //
+  static observedAttributes = ['columns', 'rows'];
+
+  static layoutAccepted = uixLayoutAttributes.filter((name) => name !== 'wrap');
+
+  static layoutReasons = {
+    wrap: 'a grid places its children on its tracks, which never wrap; write repeat(auto-fill, …) in columns to fill the lines',
+  };
+
+  sync() {
+    uixCopyLayoutValue(this, 'columns');
+    uixCopyLayoutValue(this, 'rows');
+  }
 }
 
 /**
@@ -2517,6 +2580,9 @@ class UixMenu extends HTMLElement {
 for (const [name, constructor] of [
   ['uix-app', UixApp],
   ['uix-group', UixGroup],
+  ['uix-toolbar', UixToolbar],
+  ['uix-status-bar', UixStatusBar],
+  ['uix-spacer', UixSpacer],
   ['uix-status-item', UixStatusItem],
   ['uix-separator', UixSeparator],
   ['uix-button', UixButton],
@@ -2535,9 +2601,13 @@ for (const [name, constructor] of [
   ['uix-grid', UixGrid],
   ['uix-splitter', UixSplitter],
 ]) {
-  /* Elements with a box follow changes to their size attributes. */
-  if (constructor.prototype instanceof UixAuthoring && ['container', 'item'].includes(constructor.layout)) {
-    constructor.observedAttributes = [...new Set([...(constructor.observedAttributes ?? []), ...uixSizeAttributes])];
+  /* Elements follow changes to the size attributes they accept. */
+  if (constructor.prototype instanceof UixAuthoring) {
+    const authoring = /** @type {typeof UixAuthoring} */ (constructor);
+    const sizes = uixSizeAttributes.filter((name) => authoring.acceptedLayoutAttributes.includes(name));
+    if (sizes.length > 0) {
+      authoring.observedAttributes = [...new Set([...(authoring.observedAttributes ?? []), ...sizes])];
+    }
   }
   if (!customElements.get(name)) {
     customElements.define(name, constructor);
@@ -2639,7 +2709,7 @@ const components = [
     title: 'Application',
     tags: 'uix-app',
     text: 'A complete application in a 16:9 screen. The application takes all the space of its parent, the whole window when it sits right in the body, with a margin inside its edges; it has no size attribute. The middle row takes the height left by the toolbar and the status bar. The side panels have a size, bounds and a splitter that remembers the size; the main column grows. Its content scrolls, while its buttons stay at the bottom. Forms align their labels with a grid; in the invitation row, the email field grows by default and the role list opts out. background-pattern draws a tile repeated over the canvas, dots by default; the theme sets its tile size, thickness and contrast.',
-    attrs: 'uix-app: heading · padding: (alone) | small | large | none · background-pattern: none | dots | staggered-dots | grid | graph-paper | horizontal-lines | vertical-lines | diagonal-lines | crosshatch | checkerboard | zigzag · uix-row / uix-column: width · min-width · max-width · grow · scroll · uix-splitter: persist · uix-grid: columns',
+    attrs: 'uix-app: heading · align: start | center | end | stretch · justify: start | center | end | space-between · gap: none | small | large · padding: (alone) | small | large | none · background-pattern: none | dots | staggered-dots | grid | graph-paper | horizontal-lines | vertical-lines | diagonal-lines | crosshatch | checkerboard | zigzag · uix-row / uix-column: width · min-width · max-width · grow · scroll · uix-splitter: persist · uix-grid: columns',
     wide: true,
     rows: (p) => [
       ['Application', true, [['uix-app heading="…"', `<uix-app heading="Northwind">
@@ -2875,7 +2945,7 @@ const components = [
     title: 'Grid',
     tags: 'uix-grid',
     text: 'A grid places its children on columns and rows, written as CSS grid tracks; each child takes one cell, or more with span. align places a child in its cell vertically, justify horizontally. Fields span a whole line and lay their label and control on the grid columns, so every label gets the same width.',
-    attrs: 'columns: CSS tracks (auto 1fr) · rows: CSS tracks · align: start | center | end | stretch | baseline · justify: start | center | end | stretch · gap: none | small | large · padding: (alone) | small | large | none · span (on a child): 2 | 3 | 4 | all',
+    attrs: 'columns: CSS tracks (auto 1fr) · rows: CSS tracks · align: start | center | end | stretch | baseline · justify: start | center | end | stretch · gap: none | small | large · padding: (alone) | small | large | none · scroll · span (on a child): 2 | 3 | 4 | all',
     rows: () => [
       ['columns', true, [
         ['(columns="auto 1fr")', box('uix-grid', '', [block('Label'), block('Takes the rest'), block('Longer label'), block('Takes the rest')])],
@@ -2964,7 +3034,7 @@ const components = [
     table: `<table class="sc-attrs">
   <thead><tr><th scope="col">Type</th><th scope="col">Placed by</th><th scope="col">Layout attributes</th><th scope="col">Tags</th></tr></thead>
   <tbody>
-    <tr><td>container</td><td>its parent container; it places its children</td><td>align · justify · gap · wrap · scroll, and those of an item</td><td>uix-app · uix-row · uix-column · uix-grid · uix-toolbar · uix-status-bar · uix-group · uix-radio-group</td></tr>
+    <tr><td>container</td><td>its parent container; it places its children</td><td>those of an item, and those it applies among align · justify · gap · wrap · scroll · padding: rows and columns all of them; the application align · justify · gap · padding, and no size; a grid all but wrap; toolbars and status bars justify · gap; groups none</td><td>uix-app · uix-row · uix-column · uix-grid · uix-toolbar · uix-status-bar · uix-group · uix-radio-group</td></tr>
     <tr><td>item</td><td>its parent container</td><td>grow · span (in a grid) · width · height · min-width · max-width · min-height · max-height</td><td>uix-input · uix-select · uix-button · uix-checkbox · uix-callout · uix-panel · uix-prose · uix-status-item · uix-spacer; any foreign element (grow and span only)</td></tr>
     <tr><td>floating</td><td>anchored to what opens it, above the page</td><td>width · height · min-width · max-width · min-height · max-height</td><td>uix-menu (later: dialog, toast)</td></tr>
     <tr><td>inline</td><td>the text around it, like a word</td><td>none</td><td>uix-link</td></tr>

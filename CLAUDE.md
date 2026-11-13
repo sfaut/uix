@@ -78,7 +78,10 @@ Settled decisions:
   spacing, or `small`, `large`, `none`; no padding by default, except on the application); `columns` and `rows`
   (CSS grid tracks) on `uix-grid`; `span` (`2 | 3 | 4 | all`) on a child of `uix-grid`; `persist` on
   `uix-splitter`. A foreign element (not a `uix-*` tag) inside a container accepts `grow` and `span`, but
-  no size: native elements already give `width` another meaning (pixels on `<img>`, `<canvas>`).
+  no size: native elements already give `width` another meaning (pixels on `<img>`, `<canvas>`). Each
+  container accepts the attributes it applies: rows and columns all of them; the application `align`,
+  `justify`, `gap`, `padding` and no size; a grid all but `wrap`; toolbars and status bars `justify` and
+  `gap`; groups only those of an item. A refused attribute brings a console warning with its reason.
 - Scrolling: components holding content of free length (navigation, list, table, tree, text area,
   prose) scroll by themselves once their size is constrained; layout boxes scroll only with `scroll`.
 - In a row, a field's label stays on one line: the field never gets narrower than its label.
